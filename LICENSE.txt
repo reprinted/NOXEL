@@ -1,0 +1,11 @@
+NOXEL — license not yet chosen
+
+The developer of NOXEL has not selected a license for this project yet.
+Until a license is added here, all rights are reserved by the developer.
+
+To publish NOXEL under an open-source license, replace this file with the
+full license text (for example MIT, Apache-2.0 or GPL-3.0) and update the
+"License" line in README.md.
+
+Third-party components included in NOXEL.exe are listed, with their
+licenses, in THIRD-PARTY-NOTICES.md.

@@ -1,0 +1,13 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+  </Configurations>
+  <Folder Name="/src/">
+    <Project Path="src/NOXEL.App/NOXEL.App.csproj" />
+    <Project Path="src/NOXEL.Core/NOXEL.Core.csproj" />
+    <Project Path="src/NOXEL.Windows/NOXEL.Windows.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/NOXEL.Tests/NOXEL.Tests.csproj" />
+  </Folder>
+</Solution>

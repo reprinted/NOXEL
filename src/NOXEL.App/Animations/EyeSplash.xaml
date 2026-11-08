@@ -1,0 +1,138 @@
+<UserControl
+    x:Class="Noxel.App.Animations.EyeSplash"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    IsTabStop="True"
+    AutomationProperties.Name="NOXEL intro animation. Press any key to skip.">
+    <Grid x:Name="Root" Background="#06070F">
+        <Viewbox x:Name="Stage" Stretch="Uniform" Margin="32" RenderTransformOrigin="0.5,0.5">
+            <Viewbox.RenderTransform>
+                <ScaleTransform x:Name="StageScale" />
+            </Viewbox.RenderTransform>
+            <Canvas x:Name="Scene" Width="800" Height="500">
+                <Canvas x:Name="EyeRig" Width="800" Height="500" RenderTransformOrigin="0.5,0.5">
+                    <Canvas.RenderTransform>
+                        <CompositeTransform x:Name="RigT" />
+                    </Canvas.RenderTransform>
+
+                    <!-- Eyeball -->
+                    <Ellipse Canvas.Left="110" Canvas.Top="90" Width="580" Height="320">
+                        <Ellipse.Fill>
+                            <RadialGradientBrush Center="0.5,0.48" GradientOrigin="0.5,0.42" RadiusX="0.5" RadiusY="0.5">
+                                <GradientStop Color="#E2E0EA" Offset="0" />
+                                <GradientStop Color="#C9C5D6" Offset="0.38" />
+                                <GradientStop Color="#8D88A4" Offset="0.74" />
+                                <GradientStop Color="#3A3650" Offset="1" />
+                            </RadialGradientBrush>
+                        </Ellipse.Fill>
+                    </Ellipse>
+                    <Path x:Name="Veins" Stroke="#9A3A55" StrokeThickness="1.1" Opacity="0.32" />
+
+                    <Canvas x:Name="IrisGroup">
+                        <Canvas.RenderTransform>
+                            <TranslateTransform x:Name="Gaze" />
+                        </Canvas.RenderTransform>
+                        <Ellipse x:Name="IrisGlow" Canvas.Left="262" Canvas.Top="112" Width="276" Height="276" Opacity="0">
+                            <Ellipse.Fill>
+                                <RadialGradientBrush>
+                                    <GradientStop Color="#00A47CFF" Offset="0.62" />
+                                    <GradientStop Color="#88A47CFF" Offset="0.74" />
+                                    <GradientStop Color="#00A47CFF" Offset="1" />
+                                </RadialGradientBrush>
+                            </Ellipse.Fill>
+                        </Ellipse>
+                        <Ellipse Canvas.Left="300" Canvas.Top="150" Width="200" Height="200">
+                            <Ellipse.Fill>
+                                <RadialGradientBrush>
+                                    <GradientStop Color="#120C16" Offset="0" />
+                                    <GradientStop Color="#23161F" Offset="0.36" />
+                                    <GradientStop Color="#5E3047" Offset="0.44" />
+                                    <GradientStop Color="#4A4268" Offset="0.6" />
+                                    <GradientStop Color="#2C2A44" Offset="0.84" />
+                                    <GradientStop Color="#08060C" Offset="0.97" />
+                                    <GradientStop Color="#08060C" Offset="1" />
+                                </RadialGradientBrush>
+                            </Ellipse.Fill>
+                        </Ellipse>
+                        <Path x:Name="FibersLight" Stroke="#C9BCE0" StrokeThickness="1.1" Opacity="0.2" />
+                        <Path x:Name="FibersDark" Stroke="#120818" StrokeThickness="1.6" Opacity="0.42" />
+                        <Ellipse Canvas.Left="342" Canvas.Top="192" Width="116" Height="116" Stroke="#9A72B4" StrokeThickness="3" Opacity="0.30" />
+                        <Ellipse Canvas.Left="300" Canvas.Top="150" Width="200" Height="200" Stroke="#07040C" StrokeThickness="7" />
+                        <Ellipse x:Name="Pupil" Canvas.Left="360" Canvas.Top="210" Width="80" Height="80" Fill="#020104" RenderTransformOrigin="0.5,0.5">
+                            <Ellipse.RenderTransform>
+                                <ScaleTransform x:Name="PupilScale" />
+                            </Ellipse.RenderTransform>
+                        </Ellipse>
+                        <Ellipse Canvas.Left="424" Canvas.Top="181" Width="24" Height="18" Fill="#F6F4FF" Opacity="0.95" />
+                        <Ellipse Canvas.Left="402" Canvas.Top="214" Width="7" Height="7" Fill="#F6F4FF" Opacity="0.55" />
+                        <Ellipse x:Name="GhostRed" Canvas.Left="300" Canvas.Top="150" Width="200" Height="200" Stroke="#FF2B4F" StrokeThickness="6" Opacity="0">
+                            <Ellipse.RenderTransform>
+                                <TranslateTransform x:Name="GhostRedT" />
+                            </Ellipse.RenderTransform>
+                        </Ellipse>
+                        <Ellipse x:Name="GhostCyan" Canvas.Left="300" Canvas.Top="150" Width="200" Height="200" Stroke="#2BE3FF" StrokeThickness="6" Opacity="0">
+                            <Ellipse.RenderTransform>
+                                <TranslateTransform x:Name="GhostCyanT" />
+                            </Ellipse.RenderTransform>
+                        </Ellipse>
+                    </Canvas>
+
+                    <!-- Lid shadows cast on the eyeball -->
+                    <Path x:Name="UpperShadowWide" Stroke="#05040C" StrokeThickness="46" Opacity="0.22" />
+                    <Path x:Name="UpperShadow" Stroke="#05040C" StrokeThickness="22" Opacity="0.3" />
+                    <Path x:Name="LowerShadow" Stroke="#05040C" StrokeThickness="16" Opacity="0.3" />
+                    <!-- Eyelids: opaque shapes whose inner edge is an animated Bézier curve -->
+                    <Path x:Name="UpperLid" Fill="#06070F" />
+                    <Path x:Name="LowerLid" Fill="#06070F" />
+                    <Path x:Name="UpperLine" Stroke="#DAD6EE" StrokeThickness="3" Opacity="0.8" />
+                    <Path x:Name="LowerLine" Stroke="#C9C4E0" StrokeThickness="2" Opacity="0.55" />
+                    <Path x:Name="UpperFold" Stroke="#A39DC4" StrokeThickness="2" Opacity="0.35" />
+                    <Path x:Name="LowerFold" Stroke="#A39DC4" StrokeThickness="1.5" Opacity="0.22" />
+                </Canvas>
+                <!-- Screen glow over everything inside the tube -->
+                <Ellipse Canvas.Left="-40" Canvas.Top="-60" Width="880" Height="620" IsHitTestVisible="False">
+                    <Ellipse.Fill>
+                        <RadialGradientBrush>
+                            <GradientStop Color="#302C4E9A" Offset="0" />
+                            <GradientStop Color="#142A3070" Offset="0.5" />
+                            <GradientStop Color="#00000000" Offset="1" />
+                        </RadialGradientBrush>
+                    </Ellipse.Fill>
+                </Ellipse>
+            </Canvas>
+        </Viewbox>
+
+        <!-- CRT layers, in screen pixels -->
+        <Image x:Name="Noise" Stretch="Fill" Opacity="0.2" Margin="-64" IsHitTestVisible="False">
+            <Image.RenderTransform>
+                <TranslateTransform x:Name="NoiseT" />
+            </Image.RenderTransform>
+        </Image>
+        <Rectangle x:Name="RollBar" Height="140" VerticalAlignment="Top" IsHitTestVisible="False" Opacity="0.5">
+            <Rectangle.RenderTransform>
+                <TranslateTransform x:Name="RollBarT" Y="-160" />
+            </Rectangle.RenderTransform>
+            <Rectangle.Fill>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Color="#00B8C4FF" Offset="0" />
+                    <GradientStop Color="#14B8C4FF" Offset="0.5" />
+                    <GradientStop Color="#00B8C4FF" Offset="1" />
+                </LinearGradientBrush>
+            </Rectangle.Fill>
+        </Rectangle>
+        <Image x:Name="Scanlines" Stretch="Fill" Opacity="0.55" IsHitTestVisible="False" />
+        <Canvas x:Name="Bands" IsHitTestVisible="False" />
+        <Rectangle IsHitTestVisible="False">
+            <Rectangle.Fill>
+                <RadialGradientBrush RadiusX="0.72" RadiusY="0.72">
+                    <GradientStop Color="#00000000" Offset="0.55" />
+                    <GradientStop Color="#D0000000" Offset="1" />
+                </RadialGradientBrush>
+            </Rectangle.Fill>
+        </Rectangle>
+        <Rectangle x:Name="Flicker" Fill="#000000" Opacity="0" IsHitTestVisible="False" />
+        <Rectangle x:Name="Pulse" Fill="#7C5CFF" Opacity="0" IsHitTestVisible="False" />
+        <TextBlock x:Name="SkipHint" Text="Click or press any key to skip" HorizontalAlignment="Center" VerticalAlignment="Bottom"
+                   Margin="0,0,0,22" FontSize="11" Foreground="#8C88A8" Opacity="0.55" CharacterSpacing="80" />
+    </Grid>
+</UserControl>

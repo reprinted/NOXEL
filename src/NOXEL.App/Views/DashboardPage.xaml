@@ -1,0 +1,168 @@
+<Page
+    x:Class="Noxel.App.Views.DashboardPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Background="Transparent">
+    <Grid>
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState x:Name="Wide">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="1180" />
+                    </VisualState.StateTriggers>
+                </VisualState>
+                <VisualState x:Name="Narrow">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="RightCol.Width" Value="0" />
+                        <Setter Target="PresetCard.(Grid.Column)" Value="0" />
+                        <Setter Target="PresetCard.(Grid.Row)" Value="1" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+    <ScrollViewer>
+        <StackPanel Padding="28,6,28,28" Spacing="16" MaxWidth="1320">
+            <StackPanel>
+                <TextBlock Text="Dashboard" Style="{StaticResource PageTitle}" />
+                <TextBlock Text="Your display, colors and presets in one place." Style="{StaticResource PageSubtitle}" />
+            </StackPanel>
+
+            <Grid x:Name="TopGrid" ColumnSpacing="16" RowSpacing="16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition x:Name="LeftCol" Width="*" />
+                    <ColumnDefinition x:Name="RightCol" Width="360" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <!-- Monitor card -->
+                <Border Style="{StaticResource GlassCard}" Padding="20">
+                    <Grid ColumnSpacing="20" RowSpacing="16">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <!-- Screen thumbnail -->
+                        <Border Width="190" Height="118" CornerRadius="12" BorderBrush="{ThemeResource NoxelGlassStroke}" BorderThickness="1" VerticalAlignment="Top">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="#2A1E5C" Offset="0" />
+                                    <GradientStop Color="#120F2A" Offset="0.6" />
+                                    <GradientStop Color="#0A0A18" Offset="1" />
+                                </LinearGradientBrush>
+                            </Border.Background>
+                            <Grid>
+                                <Image Source="ms-appx:///Assets/noxel-eye.png" Width="78" Opacity="0.9" />
+                                <TextBlock x:Name="ThumbRes" Text="—" FontFamily="{StaticResource NoxelMono}" FontSize="11" Foreground="#C9C2EE"
+                                           HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,10,8" />
+                            </Grid>
+                        </Border>
+                        <StackPanel Grid.Column="1" Spacing="8" VerticalAlignment="Top">
+                            <ComboBox x:Name="MonitorBox" MinWidth="240" SelectionChanged="OnMonitorChanged" AutomationProperties.Name="Monitor" />
+                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                <Border x:Name="PrimaryBadge" Style="{StaticResource AccentBadge}"><TextBlock Text="PRIMARY" Style="{StaticResource AccentBadgeText}" /></Border>
+                                <Border Style="{StaticResource Badge}"><TextBlock x:Name="ConnBadge" Text="CONNECTED" Style="{StaticResource BadgeText}" /></Border>
+                                <Border x:Name="HdrBadge" Style="{StaticResource Badge}"><TextBlock x:Name="HdrText" Text="HDR" Style="{StaticResource BadgeText}" /></Border>
+                            </StackPanel>
+                            <TextBlock x:Name="MonitorId" Style="{StaticResource FaintText}" FontFamily="{StaticResource NoxelMono}" IsTextSelectionEnabled="True" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
+                        </StackPanel>
+
+                        <VariableSizedWrapGrid Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal" ItemWidth="190" ItemHeight="64">
+                            <StackPanel Spacing="2">
+                                <TextBlock Text="RESOLUTION" Style="{StaticResource SectionLabel}" />
+                                <TextBlock x:Name="ResText" Style="{StaticResource StatValue}" />
+                            </StackPanel>
+                            <StackPanel Spacing="2">
+                                <TextBlock Text="REFRESH RATE" Style="{StaticResource SectionLabel}" />
+                                <TextBlock x:Name="HzText" Style="{StaticResource StatValue}" />
+                            </StackPanel>
+                            <StackPanel Spacing="2">
+                                <TextBlock Text="MAX FOR THIS MODE" Style="{StaticResource SectionLabel}" />
+                                <TextBlock x:Name="MaxHzText" Style="{StaticResource StatValue}" />
+                            </StackPanel>
+                            <StackPanel Spacing="2">
+                                <TextBlock Text="NATIVE" Style="{StaticResource SectionLabel}" />
+                                <TextBlock x:Name="NativeText" Style="{StaticResource StatValue}" />
+                            </StackPanel>
+                            <StackPanel Spacing="2">
+                                <TextBlock Text="COLOR LOOK" Style="{StaticResource SectionLabel}" />
+                                <TextBlock x:Name="LookText" Style="{StaticResource StatValue}" FontFamily="{ThemeResource ContentControlThemeFontFamily}" TextTrimming="CharacterEllipsis" />
+                            </StackPanel>
+                            <StackPanel Spacing="2">
+                                <TextBlock Text="COLOR PROFILE" Style="{StaticResource SectionLabel}" />
+                                <TextBlock x:Name="IccText" Style="{StaticResource StatValue}" FontSize="12.5" FontFamily="{ThemeResource ContentControlThemeFontFamily}" TextTrimming="CharacterEllipsis" />
+                            </StackPanel>
+                        </VariableSizedWrapGrid>
+                    </Grid>
+                </Border>
+
+                <!-- Active preset + favorites -->
+                <Border x:Name="PresetCard" Grid.Column="1" Style="{StaticResource GlassCard}">
+                    <StackPanel Spacing="12">
+                        <TextBlock Text="Active preset" Style="{StaticResource CardTitle}" />
+                        <ComboBox x:Name="PresetBox" HorizontalAlignment="Stretch" PlaceholderText="No preset active" SelectionChanged="OnPresetPicked" AutomationProperties.Name="Active preset" />
+                        <TextBlock x:Name="PresetSummary" Style="{StaticResource MutedText}" />
+                        <Rectangle Height="1" Fill="{ThemeResource NoxelDivider}" />
+                        <TextBlock Text="FAVORITES" Style="{StaticResource SectionLabel}" />
+                        <StackPanel x:Name="FavoritesPanel" Spacing="6" />
+                        <TextBlock x:Name="NoFavorites" Text="Star presets on the Presets page to pin them here." Style="{StaticResource FaintText}" Visibility="Collapsed" />
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- Quick actions -->
+            <Border Style="{StaticResource GlassCard}">
+                <StackPanel Spacing="12">
+                    <TextBlock Text="Quick actions" Style="{StaticResource CardTitle}" />
+                    <VariableSizedWrapGrid x:Name="ActionsGrid" Orientation="Horizontal" ItemWidth="176" ItemHeight="112">
+                        <Button x:Name="NativeTile" Style="{StaticResource TileButton}" Margin="0,0,10,10" Click="OnNative" AutomationProperties.Name="Switch to native resolution">
+                            <StackPanel Spacing="6" HorizontalAlignment="Center">
+                                <FontIcon Glyph="&#xE7F4;" FontSize="22" />
+                                <TextBlock Text="Native" HorizontalAlignment="Center" FontWeight="SemiBold" />
+                                <TextBlock x:Name="NativeTileText" Style="{StaticResource FaintText}" HorizontalAlignment="Center" FontFamily="{StaticResource NoxelMono}" />
+                            </StackPanel>
+                        </Button>
+                        <Button x:Name="StretchedTile" Style="{StaticResource TileButton}" Margin="0,0,10,10" Click="OnStretched" AutomationProperties.Name="Switch to stretched resolution">
+                            <StackPanel Spacing="6" HorizontalAlignment="Center">
+                                <FontIcon Glyph="&#xE9A6;" FontSize="22" />
+                                <TextBlock Text="Stretched" HorizontalAlignment="Center" FontWeight="SemiBold" />
+                                <TextBlock x:Name="StretchedTileText" Style="{StaticResource FaintText}" HorizontalAlignment="Center" FontFamily="{StaticResource NoxelMono}" />
+                            </StackPanel>
+                        </Button>
+                        <Button x:Name="ColorTile" Style="{StaticResource TileButton}" Margin="0,0,10,10" Click="OnToggleColor" AutomationProperties.Name="Turn color effects on or off">
+                            <StackPanel Spacing="6" HorizontalAlignment="Center">
+                                <FontIcon x:Name="ColorTileIcon" Glyph="&#xE706;" FontSize="22" />
+                                <TextBlock Text="Color look" HorizontalAlignment="Center" FontWeight="SemiBold" />
+                                <TextBlock x:Name="ColorTileText" Style="{StaticResource FaintText}" HorizontalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
+                        <Button Style="{StaticResource TileButton}" Margin="0,0,10,10" Click="OnOpenPresets" AutomationProperties.Name="Open presets">
+                            <StackPanel Spacing="6" HorizontalAlignment="Center">
+                                <FontIcon Glyph="&#xE8F1;" FontSize="22" />
+                                <TextBlock Text="Presets" HorizontalAlignment="Center" FontWeight="SemiBold" />
+                                <TextBlock x:Name="PresetsTileText" Style="{StaticResource FaintText}" HorizontalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
+                        <Button Style="{StaticResource TileButton}" Margin="0,0,10,10" Click="OnRestore" AutomationProperties.Name="Restore default display settings">
+                            <StackPanel Spacing="6" HorizontalAlignment="Center">
+                                <FontIcon Glyph="&#xE777;" FontSize="22" />
+                                <TextBlock Text="Restore defaults" HorizontalAlignment="Center" FontWeight="SemiBold" />
+                                <TextBlock Text="Native mode, look off" Style="{StaticResource FaintText}" HorizontalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
+                    </VariableSizedWrapGrid>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+    </Grid>
+</Page>
