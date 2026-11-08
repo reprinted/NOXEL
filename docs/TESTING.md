@@ -131,3 +131,64 @@ resources); the bundled fonts add a few MB.
 | Compare button checked | rounded corners kept |
 | Sliders | accent before the thumb, grey after |
 | Unit tests | 63 passed (adds look-code parsing and settings migration) |
+
+---
+
+# 1.0.0 public release — test results
+
+Updates were tested against a local stand-in for the GitHub API (loopback only; the `NOXEL_UPDATE_TEST_API` override
+accepts nothing else) with throwaway 1.0.0 and 1.0.1 builds and a separate data folder (`NOXEL_TEST_DATA_DIR`), so
+the real settings, presets, startup entry and monitors were never touched. Nothing was published to GitHub.
+
+### Update check
+| Scenario | Result |
+|---|---|
+| Newer stable release (v1.0.1) | "NOXEL v1.0.1 available" notice with Download / Later / View changes; stays until answered |
+| No releases (HTTP 404) | No releases have been published yet |
+| Same version / older version | Up to date |
+| Pre-release v1.0.1 | Ignored: up to date |
+| HTTP 500 / HTTP 403 rate limit | Error message, retried later; nothing else happens |
+| Not JSON / tag "banana" | Clear "couldn't be read" / "isn't a valid version" error |
+| Offline (connection refused) | "Couldn't reach GitHub. NOXEL works offline…" |
+
+### Download and verification
+| Scenario | Result |
+|---|---|
+| Valid release (automatic download mode) | Downloaded, size + SHA-256 + version verified, "ready to install" |
+| Wrong checksum | Rejected, file deleted |
+| No checksum published | Refused with explanation |
+| File claims v1.0.1 but is 1.0.0 (correct hash) | Rejected by the version check |
+| Connection cut at one third | "The download failed", partial file removed |
+| Cancel during a slow download | Stopped, partial file removed |
+
+### Install handoff
+| Scenario | Result |
+|---|---|
+| Installed 1.0.0 (Setup, silent, temp folder) → Install now | Installer waited for NOXEL to exit, updated to 1.0.1, reopened in ~2 s; settings kept; uninstalled afterwards and the user's own shortcuts restored |
+| Plain silent install | Does not launch NOXEL (only the updater's `/RELAUNCH=1` does) |
+| Portable 1.0.0 → Install now | Exe replaced with 1.0.1, `NOXEL.previous.exe` (1.0.0) kept, reopened in ~1 s; settings kept |
+| Portable exe read-only (can't be replaced) | Message with manual steps, exe unchanged, 1.0.0 reopened, download folder opened |
+| Install while Keep/Revert pending | Blocked in code (checked before the dialog and again at install); not exercised, to avoid display changes |
+
+### Interface
+Checked by screenshots (dark and light): update notice, release-notes dialog (Markdown headings and bullets),
+Settings › Updates with live download progress (file, MB, %, speed, Cancel), countdown bar on timed notices,
+notice re-colours when the theme changes, About with License / Third-party notices, delete dialog (rounded
+softer-red Delete, neutral Cancel with focus; Cancel keeps the preset, Delete removes it), compact view.
+
+Found and fixed during testing: a second dialog requested while one was open ended NOXEL silently (now ignored);
+theme switch showed two notices; compact view's colour switch overlapped the mode text; the update-available notice
+stayed up during a download; a failed portable update didn't reopen NOXEL and could restore an older leftover
+backup.
+
+### Performance (final Release `NOXEL.exe`, 15 s samples, no forced memory trimming)
+| State | Working set | Private | Idle CPU |
+|---|---|---|---|
+| First start to visible window (includes first-run extraction, intro on) | 2.72 s | | |
+| Window open, idle | 174.5 MB | 124.6 MB | 0.00 % |
+| In tray, idle | 169.8 MB | 118.7 MB | 0.00 % |
+| Reopen from tray (second launch) | 0.14 s to window, still one process | | |
+| Reopened, idle | 181.3 MB | 128.4 MB | 0.00 % |
+
+### Unit tests
+82 passed (adds semantic-version comparison, release parsing, untrusted-host filtering, checksum parsing).

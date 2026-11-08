@@ -8,3 +8,4 @@ artifacts/release/*
 artifacts/installer/*
 !artifacts/installer/.gitkeep
 artifacts/spike/
+artifacts/release-v*/
