@@ -33,28 +33,32 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <!-- Custom title bar (drag region). Caption buttons are drawn by Windows on the right. -->
-            <Grid x:Name="TitleBar" Height="48" Padding="16,0,0,0" Background="Transparent">
+            <!-- Custom title bar (drag region). Caption buttons are drawn by Windows on the right (CaptionInset). -->
+            <Grid x:Name="TitleBar" Height="48" Padding="16,0,0,0" Background="Transparent" ColumnSpacing="12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition x:Name="CaptionInset" Width="140" />
+                </Grid.ColumnDefinitions>
                 <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
                     <Image Source="ms-appx:///Assets/noxel-64.png" Width="22" Height="22" />
-                    <TextBlock Text="NOXEL" FontWeight="Bold" FontSize="14" CharacterSpacing="220" VerticalAlignment="Center"
-                               Foreground="{ThemeResource NoxelTextPrimary}" />
-                    <Border Style="{StaticResource Badge}">
+                    <TextBlock Text="NOXEL" Style="{StaticResource Wordmark}" VerticalAlignment="Center" />
+                    <Border x:Name="VersionBadge" Style="{StaticResource Badge}">
                         <TextBlock x:Name="VersionText" Text="v1.0" Style="{StaticResource BadgeText}" FontFamily="{StaticResource NoxelMono}" />
                     </Border>
                 </StackPanel>
-                <StackPanel x:Name="TitleStatus" Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,150,0">
+                <StackPanel x:Name="TitleStatus" Grid.Column="1" Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right" VerticalAlignment="Center">
                     <Ellipse x:Name="StatusDot" Width="8" Height="8" Fill="{ThemeResource NoxelAccent}" Opacity="0.3" VerticalAlignment="Center" />
-                    <TextBlock x:Name="StatusText" Text="Loading…" Style="{StaticResource MutedText}" VerticalAlignment="Center" />
+                    <TextBlock x:Name="StatusText" Text="Loading…" Style="{StaticResource MutedText}" VerticalAlignment="Center" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
                 </StackPanel>
             </Grid>
 
             <NavigationView x:Name="Nav" Grid.Row="1"
-                            PaneDisplayMode="Auto" OpenPaneLength="220" CompactModeThresholdWidth="0" ExpandedModeThresholdWidth="900"
+                            PaneDisplayMode="Auto" OpenPaneLength="232" CompactPaneLength="56"
+                            CompactModeThresholdWidth="700" ExpandedModeThresholdWidth="1100"
                             IsBackButtonVisible="Collapsed" IsSettingsVisible="True" IsTitleBarAutoPaddingEnabled="False"
-                            SelectionChanged="OnNavSelectionChanged" ItemInvoked="OnNavItemInvoked">
+                            SelectionChanged="OnNavSelectionChanged" ItemInvoked="OnNavItemInvoked" DisplayModeChanged="OnNavDisplayModeChanged">
                 <NavigationView.Resources>
-                    <SolidColorBrush x:Key="NavigationViewDefaultPaneBackground" Color="Transparent" />
                     <SolidColorBrush x:Key="NavigationViewExpandedPaneBackground" Color="Transparent" />
                     <SolidColorBrush x:Key="NavigationViewTopPaneBackground" Color="Transparent" />
                     <SolidColorBrush x:Key="NavigationViewContentBackground" Color="Transparent" />
@@ -82,14 +86,15 @@
                     </NavigationViewItem>
                 </NavigationView.FooterMenuItems>
 
-                <Grid>
-                    <Frame x:Name="ContentFrame" />
+                <Grid x:Name="ContentHost">
+                    <Frame x:Name="ContentFrame" CacheSize="5" Navigated="OnFrameNavigated" />
+                    <Grid x:Name="MotionLayer" IsHitTestVisible="False" />
                     <ProgressRing x:Name="LoadingRing" IsActive="True" Width="40" Height="40" HorizontalAlignment="Center" VerticalAlignment="Center" />
                 </Grid>
             </NavigationView>
 
             <!-- Notices -->
-            <StackPanel x:Name="NoticeHost" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,20,20" Width="420" Spacing="8" />
+            <StackPanel x:Name="NoticeHost" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="16,0,16,16" MaxWidth="420" Spacing="8" />
         </Grid>
 
         <!-- Startup failure -->

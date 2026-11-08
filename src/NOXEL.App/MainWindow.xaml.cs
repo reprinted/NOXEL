@@ -3,6 +3,7 @@ using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Animation;
+using Noxel.App.Animations;
 using Noxel.App.Infrastructure;
 using Noxel.App.Services;
 using Noxel.App.Views;
@@ -31,11 +32,13 @@ public sealed partial class MainWindow : Window
         VersionText.Text = "v" + (Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "1.0.0");
 
         var settings = App.Settings;
-        WindowHelper.SetMinSize(this, 720, 540);
+        // Narrow layouts are supported down to this size; below it the UI would stop being usable.
+        WindowHelper.SetMinSize(this, 420, 520);
         WindowHelper.RestorePlacement(this, settings.MainPlacement, 1220, 800);
         if (settings.MainPlacement.Maximized && AppWindow.Presenter is OverlappedPresenter op) op.Maximize();
         ApplyTheme();
 
+        Root.SizeChanged += (_, e) => UpdateTitleBar(e.NewSize.Width);
         AppWindow.Closing += OnClosing;
         AppWindow.Changed += OnWindowChanged;
         ThemeService.SystemThemeChanged += () => DispatcherQueue.TryEnqueue(ApplyTheme);
@@ -46,10 +49,45 @@ public sealed partial class MainWindow : Window
             Splash.Visibility = Visibility.Visible;
             Splash.Finished += OnSplashFinished;
         }
-        else _splashDone = true;
+        else
+        {
+            _splashDone = true;
+            // Opening from the tray / compact view: a short fade-rise instead of popping in.
+            Root.Loaded += (_, _) => Motion.WindowContentEnter(Shell);
+        }
     }
 
     public void ApplyTheme() => ThemeService.ApplyToWindow(this, Root, App.Settings);
+
+    /// <summary>Title bar never collides with the caption buttons: status and version give way on narrow windows.</summary>
+    private void UpdateTitleBar(double width)
+    {
+        TitleStatus.Visibility = width >= 760 ? Visibility.Visible : Visibility.Collapsed;
+        VersionBadge.Visibility = width >= 470 ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    /// <summary>
+    /// Three navigation states (NavigationView "Auto"): Expanded ≥ 1100 px (icons + labels), Compact 700–1100 px
+    /// (icon rail with tooltips; opening it overlays an opaque glass pane), Minimal &lt; 700 px (hamburger + flyout).
+    /// In Minimal the hamburger sits at the top-left of the content area, so pages get a top inset to never sit under it.
+    /// </summary>
+    private void OnNavDisplayModeChanged(NavigationView sender, NavigationViewDisplayModeChangedEventArgs args)
+    {
+        ContentHost.Margin = args.DisplayMode == NavigationViewDisplayMode.Minimal ? new Thickness(0, 44, 0, 0) : new Thickness(0);
+        // Expanded always shows labels; overlay modes start closed so the pane never covers content unasked.
+        // Changing IsPaneOpen inside this event (mid template update) leaves the pane half-open, so defer it.
+        bool expanded = args.DisplayMode == NavigationViewDisplayMode.Expanded;
+        DispatcherQueue.TryEnqueue(() =>
+        {
+            if ((Nav.DisplayMode == NavigationViewDisplayMode.Expanded) == expanded && Nav.IsPaneOpen != expanded)
+                Nav.IsPaneOpen = expanded;
+        });
+    }
+
+    private void OnFrameNavigated(object sender, Microsoft.UI.Xaml.Navigation.NavigationEventArgs e)
+    {
+        if (e.Content is FrameworkElement page) Motion.PageEnter(page, MotionLayer);
+    }
 
     // ------------------------------------------------------------ lifecycle
 
@@ -146,10 +184,10 @@ public sealed partial class MainWindow : Window
         };
         if (ContentFrame.CurrentSourcePageType != page)
         {
-            NavigationTransitionInfo t = ThemeService.AnimationsAllowed(App.Settings)
-                ? new EntranceNavigationTransitionInfo() : new SuppressNavigationTransitionInfo();
-            ContentFrame.Navigate(page, null, t);
+            // NOXEL animates the entrance itself (Motion.PageEnter) so it follows NOXEL's animation settings.
+            ContentFrame.Navigate(page, null, new SuppressNavigationTransitionInfo());
         }
+        if (Nav.DisplayMode != NavigationViewDisplayMode.Expanded) Nav.IsPaneOpen = false;
         var item = tag == "Settings" ? Nav.SettingsItem : Nav.MenuItems.OfType<NavigationViewItem>().FirstOrDefault(i => (string)i.Tag == tag);
         if (item is not null && !ReferenceEquals(Nav.SelectedItem, item)) Nav.SelectedItem = item;
     }
@@ -194,13 +232,14 @@ public sealed partial class MainWindow : Window
         };
         bar.Closed += (s, _) => NoticeHost.Children.Remove((UIElement)s);
         NoticeHost.Children.Add(bar);
+        Motion.Appear(bar, 12);
         while (NoticeHost.Children.Count > 3) NoticeHost.Children.RemoveAt(0);
         if (n.Kind is NoticeKind.Success or NoticeKind.Info)
         {
             var t = DispatcherQueue.CreateTimer();
             t.Interval = TimeSpan.FromSeconds(n.Kind == NoticeKind.Success ? 3.5 : 6);
             t.IsRepeating = false;
-            t.Tick += (_, _) => { bar.IsOpen = false; NoticeHost.Children.Remove(bar); };
+            t.Tick += (_, _) => Motion.Disappear(bar, () => { bar.IsOpen = false; NoticeHost.Children.Remove(bar); });
             t.Start();
         }
     }

@@ -37,14 +37,21 @@ public sealed class AppSettings
     public bool TransparencyEnabled { get; set; } = true;
     public double GlassIntensity { get; set; } = 70;
     public bool AnimationsEnabled { get; set; } = true;
+    /// <summary>NOXEL's own reduced-motion switch: stops all motion including the intro and smooth scrolling.</summary>
     public bool ReducedMotion { get; set; }
+    /// <summary>Honour Windows "Animation effects" (Settings > Accessibility > Visual effects). Default on.</summary>
+    public bool RespectSystemReducedMotion { get; set; } = true;
+    /// <summary>Compositor motion trail on page transitions. Off by default; inactive when animations are off.</summary>
+    public bool MotionBlur { get; set; }
+    /// <summary>Eased mouse-wheel scrolling. Touchpad/touch always stay native.</summary>
+    public bool SmoothScrolling { get; set; } = true;
 
     // Startup & window
     public bool StartWithWindows { get; set; }
     public bool MinimizeToTray { get; set; }
     public bool CloseToTray { get; set; } = true;
     public bool PlayIntro { get; set; } = true;
-    /// <summary>Play the intro even when Windows "Animation effects" is off (NOXEL's own Reduced motion still wins).</summary>
+    /// <summary>Legacy (1.0 builds): migrated to <see cref="RespectSystemReducedMotion"/> = false.</summary>
     public bool IntroIgnoresSystemMotion { get; set; }
     public bool SkipIntroOnRestore { get; set; } = true;
     public bool StartupOpensCompact { get; set; }
@@ -87,6 +94,7 @@ public sealed class AppSettings
     public AppSettings Sanitized()
     {
         ConfirmSeconds = Math.Clamp(ConfirmSeconds, 5, 60);
+        if (IntroIgnoresSystemMotion) { RespectSystemReducedMotion = false; IntroIgnoresSystemMotion = false; }
         GlassIntensity = Math.Clamp(double.IsFinite(GlassIntensity) ? GlassIntensity : 70, 0, 100);
         WorkingColor = (WorkingColor ?? ColorSettings.Default).Clamped();
         if (!IsHex(AccentHex)) AccentHex = "#9B7BFF";

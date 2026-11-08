@@ -3,7 +3,10 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Noxel.App.Animations;
+using Noxel.App.Infrastructure;
 using Noxel.App.Services;
+using Microsoft.UI.Xaml.Media.Animation;
 using Noxel.Core.Color;
 
 namespace Noxel.App.Views;
@@ -40,6 +43,9 @@ public sealed partial class ColorStudioPage : Page
     public ColorStudioPage()
     {
         InitializeComponent();
+        NavigationCacheMode = Microsoft.UI.Xaml.Navigation.NavigationCacheMode.Enabled;
+        Responsive.Attach(this);
+        SmoothScroll.Attach(PageScroll);
         BuildRows();
         Loaded += (_, _) => { _c.ColorChanged += Refresh; _c.PresetsChanged += Refresh; Refresh(); };
         Unloaded += (_, _) =>
@@ -89,17 +95,21 @@ public sealed partial class ColorStudioPage : Page
             var grid = new Grid { ColumnSpacing = 12, Padding = new Thickness(0, 6, 0, 6) };
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(14) });
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
             grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
 
-            var title = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 8 };
-            title.Children.Add(new TextBlock { Text = name, Style = (Style)Application.Current.Resources["CardTitle"], FontSize = 14 });
-            title.Children.Add(new TextBlock { Text = desc, Style = (Style)Application.Current.Resources["FaintText"], VerticalAlignment = VerticalAlignment.Center });
-            var badge = new Border { Style = (Style)Application.Current.Resources["Badge"], Margin = new Thickness(4, 0, 0, 0) };
+            var title = new StackPanel { Spacing = 1 };
+            var nameRow = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 8 };
+            nameRow.Children.Add(new TextBlock { Text = name, Style = (Style)Application.Current.Resources["CardTitle"], FontSize = 17 });
+            var badge = new Border { Style = (Style)Application.Current.Resources["Badge"], Margin = new Thickness(2, 0, 0, 0) };
             badge.Child = new TextBlock { Text = ColorCapabilities.EngineName(c).ToUpperInvariant(), Style = (Style)Application.Current.Resources["BadgeText"] };
-            title.Children.Add(badge);
+            nameRow.Children.Add(badge);
+            title.Children.Add(nameRow);
+            title.Children.Add(new TextBlock { Text = desc, Style = (Style)Application.Current.Resources["FaintText"] });
+            Grid.SetColumnSpan(title, 4);
             grid.Children.Add(title);
 
             var slider = new Slider
@@ -136,14 +146,12 @@ public sealed partial class ColorStudioPage : Page
             var reset = new Button { Style = (Style)Application.Current.Resources["IconButton"], Content = new FontIcon { Glyph = "", FontSize = 13 }, VerticalAlignment = VerticalAlignment.Center };
             AutomationProperties.SetName(reset, "Reset " + name);
             ToolTipService.SetToolTip(reset, "Reset to default");
-            Grid.SetRow(reset, 0); Grid.SetColumn(reset, 1); Grid.SetColumnSpan(reset, 2);
-            reset.HorizontalAlignment = HorizontalAlignment.Right;
-            reset.Margin = new Thickness(0, -6, 0, -6);
+            Grid.SetRow(reset, 1); Grid.SetColumn(reset, 3);
             grid.Children.Add(reset);
 
             var reason = new TextBlock { Style = (Style)Application.Current.Resources["FaintText"], Visibility = Visibility.Collapsed };
             reason.Foreground = (Microsoft.UI.Xaml.Media.Brush)Resources.ThemeDictionariesLookup("NoxelWarning");
-            Grid.SetRow(reason, 2); Grid.SetColumnSpan(reason, 3);
+            Grid.SetRow(reason, 2); Grid.SetColumnSpan(reason, 4);
             grid.Children.Add(reason);
 
             var row = new Row { Control = c, Range = range, Slider = slider, Number = number, Reset = reset, Reason = reason, Container = grid };
@@ -179,7 +187,7 @@ public sealed partial class ColorStudioPage : Page
                     matrixReasonShown = true;
                 }
                 double v = Get(s, row.Control);
-                row.Slider.Value = v;
+                GlideTo(row.Slider, v);
                 row.Number.Value = v;
                 row.Slider.IsEnabled = row.Number.IsEnabled = row.Reset.IsEnabled = ok;
                 row.Container.Opacity = ok ? 1 : 0.6;
@@ -223,9 +231,44 @@ public sealed partial class ColorStudioPage : Page
         Add("Gamma · hardware gamma ramp", caps.RampAvailable, caps.RampAvailable ? "Available. Applied in the GPU output stage." : caps.RampReason);
     }
 
+    /// <summary>
+    /// When values change from outside (preset applied, reset), the thumb glides to the new value instead of
+    /// jumping. The colour itself is applied immediately elsewhere; this is purely visual, and the slider's
+    /// ValueChanged events during the glide are ignored so nothing is re-applied.
+    /// </summary>
+    private void GlideTo(Slider slider, double v)
+    {
+        if (!Motion.Enabled || !IsLoaded || Math.Abs(slider.Value - v) < 1e-6)
+        {
+            slider.Value = v;
+            return;
+        }
+        var anim = new DoubleAnimation
+        {
+            From = slider.Value, To = v, Duration = TimeSpan.FromMilliseconds(220), EnableDependentAnimation = true,
+            EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut },
+        };
+        var sb = new Storyboard();
+        Storyboard.SetTarget(anim, slider);
+        Storyboard.SetTargetProperty(anim, "Value");
+        sb.Children.Add(anim);
+        _gliding++;
+        sb.Completed += (_, _) =>
+        {
+            sb.Stop();
+            _updatingGlide = true;
+            slider.Value = v;
+            _updatingGlide = false;
+            _gliding--;
+        };
+        sb.Begin();
+    }
+    private int _gliding;
+    private bool _updatingGlide;
+
     private void OnValue(Row row, double v, bool fromSlider)
     {
-        if (_updating) return;
+        if (_updating || _updatingGlide || (_gliding > 0 && fromSlider)) return;
         v = row.Range.Clamp(Math.Round(v / row.Range.Step) * row.Range.Step);
         _updating = true;
         try

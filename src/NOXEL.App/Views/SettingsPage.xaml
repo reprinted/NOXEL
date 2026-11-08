@@ -3,8 +3,21 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Background="Transparent">
-    <ScrollViewer>
-        <StackPanel Padding="28,6,28,28" Spacing="16" MaxWidth="900" HorizontalAlignment="Left">
+    <Grid>
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="Layout">
+                <VisualState x:Name="Wide" />
+                <VisualState x:Name="Medium" />
+                <VisualState x:Name="Narrow">
+                    <VisualState.Setters>
+                        <Setter Target="PagePanel.Padding" Value="16,4,16,20" />
+                        <Setter Target="ThemeRadios.MaxColumns" Value="1" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+    <ScrollView x:Name="PageScroll">
+        <StackPanel x:Name="PagePanel" Padding="28,6,28,28" Spacing="16" MaxWidth="956" HorizontalAlignment="Left">
             <StackPanel>
                 <TextBlock Text="Settings" Style="{StaticResource PageTitle}" />
                 <TextBlock Text="Everything is stored locally in %LOCALAPPDATA%\NOXEL. Nothing is sent anywhere." Style="{StaticResource PageSubtitle}" />
@@ -20,17 +33,52 @@
                         <x:String>Follow Windows</x:String>
                     </RadioButtons>
                     <TextBlock Text="Accent color" Style="{StaticResource BodyText}" />
-                    <StackPanel x:Name="Swatches" Orientation="Horizontal" Spacing="8" />
-                    <StackPanel Orientation="Horizontal" Spacing="8">
+                    <VariableSizedWrapGrid x:Name="Swatches" Orientation="Horizontal" ItemWidth="42" ItemHeight="42" />
+                    <Grid ColumnSpacing="8" RowSpacing="6">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
                         <TextBox x:Name="HexBox" Width="120" PlaceholderText="#9B7BFF" MaxLength="7" AutomationProperties.Name="Custom accent color (hex)" KeyDown="OnHexKey" />
-                        <Button Content="Use custom color" Click="OnHexApply" />
-                        <TextBlock x:Name="HexError" Style="{StaticResource FaintText}" VerticalAlignment="Center" Foreground="{ThemeResource NoxelWarning}" />
-                    </StackPanel>
-                    <ToggleSwitch x:Name="TransparencySwitch" Header="Transparency (Mica / glass)" Toggled="OnAppearanceToggled" />
-                    <Slider x:Name="GlassSlider" Header="Glass intensity" Minimum="0" Maximum="100" StepFrequency="5" ValueChanged="OnGlassChanged" MaxWidth="360" HorizontalAlignment="Left" Width="360" />
-                    <ToggleSwitch x:Name="AnimationsSwitch" Header="Animations and page transitions" Toggled="OnAppearanceToggled" />
-                    <ToggleSwitch x:Name="ReducedMotionSwitch" Header="Reduced motion (overrides everything above, including the intro)" Toggled="OnAppearanceToggled" />
-                    <TextBlock x:Name="SystemMotionNote" Style="{StaticResource FaintText}" />
+                        <Button Grid.Column="1" Content="Use custom color" Click="OnHexApply" />
+                        <TextBlock x:Name="HexError" Grid.Column="2" Style="{StaticResource FaintText}" VerticalAlignment="Center" Foreground="{ThemeResource NoxelWarning}" />
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Visual effects -->
+            <Border Style="{StaticResource GlassCard}">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Visual effects" Style="{StaticResource CardTitle}" />
+                    <ToggleSwitch x:Name="TransparencySwitch" Header="Transparency" Toggled="OnAppearanceToggled" />
+                    <TextBlock Style="{StaticResource FaintText}" Text="Mica glass behind the window. Off uses solid backgrounds." Margin="0,-6,0,0" />
+                    <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="*" MaxWidth="360" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                        <Slider x:Name="GlassSlider" Header="Glass intensity" Minimum="0" Maximum="100" StepFrequency="5" ValueChanged="OnGlassChanged" />
+                    </Grid>
+                    <ToggleSwitch x:Name="AnimationsSwitch" Header="Enable animations" Toggled="OnAppearanceToggled" />
+                    <TextBlock Style="{StaticResource FaintText}" Text="Page transitions, hover and press feedback, notices and slider movement. Off makes every change instant." Margin="0,-6,0,0" />
+                    <ToggleSwitch x:Name="MotionBlurSwitch" Header="Motion blur" Toggled="OnAppearanceToggled" />
+                    <TextBlock x:Name="MotionBlurNote" Style="{StaticResource FaintText}" Margin="0,-6,0,0"
+                               Text="A short fading motion trail behind pages as they slide in, drawn by the Windows compositor. Never used while scrolling or on dialogs." />
+                    <ToggleSwitch x:Name="SmoothScrollSwitch" Header="Smooth scrolling" Toggled="OnAppearanceToggled" />
+                    <TextBlock x:Name="SmoothScrollNote" Style="{StaticResource FaintText}" Margin="0,-6,0,0"
+                               Text="Use fluid scrolling and gentle momentum throughout NOXEL." />
+                    <ToggleSwitch x:Name="IntroSwitch" Header="Play intro on launch" Toggled="OnStartupToggled" />
+                    <TextBlock Style="{StaticResource FaintText}" Text="Show NOXEL's animated startup sequence." Margin="0,-6,0,0" />
+                    <TextBlock x:Name="IntroStatus" Style="{StaticResource MutedText}" />
+                </StackPanel>
+            </Border>
+
+            <!-- Accessibility -->
+            <Border Style="{StaticResource GlassCard}">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Accessibility" Style="{StaticResource CardTitle}" />
+                    <ToggleSwitch x:Name="RespectSystemSwitch" Header="Respect Windows reduced-motion settings" Toggled="OnAppearanceToggled" />
+                    <TextBlock x:Name="SystemMotionNote" Style="{StaticResource FaintText}" Margin="0,-6,0,0" />
+                    <ToggleSwitch x:Name="ReducedMotionSwitch" Header="Reduced motion" Toggled="OnAppearanceToggled" />
+                    <TextBlock Style="{StaticResource FaintText}" Margin="0,-6,0,0"
+                               Text="Stops all of NOXEL's movement, including the intro, motion blur and smooth scrolling, whatever the options above say." />
                 </StackPanel>
             </Border>
 
@@ -42,13 +90,12 @@
                     <TextBlock Style="{StaticResource FaintText}" Text="Starts in the tray without the intro. Uses a per-user Run entry; no admin rights." />
                     <ToggleSwitch x:Name="StartupCompactSwitch" Header="Open the compact view when started with Windows" Toggled="OnStartupToggled" />
                     <ToggleSwitch x:Name="ReapplySwitch" Header="Turn my last look back on when NOXEL starts" Toggled="OnStartupToggled" />
-                    <ComboBox x:Name="DefaultPresetBox" Header="Preset to apply when started with Windows" MinWidth="280" SelectionChanged="OnDefaultPresetChanged" />
+                    <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="*" MaxWidth="360" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                        <ComboBox x:Name="DefaultPresetBox" Header="Preset to apply when started with Windows" HorizontalAlignment="Stretch" SelectionChanged="OnDefaultPresetChanged" />
+                    </Grid>
                     <ToggleSwitch x:Name="MinimizeTraySwitch" Header="Minimize to the tray" Toggled="OnStartupToggled" />
                     <ToggleSwitch x:Name="CloseTraySwitch" Header="Close button keeps NOXEL running in the tray" Toggled="OnStartupToggled" />
                     <TextBlock Style="{StaticResource FaintText}" Text="When this is off, closing the window exits NOXEL and restores your original colors." />
-                    <ToggleSwitch x:Name="IntroSwitch" Header="Play the eye intro on launch" Toggled="OnStartupToggled" />
-                    <ToggleSwitch x:Name="IntroSystemSwitch" Header="Play the intro even when Windows animation effects are off" Toggled="OnStartupToggled" />
-                    <ToggleSwitch x:Name="IntroRestoreSwitch" Header="Also play it when reopening from the tray" Toggled="OnStartupToggled" />
                 </StackPanel>
             </Border>
 
@@ -69,10 +116,14 @@
             <Border Style="{StaticResource GlassCard}">
                 <StackPanel Spacing="10">
                     <TextBlock Text="Display" Style="{StaticResource CardTitle}" />
-                    <ComboBox x:Name="PreferredMonitorBox" Header="Monitor used by the native / stretched toggle, tray and compact view" MinWidth="320" SelectionChanged="OnPreferredMonitorChanged" />
+                    <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="*" MaxWidth="420" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                    <ComboBox x:Name="PreferredMonitorBox" Header="Monitor used by the native / stretched toggle, tray and compact view" HorizontalAlignment="Stretch" SelectionChanged="OnPreferredMonitorChanged" />
+                    </Grid>
                     <TextBlock x:Name="NativeStretchedSummary" Style="{StaticResource MutedText}" />
                     <HyperlinkButton Content="Set native and stretched resolutions on the Display page" Click="OnOpenDisplay" Padding="0" />
-                    <Slider x:Name="ConfirmSlider" Header="Seconds before an unconfirmed display change reverts" Minimum="5" Maximum="60" StepFrequency="1" Width="360" HorizontalAlignment="Left" ValueChanged="OnConfirmChanged" />
+                    <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="*" MaxWidth="360" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                    <Slider x:Name="ConfirmSlider" Header="Seconds before an unconfirmed display change reverts" Minimum="5" Maximum="60" StepFrequency="1" ValueChanged="OnConfirmChanged" />
+                    </Grid>
                     <Button Content="Forget confirmed display modes" Click="OnForgetModes" HorizontalAlignment="Left"
                             ToolTipService.ToolTip="Modes you confirmed once can be applied by hotkeys and presets without asking again. This makes NOXEL ask again." />
                 </StackPanel>
@@ -82,7 +133,7 @@
             <Border Style="{StaticResource GlassCard}">
                 <StackPanel Spacing="10">
                     <TextBlock Text="Presets" Style="{StaticResource CardTitle}" />
-                    <StackPanel Orientation="Horizontal" Spacing="8">
+                    <StackPanel Orientation="Vertical" Spacing="8" HorizontalAlignment="Left">
                         <Button Content="Manage presets, import and export" Click="OnOpenPresets" />
                         <Button Content="Restore built-in presets" Click="OnRestoreBuiltIns" />
                     </StackPanel>
@@ -95,11 +146,11 @@
                     <TextBlock Text="Diagnostics" Style="{StaticResource CardTitle}" />
                     <ToggleSwitch x:Name="LoggingSwitch" Header="Write a diagnostic log" Toggled="OnLoggingToggled" />
                     <TextBlock Style="{StaticResource FaintText}" Text="The log records display and color operations and errors, never window titles, file contents or typed keys. Crash reports are always kept locally so a failed start can be explained." />
-                    <StackPanel Orientation="Horizontal" Spacing="8">
+                    <VariableSizedWrapGrid Orientation="Horizontal" ItemWidth="170" ItemHeight="44">
                         <Button Content="Open log folder" Click="OnOpenLogs" />
                         <Button Content="Delete logs" Click="OnDeleteLogs" />
                         <Button Content="Open settings folder" Click="OnOpenSettingsFolder" />
-                    </StackPanel>
+                    </VariableSizedWrapGrid>
                 </StackPanel>
             </Border>
 
@@ -110,14 +161,14 @@
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <Image Source="ms-appx:///Assets/noxel-256.png" Width="84" Height="84" VerticalAlignment="Top" />
+                    <Image x:Name="AboutLogo" Source="ms-appx:///Assets/noxel-256.png" Width="84" Height="84" VerticalAlignment="Top" />
                     <StackPanel Grid.Column="1" Spacing="6">
-                        <TextBlock Text="NOXEL" FontSize="22" FontWeight="Bold" CharacterSpacing="200" Foreground="{ThemeResource NoxelTextPrimary}" />
+                        <TextBlock Text="NOXEL" Style="{StaticResource Wordmark}" FontSize="26" />
                         <TextBlock x:Name="AboutVersion" Style="{StaticResource MutedText}" FontFamily="{StaticResource NoxelMono}" IsTextSelectionEnabled="True" />
                         <TextBlock x:Name="AboutDeveloper" Style="{StaticResource MutedText}" />
                         <TextBlock Style="{StaticResource MutedText}" Text="Requires Windows 10 version 1809 or later, or Windows 11 (64-bit)." />
                         <TextBlock Style="{StaticResource MutedText}" Text="License: see LICENSE.txt next to the program. Third-party notices: THIRD-PARTY-NOTICES.md." />
-                        <TextBlock Style="{StaticResource FaintText}" Text="Built with .NET and the Windows App SDK (WinUI 3), both by Microsoft under their respective licenses. NVIDIA is a trademark of NVIDIA Corporation; NOXEL uses the driver's public NVAPI interface and is not affiliated with NVIDIA." />
+                        <TextBlock Style="{StaticResource FaintText}" Text="Built with .NET and the Windows App SDK (WinUI 3), both by Microsoft under their respective licenses. Fonts: Inter and Rajdhani, SIL Open Font License 1.1. NVIDIA is a trademark of NVIDIA Corporation; NOXEL uses the driver's public NVAPI interface and is not affiliated with NVIDIA." />
                         <TextBlock Style="{StaticResource FaintText}" Text="Privacy: no network access, telemetry, accounts or administrator rights. NOXEL never reads or injects into game processes, installs drivers or hooks, or captures the screen." />
                         <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,4,0,0">
                             <Button Content="Open program folder" Click="OnOpenProgramFolder" />
@@ -126,5 +177,6 @@
                 </Grid>
             </Border>
         </StackPanel>
-    </ScrollViewer>
+    </ScrollView>
+    </Grid>
 </Page>

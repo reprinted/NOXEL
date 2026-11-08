@@ -3,7 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <!--
-        NOXEL design tokens. Brush instances in these theme dictionaries are mutated at runtime by
+        NOXEL design system. Brush instances in these theme dictionaries are mutated at runtime by
         ThemeService (accent colour, glass intensity), so every control using them updates instantly.
     -->
     <ResourceDictionary.ThemeDictionaries>
@@ -12,19 +12,25 @@
             <SolidColorBrush x:Key="NoxelAccentSoft" Color="#339B7BFF" />
             <SolidColorBrush x:Key="NoxelAccentText" Color="#C6B4FF" />
             <SolidColorBrush x:Key="NoxelWindowTint" Color="#F00A0B16" />
+            <!-- Overlay navigation pane (compact rail opened / narrow flyout): opaque glass, never see-through. -->
+            <SolidColorBrush x:Key="NavigationViewDefaultPaneBackground" Color="#FF121325" />
             <SolidColorBrush x:Key="NoxelGlassFill" Color="#A6191A2E" />
             <SolidColorBrush x:Key="NoxelGlassFillStrong" Color="#D91D1E34" />
             <SolidColorBrush x:Key="NoxelGlassFillSubtle" Color="#0FFFFFFF" />
             <SolidColorBrush x:Key="NoxelGlassHover" Color="#17FFFFFF" />
             <LinearGradientBrush x:Key="NoxelGlassStroke" StartPoint="0,0" EndPoint="1,1">
-                <GradientStop Color="#3DFFFFFF" Offset="0" />
+                <GradientStop Color="#40FFFFFF" Offset="0" />
                 <GradientStop Color="#12FFFFFF" Offset="0.45" />
                 <GradientStop Color="#08FFFFFF" Offset="1" />
+            </LinearGradientBrush>
+            <LinearGradientBrush x:Key="NoxelGlassSheen" StartPoint="0,0" EndPoint="0,1">
+                <GradientStop Color="#0DFFFFFF" Offset="0" />
+                <GradientStop Color="#00FFFFFF" Offset="0.35" />
             </LinearGradientBrush>
             <SolidColorBrush x:Key="NoxelDivider" Color="#1CFFFFFF" />
             <SolidColorBrush x:Key="NoxelTextPrimary" Color="#F3F1FB" />
             <SolidColorBrush x:Key="NoxelTextSecondary" Color="#B6B2CC" />
-            <SolidColorBrush x:Key="NoxelTextTertiary" Color="#85819C" />
+            <SolidColorBrush x:Key="NoxelTextTertiary" Color="#8A86A2" />
             <SolidColorBrush x:Key="NoxelSuccess" Color="#7BE0A6" />
             <SolidColorBrush x:Key="NoxelWarning" Color="#F4C46B" />
             <SolidColorBrush x:Key="NoxelDanger" Color="#FF7A8A" />
@@ -38,6 +44,7 @@
             <SolidColorBrush x:Key="NoxelAccentSoft" Color="#266B4FD8" />
             <SolidColorBrush x:Key="NoxelAccentText" Color="#5536C4" />
             <SolidColorBrush x:Key="NoxelWindowTint" Color="#F2F5F3FC" />
+            <SolidColorBrush x:Key="NavigationViewDefaultPaneBackground" Color="#FFF8F6FD" />
             <SolidColorBrush x:Key="NoxelGlassFill" Color="#B8FFFFFF" />
             <SolidColorBrush x:Key="NoxelGlassFillStrong" Color="#EBFFFFFF" />
             <SolidColorBrush x:Key="NoxelGlassFillSubtle" Color="#0A2A1F60" />
@@ -47,10 +54,14 @@
                 <GradientStop Color="#40C8C0E6" Offset="0.5" />
                 <GradientStop Color="#33A79FD0" Offset="1" />
             </LinearGradientBrush>
+            <LinearGradientBrush x:Key="NoxelGlassSheen" StartPoint="0,0" EndPoint="0,1">
+                <GradientStop Color="#66FFFFFF" Offset="0" />
+                <GradientStop Color="#00FFFFFF" Offset="0.4" />
+            </LinearGradientBrush>
             <SolidColorBrush x:Key="NoxelDivider" Color="#1A2A1F60" />
             <SolidColorBrush x:Key="NoxelTextPrimary" Color="#1B1830" />
             <SolidColorBrush x:Key="NoxelTextSecondary" Color="#4F4A68" />
-            <SolidColorBrush x:Key="NoxelTextTertiary" Color="#767190" />
+            <SolidColorBrush x:Key="NoxelTextTertiary" Color="#6E698A" />
             <SolidColorBrush x:Key="NoxelSuccess" Color="#1E8A55" />
             <SolidColorBrush x:Key="NoxelWarning" Color="#9A6200" />
             <SolidColorBrush x:Key="NoxelDanger" Color="#C42B3F" />
@@ -64,11 +75,13 @@
             <SolidColorBrush x:Key="NoxelAccentSoft" Color="{ThemeResource SystemColorHighlightColor}" />
             <SolidColorBrush x:Key="NoxelAccentText" Color="{ThemeResource SystemColorHighlightColor}" />
             <SolidColorBrush x:Key="NoxelWindowTint" Color="{ThemeResource SystemColorWindowColor}" />
+            <SolidColorBrush x:Key="NavigationViewDefaultPaneBackground" Color="{ThemeResource SystemColorWindowColor}" />
             <SolidColorBrush x:Key="NoxelGlassFill" Color="{ThemeResource SystemColorWindowColor}" />
             <SolidColorBrush x:Key="NoxelGlassFillStrong" Color="{ThemeResource SystemColorWindowColor}" />
             <SolidColorBrush x:Key="NoxelGlassFillSubtle" Color="{ThemeResource SystemColorWindowColor}" />
             <SolidColorBrush x:Key="NoxelGlassHover" Color="{ThemeResource SystemColorHighlightColor}" />
             <SolidColorBrush x:Key="NoxelGlassStroke" Color="{ThemeResource SystemColorWindowTextColor}" />
+            <SolidColorBrush x:Key="NoxelGlassSheen" Color="Transparent" />
             <SolidColorBrush x:Key="NoxelDivider" Color="{ThemeResource SystemColorWindowTextColor}" />
             <SolidColorBrush x:Key="NoxelTextPrimary" Color="{ThemeResource SystemColorWindowTextColor}" />
             <SolidColorBrush x:Key="NoxelTextSecondary" Color="{ThemeResource SystemColorWindowTextColor}" />
@@ -83,16 +96,56 @@
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
 
+    <!-- ============================== Typography ==============================
+         Rajdhani (SIL OFL 1.1) for the wordmark, headings and key values; Inter (SIL OFL 1.1, variable) for
+         everything else. Bundled in Assets/Fonts with their licenses, so nothing has to be installed.
+         Segoe UI Variable is the fallback. -->
+    <FontFamily x:Key="NoxelFontBody">ms-appx:///Assets/Fonts/Inter-Variable.ttf#Inter, Segoe UI Variable Text, Segoe UI</FontFamily>
+    <FontFamily x:Key="NoxelFontDisplay">ms-appx:///Assets/Fonts/Rajdhani-SemiBold.ttf#Rajdhani, Segoe UI Variable Display, Segoe UI</FontFamily>
+    <FontFamily x:Key="NoxelFontBrand">ms-appx:///Assets/Fonts/Rajdhani-Bold.ttf#Rajdhani, Segoe UI Variable Display, Segoe UI</FontFamily>
     <FontFamily x:Key="NoxelMono">Cascadia Mono, Consolas</FontFamily>
-    <CornerRadius x:Key="NoxelCardRadius">14</CornerRadius>
-    <CornerRadius x:Key="NoxelControlRadius">8</CornerRadius>
+    <!-- Stock WinUI controls read this key for their text. -->
+    <FontFamily x:Key="ContentControlThemeFontFamily">ms-appx:///Assets/Fonts/Inter-Variable.ttf#Inter, Segoe UI Variable Text, Segoe UI</FontFamily>
+
+    <!-- ============================== Shape ==============================
+         Every corner radius lives here. WinUI's own keys are overridden so stock controls follow. -->
+    <CornerRadius x:Key="NoxelRadiusSmall">8</CornerRadius>
+    <CornerRadius x:Key="NoxelRadiusControl">12</CornerRadius>
+    <CornerRadius x:Key="NoxelRadiusCard">16</CornerRadius>
+    <CornerRadius x:Key="NoxelRadiusMajor">20</CornerRadius>
+    <CornerRadius x:Key="NoxelRadiusDialog">22</CornerRadius>
+    <CornerRadius x:Key="NoxelCardRadius">16</CornerRadius>
+    <CornerRadius x:Key="NoxelControlRadius">12</CornerRadius>
+    <CornerRadius x:Key="ControlCornerRadius">12</CornerRadius>
+    <CornerRadius x:Key="OverlayCornerRadius">14</CornerRadius>
     <x:Double x:Key="NoxelCardSpacing">14</x:Double>
 
+    <!-- ============================== Stock control adjustments ============================== -->
+    <Style TargetType="CheckBox">
+        <Setter Property="CornerRadius" Value="5" />
+    </Style>
+    <Style TargetType="Button" BasedOn="{StaticResource DefaultButtonStyle}">
+        <Setter Property="FontWeight" Value="Medium" />
+    </Style>
+    <Style TargetType="ToggleButton">
+        <Setter Property="FontWeight" Value="Medium" />
+    </Style>
+    <Style TargetType="ContentDialog">
+        <Setter Property="CornerRadius" Value="{StaticResource NoxelRadiusDialog}" />
+    </Style>
+    <Style TargetType="ToolTip">
+        <Setter Property="CornerRadius" Value="10" />
+    </Style>
+    <Style TargetType="InfoBar">
+        <Setter Property="CornerRadius" Value="{StaticResource NoxelRadiusCard}" />
+    </Style>
+
+    <!-- ============================== Surfaces ============================== -->
     <Style x:Key="GlassCard" TargetType="Border">
         <Setter Property="Background" Value="{ThemeResource NoxelGlassFill}" />
         <Setter Property="BorderBrush" Value="{ThemeResource NoxelGlassStroke}" />
         <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="CornerRadius" Value="{StaticResource NoxelCardRadius}" />
+        <Setter Property="CornerRadius" Value="{StaticResource NoxelRadiusCard}" />
         <Setter Property="Padding" Value="18,16" />
     </Style>
 
@@ -100,76 +153,96 @@
         <Setter Property="Background" Value="{ThemeResource NoxelGlassFillSubtle}" />
         <Setter Property="BorderBrush" Value="{ThemeResource NoxelDivider}" />
         <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="CornerRadius" Value="10" />
+        <Setter Property="CornerRadius" Value="{StaticResource NoxelRadiusControl}" />
         <Setter Property="Padding" Value="12,10" />
     </Style>
 
+    <!-- ============================== Text styles ============================== -->
+    <Style x:Key="Wordmark" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource NoxelFontBrand}" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="FontSize" Value="18" />
+        <Setter Property="CharacterSpacing" Value="260" />
+        <Setter Property="Foreground" Value="{ThemeResource NoxelTextPrimary}" />
+    </Style>
+
     <Style x:Key="PageTitle" TargetType="TextBlock">
-        <Setter Property="FontSize" Value="28" />
+        <Setter Property="FontFamily" Value="{StaticResource NoxelFontDisplay}" />
         <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="FontSize" Value="34" />
+        <Setter Property="TextWrapping" Value="Wrap" />
         <Setter Property="Foreground" Value="{ThemeResource NoxelTextPrimary}" />
     </Style>
 
     <Style x:Key="PageSubtitle" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource NoxelFontBody}" />
         <Setter Property="FontSize" Value="13" />
         <Setter Property="Foreground" Value="{ThemeResource NoxelTextSecondary}" />
         <Setter Property="TextWrapping" Value="Wrap" />
-        <Setter Property="Margin" Value="0,4,0,0" />
+        <Setter Property="Margin" Value="0,2,0,0" />
     </Style>
 
     <Style x:Key="CardTitle" TargetType="TextBlock">
-        <Setter Property="FontSize" Value="15" />
+        <Setter Property="FontFamily" Value="{StaticResource NoxelFontDisplay}" />
         <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="FontSize" Value="18" />
+        <Setter Property="TextWrapping" Value="Wrap" />
         <Setter Property="Foreground" Value="{ThemeResource NoxelTextPrimary}" />
     </Style>
 
     <Style x:Key="SectionLabel" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource NoxelFontBody}" />
         <Setter Property="FontSize" Value="11" />
         <Setter Property="FontWeight" Value="SemiBold" />
-        <Setter Property="CharacterSpacing" Value="120" />
+        <Setter Property="CharacterSpacing" Value="110" />
         <Setter Property="Foreground" Value="{ThemeResource NoxelTextTertiary}" />
     </Style>
 
     <Style x:Key="BodyText" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource NoxelFontBody}" />
         <Setter Property="FontSize" Value="13" />
         <Setter Property="Foreground" Value="{ThemeResource NoxelTextPrimary}" />
         <Setter Property="TextWrapping" Value="Wrap" />
     </Style>
 
     <Style x:Key="MutedText" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource NoxelFontBody}" />
         <Setter Property="FontSize" Value="12" />
         <Setter Property="Foreground" Value="{ThemeResource NoxelTextSecondary}" />
         <Setter Property="TextWrapping" Value="Wrap" />
     </Style>
 
     <Style x:Key="FaintText" TargetType="TextBlock">
-        <Setter Property="FontSize" Value="11" />
+        <Setter Property="FontFamily" Value="{StaticResource NoxelFontBody}" />
+        <Setter Property="FontSize" Value="11.5" />
         <Setter Property="Foreground" Value="{ThemeResource NoxelTextTertiary}" />
         <Setter Property="TextWrapping" Value="Wrap" />
     </Style>
 
     <Style x:Key="StatValue" TargetType="TextBlock">
-        <Setter Property="FontSize" Value="15" />
+        <Setter Property="FontFamily" Value="{StaticResource NoxelFontDisplay}" />
+        <Setter Property="FontSize" Value="20" />
         <Setter Property="FontWeight" Value="SemiBold" />
-        <Setter Property="FontFamily" Value="{StaticResource NoxelMono}" />
+        <Setter Property="TextTrimming" Value="CharacterEllipsis" />
         <Setter Property="Foreground" Value="{ThemeResource NoxelTextPrimary}" />
     </Style>
 
     <Style x:Key="Badge" TargetType="Border">
         <Setter Property="Background" Value="{ThemeResource NoxelBadgeFill}" />
-        <Setter Property="CornerRadius" Value="6" />
-        <Setter Property="Padding" Value="7,2" />
+        <Setter Property="CornerRadius" Value="{StaticResource NoxelRadiusSmall}" />
+        <Setter Property="Padding" Value="8,2" />
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
     <Style x:Key="AccentBadge" TargetType="Border">
         <Setter Property="Background" Value="{ThemeResource NoxelAccentSoft}" />
-        <Setter Property="CornerRadius" Value="6" />
-        <Setter Property="Padding" Value="7,2" />
+        <Setter Property="CornerRadius" Value="{StaticResource NoxelRadiusSmall}" />
+        <Setter Property="Padding" Value="8,2" />
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
     <Style x:Key="BadgeText" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource NoxelFontBody}" />
         <Setter Property="FontSize" Value="10.5" />
         <Setter Property="FontWeight" Value="SemiBold" />
         <Setter Property="CharacterSpacing" Value="60" />
@@ -180,13 +253,14 @@
         <Setter Property="Foreground" Value="{ThemeResource NoxelAccentText}" />
     </Style>
 
-    <!-- Large glass tile used for quick actions. -->
+    <!-- Large glass tile used for quick actions. Colours fade (BrushTransition); Motion adds a small lift on hover. -->
     <Style x:Key="TileButton" TargetType="Button">
         <Setter Property="Background" Value="{ThemeResource NoxelGlassFillSubtle}" />
         <Setter Property="BorderBrush" Value="{ThemeResource NoxelDivider}" />
         <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="CornerRadius" Value="12" />
+        <Setter Property="CornerRadius" Value="14" />
         <Setter Property="Padding" Value="10,14" />
+        <Setter Property="FontWeight" Value="Medium" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="VerticalAlignment" Value="Stretch" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
@@ -199,7 +273,7 @@
                     <Grid x:Name="RootGrid" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
                           BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{TemplateBinding CornerRadius}">
                         <Grid.BackgroundTransition>
-                            <BrushTransition Duration="0:0:0.12" />
+                            <BrushTransition Duration="0:0:0.14" />
                         </Grid.BackgroundTransition>
                         <ContentPresenter x:Name="ContentPresenter" Padding="{TemplateBinding Padding}"
                                           HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
@@ -244,7 +318,19 @@
     <Style x:Key="SubtleGlassButton" TargetType="Button" BasedOn="{StaticResource DefaultButtonStyle}">
         <Setter Property="Background" Value="{ThemeResource NoxelGlassFillSubtle}" />
         <Setter Property="BorderBrush" Value="{ThemeResource NoxelDivider}" />
-        <Setter Property="CornerRadius" Value="8" />
-        <Setter Property="Padding" Value="12,6" />
+        <Setter Property="CornerRadius" Value="{StaticResource NoxelRadiusControl}" />
+        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="Padding" Value="12,7" />
+    </Style>
+
+    <Style x:Key="NoxelGridViewItem" TargetType="GridViewItem" BasedOn="{StaticResource DefaultGridViewItemStyle}">
+        <Setter Property="Margin" Value="0,0,10,10" />
+        <Setter Property="Background" Value="{ThemeResource NoxelGlassFillSubtle}" />
+        <Setter Property="CornerRadius" Value="{StaticResource NoxelRadiusControl}" />
+    </Style>
+
+    <Style x:Key="NoxelListViewItem" TargetType="ListViewItem" BasedOn="{StaticResource DefaultListViewItemStyle}">
+        <Setter Property="CornerRadius" Value="{StaticResource NoxelRadiusControl}" />
+        <Setter Property="Margin" Value="0,2" />
     </Style>
 </ResourceDictionary>

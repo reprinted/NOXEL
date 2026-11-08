@@ -43,11 +43,21 @@ These are limits of Windows and graphics drivers, not bugs NOXEL hides. Each one
   identifies monitors by EDID manufacturer/product + connector type + connector index. Two identical monitors on
   the same connector type can only be told apart by connector index.
 
-## Intro animation
+## Intro and motion
 
-* Skipped when Windows *Animation effects* is off (Settings ▸ Accessibility ▸ Visual effects) unless
-  *Play the intro even when Windows animation effects are off* is enabled in NOXEL, and always skipped with NOXEL's
-  own *Reduced motion*.
+* With the default *Respect Windows reduced-motion settings* on, NOXEL plays no animations, no intro and no
+  smooth scrolling while Windows *Animation effects* is off (Settings ▸ Accessibility ▸ Visual effects). The test
+  PC has it off. Turn the NOXEL switch off to use NOXEL's own settings; the Settings page says which applies.
+* The intro never replays when NOXEL is reopened from the tray or by launching it again while it runs (single
+  instance). Exit from the tray for a fresh launch.
+* Motion blur is a compositor motion trail (live copies of the page trailing and fading during the 220 ms
+  transition), not a per-pixel directional blur: Windows' composition effects have no directional blur, and a
+  Gaussian pass would need an extra effects library.
+* Smooth scrolling replaces mouse-wheel handling on the main page scroller only. Lists inside pages, dropdowns
+  and the compact window use WinUI's native scrolling. Precision-touchpad behaviour is inferred (fine-grained
+  deltas are applied 1:1) — no touchpad or touchscreen was available to test.
+* Stock WinUI control animations (toggle thumbs, dropdown opening, pane slide) follow WinUI's own rules and are
+  suppressed by Windows when its *Animation effects* is off, independently of NOXEL's settings.
 
 ## Memory
 
@@ -62,3 +72,5 @@ These are limits of Windows and graphics drivers, not bugs NOXEL hides. Each one
 * Not code-signed (SmartScreen may warn). Not tested on a clean VM: the build PC is Windows 11 Home without
   Windows Sandbox or Hyper-V.
 * English only.
+* Display scaling other than 100 % (125/150/200 %) was not tested: changing Windows' scaling is a system setting
+  that was not altered on the user's PC. Layout uses DIPs and the minimum window size scales with DPI.

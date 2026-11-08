@@ -1,5 +1,7 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Noxel.App.Animations;
+using Noxel.App.Infrastructure;
 using Noxel.App.Services;
 using Noxel.Core.Display;
 using Noxel.Core.Presets;
@@ -16,6 +18,9 @@ public sealed partial class DashboardPage : Page
     public DashboardPage()
     {
         InitializeComponent();
+        NavigationCacheMode = Microsoft.UI.Xaml.Navigation.NavigationCacheMode.Enabled;
+        Responsive.Attach(this);
+        SmoothScroll.Attach(PageScroll);
         Loaded += (_, _) =>
         {
             _c.MonitorsChanged += Refresh;
@@ -95,6 +100,7 @@ public sealed partial class DashboardPage : Page
                     },
                 };
                 AutomationPropertiesHelper(btn, $"Apply favorite preset {f.Name}");
+                Motion.SetHoverLift(btn, true);
                 btn.Click += async (s, _) => await _c.ApplyPresetAsync((Guid)((Button)s).Tag);
                 FavoritesPanel.Children.Add(btn);
             }

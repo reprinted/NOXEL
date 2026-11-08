@@ -6,27 +6,39 @@
     Background="Transparent">
     <Grid>
         <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup>
-                <VisualState x:Name="Wide">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="1180" />
-                    </VisualState.StateTriggers>
-                </VisualState>
-                <VisualState x:Name="Narrow">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="0" />
-                    </VisualState.StateTriggers>
+            <VisualStateGroup x:Name="Layout">
+                <VisualState x:Name="Wide" />
+                <VisualState x:Name="Medium">
                     <VisualState.Setters>
                         <Setter Target="SideCol.Width" Value="0" />
                         <Setter Target="SidePanel.(Grid.Column)" Value="0" />
                         <Setter Target="SidePanel.(Grid.Row)" Value="1" />
                     </VisualState.Setters>
                 </VisualState>
+                <VisualState x:Name="Narrow">
+                    <VisualState.Setters>
+                        <Setter Target="SideCol.Width" Value="0" />
+                        <Setter Target="SidePanel.(Grid.Column)" Value="0" />
+                        <Setter Target="SidePanel.(Grid.Row)" Value="1" />
+                        <Setter Target="PagePanel.Padding" Value="16,4,16,20" />
+                        <Setter Target="StripStats.(Grid.Row)" Value="1" />
+                        <Setter Target="StripStats.(Grid.Column)" Value="0" />
+                        <Setter Target="StripStats.(Grid.ColumnSpan)" Value="3" />
+                        <Setter Target="StripStats.ItemWidth" Value="140" />
+                        <Setter Target="MonitorBox.MinWidth" Value="0" />
+                        <Setter Target="PickerPanel.(Grid.ColumnSpan)" Value="2" />
+                        <Setter Target="SearchBox.(Grid.Row)" Value="1" />
+                        <Setter Target="SearchBox.(Grid.Column)" Value="0" />
+                        <Setter Target="SearchBox.(Grid.ColumnSpan)" Value="2" />
+                        <Setter Target="SearchBox.Width" Value="NaN" />
+                        <Setter Target="AspectBox.(Grid.Row)" Value="1" />
+                    </VisualState.Setters>
+                </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
 
-        <ScrollViewer>
-            <StackPanel Padding="28,6,28,28" Spacing="16" MaxWidth="1320">
+        <ScrollView x:Name="PageScroll">
+            <StackPanel x:Name="PagePanel" Padding="28,6,28,28" Spacing="16" MaxWidth="1320">
                 <StackPanel>
                     <TextBlock Text="Display" Style="{StaticResource PageTitle}" />
                     <TextBlock Text="Switch to any mode your graphics driver exposes. Every change asks you to confirm and reverts on its own if you don't." Style="{StaticResource PageSubtitle}" />
@@ -43,12 +55,13 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <StackPanel Spacing="4">
+                        <StackPanel x:Name="PickerPanel" Spacing="4">
                             <TextBlock Text="MONITOR" Style="{StaticResource SectionLabel}" />
-                            <ComboBox x:Name="MonitorBox" MinWidth="260" SelectionChanged="OnMonitorChanged" AutomationProperties.Name="Monitor to edit" />
+                            <ComboBox x:Name="MonitorBox" MinWidth="260" HorizontalAlignment="Stretch" SelectionChanged="OnMonitorChanged" AutomationProperties.Name="Monitor to edit" />
                         </StackPanel>
-                        <VariableSizedWrapGrid Grid.Column="1" Orientation="Horizontal" ItemWidth="150" ItemHeight="46" VerticalAlignment="Center">
+                        <VariableSizedWrapGrid x:Name="StripStats" Grid.Column="1" Orientation="Horizontal" ItemWidth="150" ItemHeight="46" VerticalAlignment="Center">
                             <StackPanel><TextBlock Text="CURRENT" Style="{StaticResource SectionLabel}" /><TextBlock x:Name="CurText" Style="{StaticResource StatValue}" FontSize="13" /></StackPanel>
                             <StackPanel><TextBlock Text="REFRESH" Style="{StaticResource SectionLabel}" /><TextBlock x:Name="CurHzText" Style="{StaticResource StatValue}" FontSize="13" /></StackPanel>
                             <StackPanel><TextBlock Text="NATIVE" Style="{StaticResource SectionLabel}" /><TextBlock x:Name="NativeText" Style="{StaticResource StatValue}" FontSize="13" /></StackPanel>
@@ -59,7 +72,7 @@
                         <Button Grid.Column="2" Style="{StaticResource IconButton}" Click="OnRefresh" VerticalAlignment="Center" AutomationProperties.Name="Re-scan monitors" ToolTipService.ToolTip="Re-scan monitors">
                             <FontIcon Glyph="&#xE72C;" FontSize="15" />
                         </Button>
-                        <TextBlock x:Name="IdText" Grid.Row="1" Grid.ColumnSpan="3" Style="{StaticResource FaintText}" FontFamily="{StaticResource NoxelMono}" IsTextSelectionEnabled="True" />
+                        <TextBlock x:Name="IdText" Grid.Row="2" Grid.ColumnSpan="3" Style="{StaticResource FaintText}" FontFamily="{StaticResource NoxelMono}" IsTextSelectionEnabled="True" />
                     </Grid>
                 </Border>
 
@@ -76,14 +89,18 @@
                     <!-- Resolution cards -->
                     <Border Style="{StaticResource GlassCard}" VerticalAlignment="Top">
                         <StackPanel Spacing="12">
-                            <Grid ColumnSpacing="10">
+                            <Grid ColumnSpacing="10" RowSpacing="8">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
                                 <TextBlock Text="Resolutions" Style="{StaticResource CardTitle}" VerticalAlignment="Center" />
-                                <TextBox x:Name="SearchBox" Grid.Column="1" Width="160" PlaceholderText="Search, e.g. 1440" TextChanged="OnFilterChanged" AutomationProperties.Name="Search resolutions" />
+                                <TextBox x:Name="SearchBox" Grid.Column="1" Width="170" PlaceholderText="Search, e.g. 1440" TextChanged="OnFilterChanged" AutomationProperties.Name="Search resolutions" />
                                 <ComboBox x:Name="AspectBox" Grid.Column="2" Width="110" SelectedIndex="0" SelectionChanged="OnFilterChanged" AutomationProperties.Name="Aspect ratio filter">
                                     <x:String>All</x:String>
                                     <x:String>16:9</x:String>
@@ -98,15 +115,11 @@
                             <GridView x:Name="ResGrid" SelectionMode="Single" SelectionChanged="OnResolutionSelected" IsItemClickEnabled="False"
                                       AutomationProperties.Name="Resolutions" Padding="0">
                                 <GridView.ItemContainerStyle>
-                                    <Style TargetType="GridViewItem" BasedOn="{StaticResource DefaultGridViewItemStyle}">
-                                        <Setter Property="Margin" Value="0,0,8,8" />
-                                        <Setter Property="Background" Value="{ThemeResource NoxelGlassFillSubtle}" />
-                                        <Setter Property="CornerRadius" Value="10" />
-                                    </Style>
+                                    <StaticResource ResourceKey="NoxelGridViewItem" />
                                 </GridView.ItemContainerStyle>
                                 <GridView.ItemTemplate>
                                     <DataTemplate x:DataType="vm:ResolutionItem">
-                                        <Grid Width="170" Height="78" Padding="12,10,6,10" AutomationProperties.Name="{x:Bind AutomationName}">
+                                        <Grid Width="164" Height="78" Padding="12,10,6,10" AutomationProperties.Name="{x:Bind AutomationName}">
                                             <StackPanel Spacing="2">
                                                 <TextBlock Text="{x:Bind Text}" FontFamily="{StaticResource NoxelMono}" FontSize="15" FontWeight="SemiBold" Foreground="{ThemeResource NoxelTextPrimary}" />
                                                 <TextBlock Text="{x:Bind Detail}" Style="{StaticResource FaintText}" />
@@ -218,6 +231,6 @@
                     </StackPanel>
                 </Grid>
             </StackPanel>
-        </ScrollViewer>
+        </ScrollView>
     </Grid>
 </Page>

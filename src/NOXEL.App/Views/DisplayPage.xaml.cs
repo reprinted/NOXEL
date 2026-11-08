@@ -1,6 +1,7 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
+using Noxel.App.Infrastructure;
 using Noxel.App.Services;
 using Noxel.App.ViewModels;
 using Noxel.Core.Display;
@@ -22,6 +23,9 @@ public sealed partial class DisplayPage : Page
     public DisplayPage()
     {
         InitializeComponent();
+        NavigationCacheMode = Microsoft.UI.Xaml.Navigation.NavigationCacheMode.Enabled;
+        Responsive.Attach(this);
+        SmoothScroll.Attach(PageScroll);
         Loaded += (_, _) => { _c.MonitorsChanged += Refresh; Refresh(); };
         Unloaded += (_, _) => _c.MonitorsChanged -= Refresh;
     }

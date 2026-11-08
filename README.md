@@ -19,7 +19,8 @@ WinUI 3 app with a dark "liquid glass" interface and a glitchy CRT eye intro.
 | Presets | Display mode + colors in one profile, per-monitor, favorites, optional hotkey, search, duplicate, edit, import/export JSON (also drag-and-drop), protected built-ins (Original, Clarity, Vibrant, Cinema, After Hours, Competitive) and an editable Custom slot. |
 | Hotkeys | F6 native/stretched, Ctrl+Alt+F12 color on/off, Ctrl+Shift+1/2 favorites, per-preset shortcuts. Conflict detection, per-shortcut and global disable. Uses `RegisterHotKey` (no keyboard hooks). |
 | Tray & compact | Tray menu (open, compact, current preset, favorites, color on/off, native/stretched, settings, exit). Compact window with look switch, preset picker, pin on top. Single instance: a second launch focuses the first. |
-| Settings | Dark / Light / Follow Windows, accent presets + custom hex, transparency, glass intensity, animations, reduced motion, startup, tray behavior, intro options, shortcuts, display defaults, diagnostics, About. |
+| Settings | Dark / Light / Follow Windows, accent presets + custom hex, transparency, glass intensity, animations, motion blur, smooth scrolling, Play intro on launch, respect Windows reduced motion, NOXEL reduced motion, startup, tray behavior, shortcuts, display defaults, diagnostics, About. |
+| Interface | Responsive layout (expanded sidebar → icon rail → hamburger flyout; cards stack on narrow windows), Liquid Glass surfaces on Mica, Rajdhani + Inter typography, consistent rounded corners, composition-driven animations, smooth scrolling. |
 
 ## Build
 

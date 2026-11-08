@@ -5,33 +5,45 @@
     Background="Transparent">
     <Grid>
         <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup>
-                <VisualState x:Name="Wide">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="1180" />
-                    </VisualState.StateTriggers>
-                </VisualState>
-                <VisualState x:Name="Narrow">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="0" />
-                    </VisualState.StateTriggers>
+            <VisualStateGroup x:Name="Layout">
+                <VisualState x:Name="Wide" />
+                <VisualState x:Name="Medium">
                     <VisualState.Setters>
                         <Setter Target="SideCol.Width" Value="0" />
                         <Setter Target="SidePanel.(Grid.Column)" Value="0" />
                         <Setter Target="SidePanel.(Grid.Row)" Value="1" />
                     </VisualState.Setters>
                 </VisualState>
+                <VisualState x:Name="Narrow">
+                    <VisualState.Setters>
+                        <Setter Target="SideCol.Width" Value="0" />
+                        <Setter Target="SidePanel.(Grid.Column)" Value="0" />
+                        <Setter Target="SidePanel.(Grid.Row)" Value="1" />
+                        <Setter Target="PagePanel.Padding" Value="16,4,16,20" />
+                        <Setter Target="MasterPanel.(Grid.Row)" Value="1" />
+                        <Setter Target="MasterPanel.(Grid.Column)" Value="0" />
+                        <Setter Target="MasterPanel.HorizontalAlignment" Value="Left" />
+                    </VisualState.Setters>
+                </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
 
-        <ScrollViewer>
-            <StackPanel Padding="28,6,28,28" Spacing="16" MaxWidth="1320">
-                <Grid>
+        <ScrollView x:Name="PageScroll">
+            <StackPanel x:Name="PagePanel" Padding="28,6,28,28" Spacing="16" MaxWidth="1320">
+                <Grid x:Name="HeaderGrid" RowSpacing="8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
                     <StackPanel>
                         <TextBlock Text="Color Studio" Style="{StaticResource PageTitle}" />
                         <TextBlock x:Name="Subtitle" Text="Adjust your display colors. Changes apply to all displays." Style="{StaticResource PageSubtitle}" />
                     </StackPanel>
-                    <StackPanel HorizontalAlignment="Right" VerticalAlignment="Center" Orientation="Horizontal" Spacing="12">
+                    <StackPanel x:Name="MasterPanel" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" Orientation="Horizontal" Spacing="12">
                         <TextBlock x:Name="AppliedText" Style="{StaticResource MutedText}" VerticalAlignment="Center" />
                         <ToggleSwitch x:Name="MasterSwitch" OnContent="Effects on" OffContent="Effects off" Toggled="OnMasterToggled" AutomationProperties.Name="Color effects" />
                     </StackPanel>
@@ -93,6 +105,6 @@
                     </StackPanel>
                 </Grid>
             </StackPanel>
-        </ScrollViewer>
+        </ScrollView>
     </Grid>
 </Page>

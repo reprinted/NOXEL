@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Noxel.App.Controls;
+using Noxel.App.Infrastructure;
 using Noxel.App.Services;
 using Noxel.Core.Hotkeys;
 using Noxel.Core.Infrastructure;
@@ -23,6 +24,9 @@ public sealed partial class SettingsPage : Page
     public SettingsPage()
     {
         InitializeComponent();
+        NavigationCacheMode = Microsoft.UI.Xaml.Navigation.NavigationCacheMode.Enabled;
+        Responsive.Attach(this);
+        SmoothScroll.Attach(PageScroll);
         BuildSwatches();
         BuildHotkeyRows();
         Loaded += (_, _) =>
@@ -47,21 +51,19 @@ public sealed partial class SettingsPage : Page
             HexBox.Text = S.AccentHex;
             TransparencySwitch.IsOn = S.TransparencyEnabled;
             GlassSlider.Value = S.GlassIntensity;
-            GlassSlider.IsEnabled = S.TransparencyEnabled;
             AnimationsSwitch.IsOn = S.AnimationsEnabled;
+            MotionBlurSwitch.IsOn = S.MotionBlur;
+            SmoothScrollSwitch.IsOn = S.SmoothScrolling;
+            RespectSystemSwitch.IsOn = S.RespectSystemReducedMotion;
             ReducedMotionSwitch.IsOn = S.ReducedMotion;
-            SystemMotionNote.Text = ThemeService.SystemReducedMotion
-                ? "Windows \"Animation effects\" is off, so transitions and the intro are skipped unless you allow the intro below."
-                : "";
+            IntroSwitch.IsOn = S.PlayIntro;
+            UpdateMotionDependencies();
 
             StartWithWindowsSwitch.IsOn = StartupRegistration.IsEnabled();
             StartupCompactSwitch.IsOn = S.StartupOpensCompact;
             ReapplySwitch.IsOn = S.ReapplyLookOnStartup;
             MinimizeTraySwitch.IsOn = S.MinimizeToTray;
             CloseTraySwitch.IsOn = S.CloseToTray;
-            IntroSwitch.IsOn = S.PlayIntro;
-            IntroSystemSwitch.IsOn = S.IntroIgnoresSystemMotion;
-            IntroRestoreSwitch.IsOn = !S.SkipIntroOnRestore;
             var presets = _c.Presets.All.ToList();
             DefaultPresetBox.ItemsSource = new[] { "None (keep the last look)" }.Concat(presets.Select(p => p.Name)).ToList();
             DefaultPresetBox.Tag = presets;
@@ -147,11 +149,43 @@ public sealed partial class SettingsPage : Page
         if (_updating) return;
         S.TransparencyEnabled = TransparencySwitch.IsOn;
         S.AnimationsEnabled = AnimationsSwitch.IsOn;
+        S.MotionBlur = MotionBlurSwitch.IsOn;
+        S.SmoothScrolling = SmoothScrollSwitch.IsOn;
+        S.RespectSystemReducedMotion = RespectSystemSwitch.IsOn;
         S.ReducedMotion = ReducedMotionSwitch.IsOn;
-        GlassSlider.IsEnabled = S.TransparencyEnabled;
         ThemeService.ApplyGlass(S.TransparencyEnabled, S.GlassIntensity);
         App.Current.ApplyThemeToAllWindows();
+        UpdateMotionDependencies();
+        SmoothScroll.ApplySettings();
         Save();
+    }
+
+    /// <summary>
+    /// Keeps dependent options honest: a saved preference is never erased, but a switch that currently has no
+    /// effect is disabled with the reason shown, instead of pretending to work.
+    /// </summary>
+    private void UpdateMotionDependencies()
+    {
+        bool anim = ThemeService.AnimationsAllowed(S);
+        bool systemOff = ThemeService.SystemReducedMotion;
+        GlassSlider.IsEnabled = S.TransparencyEnabled;
+        AnimationsSwitch.IsEnabled = !S.ReducedMotion;
+        MotionBlurSwitch.IsEnabled = anim;
+        MotionBlurNote.Text = anim
+            ? "A short fading motion trail behind pages as they slide in, drawn by the Windows compositor. Never used while scrolling or on dialogs."
+            : "Needs animations. It turns back on by itself when animations are allowed again.";
+        bool smoothOk = ThemeService.SmoothScrollingAllowed(S);
+        SmoothScrollSwitch.IsEnabled = smoothOk;
+        SmoothScrollNote.Text = smoothOk
+            ? "Use fluid scrolling and gentle momentum throughout NOXEL."
+            : "Unavailable while reduced motion applies; scrolling stays standard. Touchpad and keyboard scrolling always work.";
+        IntroSwitch.IsEnabled = !S.ReducedMotion;
+        IntroStatus.Text = ThemeService.IntroStatus(S);
+        SystemMotionNote.Text = systemOff
+            ? (S.RespectSystemReducedMotion
+                ? "Windows \"Animation effects\" is OFF on this PC, so NOXEL is currently not animating and the intro is skipped. Turn this switch off to use NOXEL's own animation settings instead."
+                : "Windows \"Animation effects\" is off, but NOXEL is using its own animation settings.")
+            : "Windows \"Animation effects\" is on.";
     }
 
     private void OnGlassChanged(object sender, Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
@@ -182,8 +216,8 @@ public sealed partial class SettingsPage : Page
         S.MinimizeToTray = MinimizeTraySwitch.IsOn;
         S.CloseToTray = CloseTraySwitch.IsOn;
         S.PlayIntro = IntroSwitch.IsOn;
-        S.IntroIgnoresSystemMotion = IntroSystemSwitch.IsOn;
-        S.SkipIntroOnRestore = !IntroRestoreSwitch.IsOn;
+        S.SkipIntroOnRestore = true; // reopening from the tray never replays the intro
+        UpdateMotionDependencies();
         Save();
     }
 

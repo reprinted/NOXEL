@@ -7,27 +7,34 @@
     Background="Transparent" AllowDrop="True" DragOver="OnDragOver" Drop="OnDrop">
     <Grid>
         <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup>
-                <VisualState x:Name="Wide">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="1180" />
-                    </VisualState.StateTriggers>
-                </VisualState>
-                <VisualState x:Name="Narrow">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="0" />
-                    </VisualState.StateTriggers>
+            <VisualStateGroup x:Name="Layout">
+                <VisualState x:Name="Wide" />
+                <VisualState x:Name="Medium">
                     <VisualState.Setters>
                         <Setter Target="SideCol.Width" Value="0" />
                         <Setter Target="Editor.(Grid.Column)" Value="0" />
                         <Setter Target="Editor.(Grid.Row)" Value="1" />
                     </VisualState.Setters>
                 </VisualState>
+                <VisualState x:Name="Narrow">
+                    <VisualState.Setters>
+                        <Setter Target="SideCol.Width" Value="0" />
+                        <Setter Target="Editor.(Grid.Column)" Value="0" />
+                        <Setter Target="Editor.(Grid.Row)" Value="1" />
+                        <Setter Target="PagePanel.Padding" Value="16,4,16,20" />
+                        <Setter Target="Toolbar.(Grid.Row)" Value="1" />
+                        <Setter Target="Toolbar.(Grid.Column)" Value="0" />
+                        <Setter Target="SearchBox.MaxWidth" Value="Infinity" />
+                        <Setter Target="LblNewfromcurrent.Visibility" Value="Collapsed" />
+                        <Setter Target="LblImport.Visibility" Value="Collapsed" />
+                        <Setter Target="LblExportall.Visibility" Value="Collapsed" />
+                    </VisualState.Setters>
+                </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
 
-        <ScrollViewer>
-            <StackPanel Padding="28,6,28,28" Spacing="16" MaxWidth="1320">
+        <ScrollView x:Name="PageScroll">
+            <StackPanel x:Name="PagePanel" Padding="28,6,28,28" Spacing="16" MaxWidth="1320">
                 <StackPanel>
                     <TextBlock Text="Presets" Style="{StaticResource PageTitle}" />
                     <TextBlock Text="Save complete setups: resolution, refresh rate and colors together. Star favorites for the dashboard, tray and Ctrl + Shift + 1/2." Style="{StaticResource PageSubtitle}" />
@@ -38,16 +45,20 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <TextBox x:Name="SearchBox" PlaceholderText="Search presets" Width="280" HorizontalAlignment="Left" TextChanged="OnSearch" AutomationProperties.Name="Search presets" />
-                    <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBox x:Name="SearchBox" PlaceholderText="Search presets" MaxWidth="320" HorizontalAlignment="Stretch" TextChanged="OnSearch" AutomationProperties.Name="Search presets" />
+                    <StackPanel x:Name="Toolbar" Grid.Column="1" Orientation="Horizontal" Spacing="8">
                         <Button Click="OnNew" Style="{StaticResource AccentButtonStyle}">
-                            <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE710;" FontSize="13" /><TextBlock Text="New from current" /></StackPanel>
+                            <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE710;" FontSize="13" /><TextBlock x:Name="LblNewfromcurrent" Text="New from current" /></StackPanel>
                         </Button>
                         <Button Click="OnImport" ToolTipService.ToolTip="Import presets from a .json file (you can also drop files here)">
-                            <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE8B5;" FontSize="13" /><TextBlock Text="Import" /></StackPanel>
+                            <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE8B5;" FontSize="13" /><TextBlock x:Name="LblImport" Text="Import" /></StackPanel>
                         </Button>
                         <Button Click="OnExportAll">
-                            <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE72D;" FontSize="13" /><TextBlock Text="Export all" /></StackPanel>
+                            <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE72D;" FontSize="13" /><TextBlock x:Name="LblExportall" Text="Export all" /></StackPanel>
                         </Button>
                         <Button Click="OnRestoreBuiltIns" ToolTipService.ToolTip="Reset built-in favorites and hotkeys and clear the Custom slot">
                             <FontIcon Glyph="&#xE777;" FontSize="13" />
@@ -66,7 +77,8 @@
                     </Grid.RowDefinitions>
 
                     <Border Style="{StaticResource GlassCard}" Padding="8" VerticalAlignment="Top">
-                        <ListView x:Name="List" SelectionMode="Single" SelectionChanged="OnSelected" AutomationProperties.Name="Presets">
+                        <ListView x:Name="List" SelectionMode="Single" SelectionChanged="OnSelected" AutomationProperties.Name="Presets"
+                                  ItemContainerStyle="{StaticResource NoxelListViewItem}">
                             <ListView.ItemTemplate>
                                 <DataTemplate x:DataType="vm:PresetItem">
                                     <Grid ColumnSpacing="12" Padding="4,10" AutomationProperties.Name="{x:Bind Name}">
@@ -154,6 +166,6 @@
                     </Border>
                 </Grid>
             </StackPanel>
-        </ScrollViewer>
+        </ScrollView>
     </Grid>
 </Page>

@@ -72,6 +72,8 @@ public static class ThemeService
         ("ToggleButtonForegroundCheckedPointerOver", Role.TextOnAccent),
         ("ToggleButtonForegroundCheckedPressed", Role.TextOnAccent),
         ("NavigationViewSelectionIndicatorForeground", Role.Fill),
+        ("ScrollBarThumbFillPointerOver", Role.Fill),
+        ("ScrollBarThumbFillPressed", Role.FillSecondary),
         ("ListViewItemSelectionIndicatorBrush", Role.Fill),
         ("ListViewItemSelectionIndicatorPointerOverBrush", Role.Fill),
         ("ListViewItemSelectionIndicatorPressedBrush", Role.Fill),
@@ -186,10 +188,29 @@ public static class ThemeService
         _ => SystemIsDark(),
     };
 
-    public static bool AnimationsAllowed(AppSettings s) => s.AnimationsEnabled && !s.ReducedMotion && UiSettings.AnimationsEnabled;
+    /// <summary>False when Windows "Animation effects" is off and the user asked NOXEL to respect it.</summary>
+    public static bool MotionAllowedBySystem(AppSettings s) => UiSettings.AnimationsEnabled || !s.RespectSystemReducedMotion;
 
-    public static bool IntroAllowed(AppSettings s) =>
-        s.PlayIntro && s.AnimationsEnabled && !s.ReducedMotion && (UiSettings.AnimationsEnabled || s.IntroIgnoresSystemMotion);
+    /// <summary>Interface animations (page transitions, hover, toggles, notices).</summary>
+    public static bool AnimationsAllowed(AppSettings s) => s.AnimationsEnabled && !s.ReducedMotion && MotionAllowedBySystem(s);
+
+    /// <summary>
+    /// The intro is its own preference: turning interface animations off does not disable it, but accessibility
+    /// (NOXEL's Reduced motion, or Windows' setting while "Respect" is on) does.
+    /// </summary>
+    public static bool IntroAllowed(AppSettings s) => s.PlayIntro && !s.ReducedMotion && MotionAllowedBySystem(s);
+
+    public static bool SmoothScrollingAllowed(AppSettings s) => !s.ReducedMotion && MotionAllowedBySystem(s);
+
+    /// <summary>Plain-language answer to "will the intro play next time?", shown under the setting.</summary>
+    public static string IntroStatus(AppSettings s)
+    {
+        if (!s.PlayIntro) return "Off: NOXEL opens straight to the dashboard.";
+        if (s.ReducedMotion) return "Not playing: NOXEL's Reduced motion is on.";
+        if (!MotionAllowedBySystem(s))
+            return "Not playing: Windows \"Animation effects\" is off on this PC and \"Respect Windows reduced-motion settings\" is on. Turn that off below to play the intro anyway.";
+        return "Plays on the next fresh launch. It doesn't replay when NOXEL is reopened from the tray (exit NOXEL from the tray to start it fresh).";
+    }
 
     public static bool SystemReducedMotion => !UiSettings.AnimationsEnabled;
 

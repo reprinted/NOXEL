@@ -1,6 +1,7 @@
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Noxel.App.Animations;
 using Noxel.App.Infrastructure;
 using Noxel.App.Services;
 using Noxel.Core.Hotkeys;
@@ -44,6 +45,7 @@ public sealed partial class CompactWindow : Window
             _c.PresetsChanged -= Refresh;
         };
         Refresh();
+        Root.Loaded += (_, _) => Motion.WindowContentEnter(Root);
     }
 
     public void ApplyTheme() => ThemeService.ApplyToWindow(this, Root, App.Settings);

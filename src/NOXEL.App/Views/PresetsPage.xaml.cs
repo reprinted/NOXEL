@@ -1,6 +1,7 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Noxel.App.Controls;
+using Noxel.App.Animations;
 using Noxel.App.Infrastructure;
 using Noxel.App.Services;
 using Noxel.App.ViewModels;
@@ -25,6 +26,9 @@ public sealed partial class PresetsPage : Page
     public PresetsPage()
     {
         InitializeComponent();
+        NavigationCacheMode = Microsoft.UI.Xaml.Navigation.NavigationCacheMode.Enabled;
+        Responsive.Attach(this);
+        SmoothScroll.Attach(PageScroll);
         HotkeyBox.GestureChanged += OnHotkeyChanged;
         HotkeyBox.Rejected += (_, msg) => { HotkeyError.Text = msg; HotkeyError.Visibility = Visibility.Visible; };
         Loaded += (_, _) =>
@@ -246,7 +250,9 @@ public sealed partial class PresetsPage : Page
 
     private void OnStar(object sender, RoutedEventArgs e)
     {
-        if ((sender as FrameworkElement)?.Tag is PresetItem i) _c.Presets.SetFavorite(i.Preset.Id, !i.Preset.IsFavorite);
+        if ((sender as FrameworkElement)?.Tag is not PresetItem i) return;
+        if (sender is Button { Content: FrameworkElement star }) Motion.Pop(star);
+        _c.Presets.SetFavorite(i.Preset.Id, !i.Preset.IsFavorite);
     }
 
     private void OnHotkeyChanged(HotkeyRecorder _, string? gesture)

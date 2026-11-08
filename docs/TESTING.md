@@ -79,3 +79,40 @@ JSON import, export/import round-trip, settings recovery from a corrupt file, sa
 * Windows 10, HDR enabled, Remote Desktop, DPI scaling other than this PC's, a real Windows sign-in with Start with
   Windows, GPU scaling request (`dmDisplayFixedOutput`), color re-apply after unlock/resume, import/export file
   pickers (logic is unit-tested).
+
+---
+
+# 1.1.0 interface overhaul — test results
+
+Same PC, 100 % scaling (96 DPI), Windows *Animation effects* off. No display modes were changed during these
+visual tests.
+
+| Area | How | Result |
+|---|---|---|
+| Responsive navigation | UI Automation resize 1400 → 900 → 520 → 1400 px, width of a nav item | 224 px (labels) → 48 px (icon rail) → 0 (hamburger flyout) → 224 px again. Opened overlay pane is opaque. |
+| Minimum size | request 300 × 380 | window stays 420 × 520 |
+| Page layouts | all 5 pages captured at 1400, 960, 560 and 420 px | no overlapping, clipping or horizontal overflow; cards stack; Presets toolbar becomes icon-only; title bar status/version hide on narrow windows |
+| Intro decision | 7 fresh launches with different settings, UI Automation check at 1.2 s | defaults (Windows animations off, respect on) → no intro; respect off → intro; respect off + interface animations off → intro (separate preference); Play intro off → none; NOXEL reduced motion → none; migrated 1.0 setting → intro |
+| Intro, other paths | second launch while in the tray; mouse click | reopening the existing instance never replays it (one process); a click skips it (gone 0.45 s later) |
+| Smooth scrolling | one real wheel notch + sampled scroll position | ON: eased glide of ~3 lines, settles ≈ 190 ms; OFF: WinUI's native ~150 ms glide; high-resolution deltas applied 1:1 immediately with ON; down-down-up reversal responsive |
+| Motion blur | frames at 40/90/150/400 ms after navigation, blur off vs on | fade-rise in both; with blur on, faint trailing copies under text at 90 ms, gone by 150 ms |
+| Settings persistence | toggles + theme + accent via UI Automation, exit, relaunch | all values saved to settings.json and shown again after restart; dependent switches disabled (not erased) when they can't apply |
+| Regression | tray menu, color on/off through the driver, compact view + preset apply, single instance, Start with Windows, exit | all pass (vibrance 58/62 applied and restored to 50) |
+| Unit tests | `dotnet test` | 53 passed |
+
+### Performance (Release build, 20 s idle samples)
+
+| Configuration | First window | Idle CPU (open / tray) | Working set | Private |
+|---|---|---|---|---|
+| Animations on, blur off, smooth on | 403 ms | 0.000 % / 0.000 % | 164 / 163 MB | 130 / 128 MB |
+| Animations on, blur on, smooth on | 342 ms | 0.000 % / 0.000 % | 165 / 164 MB | 132 / 130 MB |
+| Animations off, smooth off | 331 ms | 0.000 % / 0.000 % | 164 / 162 MB | 120 / 117 MB |
+| Defaults (Windows motion respected → none) | 332 ms | 0.000 % / 0.000 % | 164 / 162 MB | 121 / 119 MB |
+
+Working set is not trimmed artificially. Animations, when allowed, add ≈ 10 MB private (composition animation
+resources); the bundled fonts add a few MB.
+
+### Not tested in 1.1
+* 125 / 150 / 200 % display scaling (would require changing the user's Windows scaling).
+* Precision touchpad and touchscreen scrolling (no such hardware); behaviour is by design native or 1:1.
+* Stock WinUI control animations with Windows *Animation effects* on (it is off on this PC).
