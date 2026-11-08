@@ -115,7 +115,7 @@
                     <!-- Editor -->
                     <Border x:Name="Editor" Grid.Column="1" Style="{StaticResource GlassCard}" VerticalAlignment="Top">
                         <StackPanel Spacing="10">
-                            <TextBlock x:Name="EditorTitle" Text="Preset" Style="{StaticResource CardTitle}" FontSize="18" />
+                            <ctl:ShadowText x:Name="EditorTitle" Text="Preset" TextStyle="{StaticResource CardTitle}" />
                             <TextBlock x:Name="BuiltInNote" Style="{StaticResource FaintText}" Text="Built-in presets can't be edited or deleted. Duplicate one to make your own copy. You can still star it and give it a shortcut." />
                             <TextBox x:Name="NameBox" Header="Name" MaxLength="48" />
                             <TextBox x:Name="DescBox" Header="Description" MaxLength="160" />

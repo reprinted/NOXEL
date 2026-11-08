@@ -1,8 +1,11 @@
 # How to Publish a NOXEL Update
 
-NOXEL's source code stays private. Only the finished files go to the public repository
-[reprinted/NOXEL-Releases](https://github.com/reprinted/NOXEL-Releases). That repository also has its own checklist
-in `docs/RELEASING.md`; this guide is the source-side half.
+NOXEL is GPL-3.0-only. The source lives in [reprinted/NOXEL](https://github.com/reprinted/NOXEL); the finished
+files go to [reprinted/NOXEL-Releases](https://github.com/reprinted/NOXEL-Releases), which the updater reads. That
+repository has its own checklist in `docs/RELEASING.md`; this guide is the source-side half.
+
+**GPL rule:** every binary you publish must have its matching source available. Push the source tag (`v1.0.1`) to
+reprinted/NOXEL *before* or together with the binary release, and keep the tag and the release version identical.
 
 Nothing here runs automatically. You publish every release by hand.
 
@@ -37,12 +40,13 @@ Files must be named exactly `NOXEL.exe`, `NOXEL-Setup.exe` and `SHA256SUMS.txt`.
    nothing.
 5. **Test the files in `artifacts\release-v1.0.1\`** on your PC: install over 1.0.0, run the portable exe, check the
    things you changed.
-6. **Tag the source:** `git tag v1.0.1` (keep it in the private repository; don't push source to NOXEL-Releases).
+6. **Publish the matching source:** `git tag v1.0.1`, then `git push origin main v1.0.1` (origin =
+   github.com/reprinted/NOXEL). Don't put source in NOXEL-Releases; link to the tag instead (the release notes
+   from the script already contain the link).
 7. **Create the release** at https://github.com/reprinted/NOXEL-Releases/releases/new:
    * Tag: `v1.0.1` (create it on publish). Title: `NOXEL v1.0.1`.
    * Description: paste `RELEASE-NOTES-v1.0.1.md`.
-   * Attach `NOXEL.exe`, `NOXEL-Setup.exe` and `SHA256SUMS.txt`. `LICENSE.txt` and `THIRD-PARTY-NOTICES.txt` are
-     optional extras; both are already inside the installer and the program.
+   * Attach `NOXEL.exe`, `NOXEL-Setup.exe`, `SHA256SUMS.txt`, `LICENSE.txt` and `THIRD-PARTY-NOTICES.txt`.
    * Leave **Set as a pre-release** unticked and **Set as the latest release** ticked. Click **Publish release**.
 
    Or, with the GitHub CLI signed in on your own PC (the command is printed by the release script):
@@ -77,6 +81,6 @@ outside the repository.
 
 ## Optional: GitHub Actions
 
-Building on GitHub would need the private source on GitHub runners and a token that can write to
-NOXEL-Releases. It is not set up and nothing publishes automatically. Don't add a workflow that publishes without
-deciding that on purpose.
+A workflow could build from the public source, but publishing to NOXEL-Releases would need a token that can write
+to it. It is not set up and nothing publishes automatically. Don't add a workflow that publishes without deciding
+that on purpose.

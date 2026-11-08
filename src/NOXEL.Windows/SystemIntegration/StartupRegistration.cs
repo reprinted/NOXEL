@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-3.0-only
+// Copyright (C) 2026 barry
+
 using Microsoft.Win32;
 using Noxel.Core.Infrastructure;
 

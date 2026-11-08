@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-3.0-only
+// Copyright (C) 2026 barry
+
 using System.Diagnostics;
 using System.Net;
 using System.Net.Http.Headers;

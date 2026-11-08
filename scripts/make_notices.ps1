@@ -1,3 +1,4 @@
+﻿# SPDX-License-Identifier: GPL-3.0-only
 <#
 .SYNOPSIS
   Regenerates THIRD-PARTY-NOTICES.txt from the exact license and notice files of the packages NOXEL ships.
@@ -22,9 +23,10 @@ $components = @(
 $sb = [System.Text.StringBuilder]::new()
 [void]$sb.AppendLine("NOXEL — THIRD-PARTY SOFTWARE NOTICES AND INFORMATION")
 [void]$sb.AppendLine("")
-[void]$sb.AppendLine("NOXEL is proprietary software (see LICENSE.txt). It incorporates the third-party components listed below, each")
-[void]$sb.AppendLine("under its own license, reproduced here verbatim. These licenses apply to those components only; they do not")
-[void]$sb.AppendLine("place NOXEL's own code under any of these licenses, and LICENSE.txt does not restrict rights they grant.")
+[void]$sb.AppendLine("NOXEL is free software under the GNU General Public License v3 only (GPL-3.0-only; see LICENSE). It")
+[void]$sb.AppendLine("incorporates the third-party components listed below, each under its own license, reproduced here verbatim.")
+[void]$sb.AppendLine("These licenses apply to those components only; they do not")
+[void]$sb.AppendLine("relicense those components under the GPL, and the GPL does not restrict rights their own licenses grant.")
 [void]$sb.AppendLine("")
 [void]$sb.AppendLine("Also used, not redistributed: Microsoft Windows SDK C#/WinRT projections (Microsoft.Windows.SDK.NET; Windows SDK")
 [void]$sb.AppendLine("license https://aka.ms/WinSDKLicenseURL), the NVIDIA driver's nvapi64.dll (installed by the NVIDIA driver; NVIDIA is")

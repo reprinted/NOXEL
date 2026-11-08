@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-3.0-only
+// Copyright (C) 2026 barry
+
 namespace Noxel.Windows.SystemIntegration;
 
 /// <summary>
@@ -13,15 +16,17 @@ public sealed class SingleInstance : IDisposable
 
     public bool IsFirst { get; }
 
-    public SingleInstance()
+    /// <param name="scope">Empty for normal use. Isolated test copies (NOXEL_TEST_DATA_DIR) pass a scope so they can
+    /// run next to a real NOXEL; the installer only waits for the unscoped name.</param>
+    public SingleInstance(string scope = "")
     {
-        _mutex = new Mutex(true, MutexName, out bool created);
+        _mutex = new Mutex(true, MutexName + scope, out bool created);
         IsFirst = created;
         if (!created)
         {
             try { _mutex.WaitOne(0); } catch (AbandonedMutexException) { IsFirst = true; } // previous instance crashed
         }
-        _activate = new EventWaitHandle(false, EventResetMode.AutoReset, EventName);
+        _activate = new EventWaitHandle(false, EventResetMode.AutoReset, EventName + scope);
     }
 
     /// <summary>Called by a second instance.</summary>

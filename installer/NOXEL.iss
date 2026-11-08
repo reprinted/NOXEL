@@ -1,3 +1,4 @@
+; SPDX-License-Identifier: GPL-3.0-only
 ; NOXEL installer (Inno Setup 6). Built by scripts/publish.ps1, which passes the version from Directory.Build.props:
 ;   ISCC.exe /DAppVersion=1.0.0 installer\NOXEL.iss
 ; Output: artifacts\installer\NOXEL-Setup.exe
@@ -53,14 +54,15 @@ SolidCompression=yes
 WizardStyle=modern
 CloseApplications=yes
 RestartApplications=no
-LicenseFile=..\LICENSE.txt
+; GNU GPL v3 is shown for information; it does not restrict running the program.
+LicenseFile=..\LICENSE
 
 [Tasks]
 Name: "desktopicon"; Description: "Create a desktop shortcut"; GroupDescription: "Shortcuts:"; Flags: unchecked
 
 [Files]
 Source: "{#SourceExe}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\LICENSE.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\LICENSE"; DestDir: "{app}"; DestName: "LICENSE.txt"; Flags: ignoreversion
 Source: "..\THIRD-PARTY-NOTICES.txt"; DestDir: "{app}"; Flags: ignoreversion
 
 [InstallDelete]

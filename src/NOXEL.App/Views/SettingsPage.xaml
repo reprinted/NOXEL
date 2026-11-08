@@ -209,11 +209,12 @@
                         <TextBlock x:Name="AboutVersion" Style="{StaticResource MutedText}" FontFamily="{StaticResource NoxelMono}" IsTextSelectionEnabled="True" />
                         <TextBlock x:Name="AboutDeveloper" Style="{StaticResource MutedText}" />
                         <TextBlock Style="{StaticResource MutedText}" Text="Requires Windows 10 version 1809 or later, or Windows 11 (64-bit)." />
-                        <TextBlock Style="{StaticResource MutedText}" Text="NOXEL is proprietary software. Copyright © 2026 barry. All rights reserved. Use is governed by the NOXEL license agreement." />
+                        <TextBlock Style="{StaticResource MutedText}" Text="NOXEL is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License, version 3 only. It comes with ABSOLUTELY NO WARRANTY. Copyright © 2026 barry." />
                         <TextBlock Style="{StaticResource FaintText}" Text="Includes third-party components under their own licenses: Microsoft .NET, the Windows App SDK (WinUI 3) and the WebView2 loader, and the Inter and Rajdhani fonts (SIL Open Font License 1.1). NVIDIA is a trademark of NVIDIA Corporation; NOXEL uses the driver's public NVAPI interface and is not affiliated with NVIDIA." />
                         <TextBlock Style="{StaticResource FaintText}" Text="Privacy: no telemetry, accounts or administrator rights. The only network access is the update check against github.com/reprinted/NOXEL-Releases (can be set to manual). NOXEL never reads or injects into game processes, installs drivers or hooks, or captures the screen." />
                         <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,4,0,0">
-                            <Button Content="License" Click="OnOpenLicense" />
+                            <Button Content="License (GPL v3)" Click="OnOpenLicense" />
+                            <Button Content="Source code" Click="OnOpenSource" />
                             <Button Content="Third-party notices" Click="OnOpenNotices" />
                             <Button Content="Open program folder" Click="OnOpenProgramFolder" />
                         </StackPanel>

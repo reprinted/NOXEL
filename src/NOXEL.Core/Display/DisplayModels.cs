@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-3.0-only
+// Copyright (C) 2026 barry
+
 namespace Noxel.Core.Display;
 
 /// <summary>A driver-exposed display mode. Refresh is the integer value Windows reports via EnumDisplaySettings.</summary>

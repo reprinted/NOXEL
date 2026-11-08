@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-3.0-only
+// Copyright (C) 2026 barry
+
 using System.Numerics;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
@@ -64,8 +67,8 @@ public sealed class ShadowText : Grid
         _shadow!.Mask = _text.GetAlphaMask();
         _sprite.Size = new Vector2((float)_text.ActualWidth, (float)_text.ActualHeight);
         bool dark = ActualTheme != ElementTheme.Light;
-        _shadow.Color = dark ? Color.FromArgb(255, 0x0A, 0x05, 0x1E) : Color.FromArgb(255, 0x20, 0x1C, 0x30);
-        _shadow.Opacity = dark ? 0.65f : 0.16f;
+        _shadow.Color = dark ? Color.FromArgb(255, 0x14, 0x09, 0x34) : Color.FromArgb(255, 0x20, 0x1C, 0x30);
+        _shadow.Opacity = dark ? 0.6f : 0.16f;
         _shadow.BlurRadius = dark ? 10f : 4f;
         _shadow.Offset = dark ? new Vector3(0, 2, 0) : new Vector3(0, 1, 0);
     }

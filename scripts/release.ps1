@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: GPL-3.0-only
 <#
 .SYNOPSIS
   Prepares a NOXEL release locally. It never uploads anything.
@@ -29,24 +30,27 @@ if ($LASTEXITCODE -ne 0 -and $LASTEXITCODE -ne $null) { throw "Build failed." }
 $dest = Join-Path $root "artifacts\release-v$Version"
 if (Test-Path $dest) { Remove-Item $dest -Recurse -Force }
 New-Item -ItemType Directory $dest | Out-Null
-Copy-Item (Join-Path $root "artifacts\release\NOXEL.exe"), (Join-Path $root "artifacts\installer\NOXEL-Setup.exe"), (Join-Path $root "LICENSE.txt"), (Join-Path $root "THIRD-PARTY-NOTICES.txt") $dest
+Copy-Item (Join-Path $root "artifacts\release\NOXEL.exe"), (Join-Path $root "artifacts\installer\NOXEL-Setup.exe"), (Join-Path $root "THIRD-PARTY-NOTICES.txt") $dest
+Copy-Item (Join-Path $root "LICENSE") (Join-Path $dest "LICENSE.txt")
 foreach ($f in "NOXEL.exe", "NOXEL-Setup.exe") {
   $v = (Get-Item (Join-Path $dest $f)).VersionInfo.ProductVersion
   if (-not $v.StartsWith($Version)) { throw "$f reports version $v, expected $Version." }
 }
 $sums = foreach ($f in "NOXEL.exe", "NOXEL-Setup.exe") { "{0}  {1}" -f (Get-FileHash (Join-Path $dest $f) -Algorithm SHA256).Hash.ToLower(), $f }
 [IO.File]::WriteAllLines((Join-Path $dest "SHA256SUMS.txt"), $sums)
-[IO.File]::WriteAllText((Join-Path $dest "RELEASE-NOTES-v$Version.md"), ($m.Value -replace "^## ", "# NOXEL ").Trim() + "`n")
+$sourceLine = "`n`n---`nSource code for this release (GPL-3.0-only): https://github.com/reprinted/NOXEL/tree/v$Version`n"
+[IO.File]::WriteAllText((Join-Path $dest "RELEASE-NOTES-v$Version.md"), ($m.Value -replace "^## ", "# NOXEL ").Trim() + $sourceLine)
 
 ""
 "Release v$Version prepared in $dest"
 Get-ChildItem $dest | ForEach-Object { "  {0,-28} {1,10:N0} bytes" -f $_.Name, $_.Length }
 ""
 "To publish (only after testing):"
-"  1. Commit and tag the source:  git tag v$Version"
+"  1. Tag the source and publish it FIRST (GPL: the matching source must be available):"
+"       git tag v$Version; git push origin main v$Version   (origin = github.com/reprinted/NOXEL)"
 "  2. Open https://github.com/reprinted/NOXEL-Releases/releases/new"
 "  3. Tag: v$Version   Title: NOXEL v$Version   Notes: paste RELEASE-NOTES-v$Version.md"
-"  4. Attach NOXEL.exe, NOXEL-Setup.exe, SHA256SUMS.txt (and optionally LICENSE.txt, THIRD-PARTY-NOTICES.txt)"
+"  4. Attach NOXEL.exe, NOXEL-Setup.exe, SHA256SUMS.txt, LICENSE.txt and THIRD-PARTY-NOTICES.txt"
 "  5. Leave 'Set as a pre-release' unticked; Publish release."
 "  6. Check https://api.github.com/repos/reprinted/NOXEL-Releases/releases/latest shows v$Version and each asset has a sha256 digest."
 "  Or with GitHub CLI:  gh release create v$Version `"$dest\NOXEL.exe`" `"$dest\NOXEL-Setup.exe`" `"$dest\SHA256SUMS.txt`" --repo reprinted/NOXEL-Releases --title `"NOXEL v$Version`" --notes-file `"$dest\RELEASE-NOTES-v$Version.md`""

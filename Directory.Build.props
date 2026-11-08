@@ -13,7 +13,7 @@
     <NoxelBuild Condition="'$(NoxelBuild)' == ''">$([System.DateTime]::UtcNow.ToString("yyyyMMdd.HHmm"))</NoxelBuild>
     <InformationalVersion>$(Version)+$(NoxelBuild)</InformationalVersion>
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
-    <Copyright>See LICENSE.txt</Copyright>
+    <Copyright>Copyright (C) 2026 barry. GPL-3.0-only.</Copyright>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
   </PropertyGroup>
 </Project>

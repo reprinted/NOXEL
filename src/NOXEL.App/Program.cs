@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-3.0-only
+// Copyright (C) 2026 barry
+
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Noxel.Core.Infrastructure;
@@ -15,8 +18,12 @@ public static class Program
     {
         Args = args;
         // Testing only: keep a throwaway copy's settings, presets and downloads apart from the real ones.
+        var testScope = "";
         if (Environment.GetEnvironmentVariable("NOXEL_TEST_DATA_DIR") is { Length: > 0 } testData && Path.IsPathFullyQualified(testData))
+        {
             AppPaths.Root = testData;
+            testScope = ".test";
+        }
         AppDomain.CurrentDomain.UnhandledException += (_, e) =>
         {
             if (e.ExceptionObject is Exception ex) Log.Crash("Unhandled exception", ex);
@@ -28,7 +35,7 @@ public static class Program
         if (args.Any(a => a.Equals("--apply-portable-update", StringComparison.OrdinalIgnoreCase)))
             return Services.PortableUpdater.Run(args);
 
-        Instance = new SingleInstance();
+        Instance = new SingleInstance(testScope);
         if (!Instance.IsFirst)
         {
             Infrastructure.WindowHelper.AllowAnyForeground();

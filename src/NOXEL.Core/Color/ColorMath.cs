@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-3.0-only
+// Copyright (C) 2026 barry
+
 namespace Noxel.Core.Color;
 
 /// <summary>Pure math for the color engines. No Windows dependencies; unit-tested.</summary>

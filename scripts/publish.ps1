@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: GPL-3.0-only
 <#
 .SYNOPSIS
   Builds, tests and publishes NOXEL.exe (self-contained, single file, win-x64) into artifacts/release, then
@@ -37,7 +38,8 @@ dotnet publish $project -c Release -r win-x64 -o $out @props
 if ($LASTEXITCODE -ne 0) { throw "Publish failed." }
 
 Get-ChildItem $out -Filter *.pdb | Remove-Item -Force
-Copy-Item (Join-Path $root "LICENSE.txt"), (Join-Path $root "THIRD-PARTY-NOTICES.txt"), (Join-Path $root "README.md") $out -Force
+Copy-Item (Join-Path $root "LICENSE") (Join-Path $out "LICENSE.txt") -Force
+Copy-Item (Join-Path $root "THIRD-PARTY-NOTICES.txt"), (Join-Path $root "README.md") $out -Force
 Copy-Item (Join-Path $root "docs\KNOWN-LIMITATIONS.md"), (Join-Path $root "docs\RELEASE-NOTES.md") $out -Force
 $exe = Join-Path $out "NOXEL.exe"
 $product = (Get-Item $exe).VersionInfo.ProductVersion

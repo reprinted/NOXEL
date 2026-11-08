@@ -168,6 +168,12 @@
     <Style TargetType="ToggleSwitch">
         <Setter Property="FontWeight" Value="Medium" />
     </Style>
+    <!-- Settings labels (control headers) are Medium; the values inside the controls stay Regular. -->
+    <FontWeight x:Key="ComboBoxHeaderThemeFontWeight">Medium</FontWeight>
+    <FontWeight x:Key="SliderHeaderThemeFontWeight">Medium</FontWeight>
+    <Style TargetType="RadioButtons">
+        <Setter Property="FontWeight" Value="Medium" />
+    </Style>
 
     <!-- Dialog buttons: identical height, padding, radius and type; Cancel is neutral, destructive is red. -->
     <Style x:Key="NoxelDialogButton" TargetType="Button" BasedOn="{StaticResource DefaultButtonStyle}">

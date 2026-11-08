@@ -1,54 +1,72 @@
 # NOXEL
 
-A lightweight Windows 10/11 display utility that combines resolution and refresh-rate switching, native/stretched
-toggling, real color adjustments, unified presets, global hotkeys, a tray icon and a compact view — in one native
-WinUI 3 app with a dark "liquid glass" interface and a glitchy CRT eye intro.
+A lightweight Windows 10/11 display utility: resolution and refresh-rate switching, native/stretched toggling,
+real color adjustments, unified presets, global hotkeys, a tray icon and a compact view, in one native WinUI 3 app.
 
-* **Download:** [github.com/reprinted/NOXEL-Releases](https://github.com/reprinted/NOXEL-Releases/releases/latest) —
-  `NOXEL-Setup.exe` (installer, per-user, no admin) or `NOXEL.exe` (portable, self-contained, x64; no .NET needed).
-* **Local build output:** `artifacts/release/NOXEL.exe` and `artifacts/installer/NOXEL-Setup.exe`.
-* **Settings and presets:** `%LOCALAPPDATA%\NOXEL` (JSON, saved atomically with a backup copy).
-* **Privacy:** no telemetry, accounts or administrator rights. The only network access is the update check against
-  the GitHub releases page (Settings › Updates; can be set to manual).
-* **Updates:** checked shortly after start and daily. Notify only (default), automatic download or manual. Files are
-  installed only after their version and SHA-256 checksum are verified; see [docs/HOW-TO-PUBLISH.md](docs/HOW-TO-PUBLISH.md).
+**Download:** [NOXEL-Releases](https://github.com/reprinted/NOXEL-Releases/releases/latest): `NOXEL-Setup.exe`
+(per-user installer, no admin rights) or `NOXEL.exe` (portable, self-contained, x64; no .NET install needed).
+
+NOXEL is free software under the [GNU General Public License v3.0 only](LICENSE) (`GPL-3.0-only`).
 
 ## Features
 
 | Area | What it does |
 |---|---|
-| Dashboard | Real monitor data (name, ID, primary, resolution, exact refresh, max Hz for the mode, native mode, color profile, HDR), active preset picker, favorites, quick actions (native, stretched, color look, presets, restore defaults). |
-| Display | Every driver-exposed mode per monitor as cards (aspect ratio, max Hz, native/current badges), search, aspect filter, favorites first; refresh-rate picker for the selected resolution; optional GPU scaling request; custom-resolution lookup; native/stretched setup. Changes ask **Keep / Revert** and revert automatically after 15 s (configurable). |
-| Color Studio | Digital vibrance (NVIDIA driver), saturation, brightness, contrast, temperature (Windows full-screen color matrix), gamma (hardware gamma ramp, where Windows allows it). Live preview, compare with original, reset, save as preset. Unavailable controls are disabled with the real reason. |
-| Presets | Display mode + colors in one profile, per-monitor, favorites, optional hotkey, search, duplicate, edit, import/export JSON (also drag-and-drop), protected built-ins (Original, Clarity, Vibrant, Cinema, After Hours, Competitive) and an editable Custom slot. |
-| Hotkeys | F6 native/stretched, Ctrl+Alt+F12 color on/off, Ctrl+Shift+1/2 favorites, per-preset shortcuts. Conflict detection, per-shortcut and global disable. Uses `RegisterHotKey` (no keyboard hooks). |
-| Tray & compact | Tray menu (open, compact, current preset, favorites, color on/off, native/stretched, settings, exit). Compact window with look switch, preset picker, pin on top. Single instance: a second launch focuses the first. |
-| Settings | Updates (mode, check, release notes, download progress, install), Dark / Light / Follow Windows, accent presets + custom hex, transparency, glass intensity, animations, motion blur, smooth scrolling, Play intro on launch, respect Windows reduced motion, NOXEL reduced motion, startup, tray behavior, shortcuts, display defaults, diagnostics, About. |
-| Interface | Responsive layout (expanded sidebar → icon rail → hamburger flyout; cards stack on narrow windows), Liquid Glass surfaces on Mica, Rajdhani + Inter typography, consistent rounded corners, composition-driven animations, smooth scrolling. |
+| Dashboard | Live monitor data (name, resolution, exact refresh rate, max Hz, native mode, color profile, HDR), active preset, favorites, quick actions. |
+| Display | Every driver-exposed mode per monitor, refresh-rate picker, favorites, custom-resolution lookup, native/stretched setup. Every change asks **Keep / Revert** and reverts by itself after 15 s; an interrupted change is rolled back on the next start. |
+| Color Studio | Digital vibrance (NVIDIA driver), saturation, brightness, contrast, temperature (Windows color matrix), gamma (where Windows allows it). Live preview, compare, look codes. Unavailable controls are disabled with the reason. |
+| Presets | Display mode + colors in one profile, per monitor, with favorites, hotkeys, import/export and protected built-ins. |
+| Shell | Global hotkeys (`RegisterHotKey`, no keyboard hooks), tray menu, compact always-on-top view, single instance, optional start with Windows. |
+| Updates | Checks [NOXEL-Releases](https://github.com/reprinted/NOXEL-Releases) at start and daily (notify only by default). Installs only after size, SHA-256 and version checks, never during a pending display change. |
+
+Privacy: no telemetry, accounts or administrator rights. The only network access is the update check (can be set
+to manual). Settings and presets are JSON files in `%LOCALAPPDATA%\NOXEL`.
+
+## Compatibility
+
+| | Status |
+|---|---|
+| Windows 11 23H2, NVIDIA RTX 4060 Ti | Tested (all features) |
+| Windows 10 1809+ and other Windows 11 builds | Supported target, not tested |
+| AMD and Intel GPUs | Display switching and the Windows color matrix use vendor-independent Windows APIs but are **untested**; digital vibrance is NVIDIA-only and is disabled elsewhere |
+| 125–200 % display scaling, touch, clean VM | Not tested |
+
+Details: [docs/GPU-COMPATIBILITY-AUDIT.md](docs/GPU-COMPATIBILITY-AUDIT.md) and [docs/KNOWN-LIMITATIONS.md](docs/KNOWN-LIMITATIONS.md).
 
 ## Build
 
-See [docs/BUILD.md](docs/BUILD.md). Short version, from the repo root:
+Requirements: Windows 10/11 x64, .NET 10 SDK. Optional: [Inno Setup 6](https://jrsoftware.org/isinfo.php) for the
+installer.
 
 ```powershell
-./scripts/publish.ps1                  # NOXEL.exe + NOXEL-Setup.exe
-./scripts/release.ps1 -Version 1.0.0   # same, plus SHA256SUMS.txt and release notes in artifacts/release-v1.0.0
+dotnet build src/NOXEL.App/NOXEL.App.csproj          # Debug build
+dotnet test tests/NOXEL.Tests                          # unit tests
+./scripts/publish.ps1                                  # tests + NOXEL.exe (+ NOXEL-Setup.exe if Inno Setup is installed)
+./scripts/release.ps1 -Version 1.0.0                   # release folder with SHA256SUMS.txt; uploads nothing
 ```
 
-The version is set only in `Directory.Build.props`.
+The version is set only in `Directory.Build.props`. More in [docs/BUILD.md](docs/BUILD.md).
 
 ## Documentation
 
-* [docs/BUILD.md](docs/BUILD.md) — requirements, build, publish, installer, deployment behavior
-* [docs/KNOWN-LIMITATIONS.md](docs/KNOWN-LIMITATIONS.md) — what Windows and drivers do and don't allow
-* [docs/TESTING.md](docs/TESTING.md) — what was verified on real hardware vs. unit tests
-* [docs/RELEASE-NOTES.md](docs/RELEASE-NOTES.md)
+* [docs/BUILD.md](docs/BUILD.md): build, publish, installer, deployment
+* [docs/TESTING.md](docs/TESTING.md): what was verified on real hardware
+* [docs/KNOWN-LIMITATIONS.md](docs/KNOWN-LIMITATIONS.md)
 * [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
-* [docs/HOW-TO-PUBLISH.md](docs/HOW-TO-PUBLISH.md) — how to publish an update to NOXEL-Releases
-* [THIRD-PARTY-NOTICES.txt](THIRD-PARTY-NOTICES.txt) — licenses of bundled third-party components (regenerate with `scripts/make_notices.ps1`)
+* [docs/HOW-TO-PUBLISH.md](docs/HOW-TO-PUBLISH.md): releasing a version
+* [docs/LICENSING.md](docs/LICENSING.md): dependency licenses and GPL compatibility
+* [docs/RELEASE-NOTES.md](docs/RELEASE-NOTES.md)
+* [CONTRIBUTING.md](CONTRIBUTING.md) · [SECURITY.md](SECURITY.md)
 
 ## License
 
-NOXEL is proprietary software; the source code is private and not open source. See [LICENSE.txt](LICENSE.txt)
-(an end-user license agreement **draft that still needs review by a lawyer** and the licensor's legal details).
-Bundled third-party components keep their own licenses, listed in [THIRD-PARTY-NOTICES.txt](THIRD-PARTY-NOTICES.txt).
+Copyright (C) 2026 barry
+
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
+License as published by the Free Software Foundation, version 3 of the License only. It is distributed in the hope
+that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See [LICENSE](LICENSE) for details.
+
+Bundled third-party components (.NET runtime, Windows App SDK, WebView2 loader, Inter and Rajdhani fonts) keep
+their own licenses: [THIRD-PARTY-NOTICES.txt](THIRD-PARTY-NOTICES.txt). NVIDIA is a trademark of NVIDIA
+Corporation; NOXEL is not affiliated with NVIDIA.

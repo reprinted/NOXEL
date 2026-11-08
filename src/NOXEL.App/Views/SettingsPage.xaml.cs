@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-3.0-only
+// Copyright (C) 2026 barry
+
 using System.Reflection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
@@ -421,6 +424,8 @@ public sealed partial class SettingsPage : Page
 
     private void OnOpenLicense(object sender, RoutedEventArgs e) => OpenTextFile("LICENSE.txt");
     private void OnOpenNotices(object sender, RoutedEventArgs e) => OpenTextFile("THIRD-PARTY-NOTICES.txt");
+    private async void OnOpenSource(object sender, RoutedEventArgs e) =>
+        await global::Windows.System.Launcher.LaunchUriAsync(new Uri($"https://github.com/reprinted/NOXEL/tree/v{UpdateService.CurrentVersion()}"));
 
     // The copy next to NOXEL.exe (installer / release folder) wins; the bundled copy is the fallback for a lone exe.
     private void OpenTextFile(string name)

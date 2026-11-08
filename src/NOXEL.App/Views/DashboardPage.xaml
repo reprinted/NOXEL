@@ -107,11 +107,11 @@
                             </StackPanel>
                             <StackPanel Spacing="2">
                                 <TextBlock Text="COLOR LOOK" Style="{StaticResource SectionLabel}" />
-                                <TextBlock x:Name="LookText" Style="{StaticResource StatValue}" FontFamily="{ThemeResource ContentControlThemeFontFamily}" TextTrimming="CharacterEllipsis" />
+                                <TextBlock x:Name="LookText" Style="{StaticResource StatValue}" FontWeight="SemiBold" FontFamily="{ThemeResource ContentControlThemeFontFamily}" TextTrimming="CharacterEllipsis" />
                             </StackPanel>
                             <StackPanel Spacing="2">
                                 <TextBlock Text="COLOR PROFILE" Style="{StaticResource SectionLabel}" />
-                                <TextBlock x:Name="IccText" Style="{StaticResource StatValue}" FontSize="12.5" FontFamily="{ThemeResource ContentControlThemeFontFamily}" TextTrimming="CharacterEllipsis" />
+                                <TextBlock x:Name="IccText" Style="{StaticResource StatValue}" FontWeight="SemiBold" FontSize="12.5" FontFamily="{ThemeResource ContentControlThemeFontFamily}" TextTrimming="CharacterEllipsis" />
                             </StackPanel>
                         </VariableSizedWrapGrid>
                     </Grid>

@@ -63,12 +63,12 @@
                             <ComboBox x:Name="MonitorBox" MinWidth="260" HorizontalAlignment="Stretch" SelectionChanged="OnMonitorChanged" AutomationProperties.Name="Monitor to edit" />
                         </StackPanel>
                         <VariableSizedWrapGrid x:Name="StripStats" Grid.Column="1" Orientation="Horizontal" ItemWidth="150" ItemHeight="46" VerticalAlignment="Center">
-                            <StackPanel><TextBlock Text="CURRENT" Style="{StaticResource SectionLabel}" /><TextBlock x:Name="CurText" Style="{StaticResource StatValue}" FontSize="13" /></StackPanel>
-                            <StackPanel><TextBlock Text="REFRESH" Style="{StaticResource SectionLabel}" /><TextBlock x:Name="CurHzText" Style="{StaticResource StatValue}" FontSize="13" /></StackPanel>
-                            <StackPanel><TextBlock Text="NATIVE" Style="{StaticResource SectionLabel}" /><TextBlock x:Name="NativeText" Style="{StaticResource StatValue}" FontSize="13" /></StackPanel>
-                            <StackPanel><TextBlock Text="ORIENTATION" Style="{StaticResource SectionLabel}" /><TextBlock x:Name="OrientText" Style="{StaticResource StatValue}" FontSize="13" FontFamily="{ThemeResource ContentControlThemeFontFamily}" /></StackPanel>
-                            <StackPanel><TextBlock Text="CONNECTION" Style="{StaticResource SectionLabel}" /><TextBlock x:Name="ConnText" Style="{StaticResource StatValue}" FontSize="13" FontFamily="{ThemeResource ContentControlThemeFontFamily}" /></StackPanel>
-                            <StackPanel><TextBlock Text="ROLE" Style="{StaticResource SectionLabel}" /><TextBlock x:Name="RoleText" Style="{StaticResource StatValue}" FontSize="13" FontFamily="{ThemeResource ContentControlThemeFontFamily}" /></StackPanel>
+                            <StackPanel><TextBlock Text="CURRENT" Style="{StaticResource SectionLabel}" /><TextBlock x:Name="CurText" Style="{StaticResource StatValue}" FontSize="17" /></StackPanel>
+                            <StackPanel><TextBlock Text="REFRESH" Style="{StaticResource SectionLabel}" /><TextBlock x:Name="CurHzText" Style="{StaticResource StatValue}" FontSize="17" /></StackPanel>
+                            <StackPanel><TextBlock Text="NATIVE" Style="{StaticResource SectionLabel}" /><TextBlock x:Name="NativeText" Style="{StaticResource StatValue}" FontSize="17" /></StackPanel>
+                            <StackPanel><TextBlock Text="ORIENTATION" Style="{StaticResource SectionLabel}" /><TextBlock x:Name="OrientText" Style="{StaticResource StatValue}" FontSize="13" FontWeight="SemiBold" FontFamily="{ThemeResource ContentControlThemeFontFamily}" /></StackPanel>
+                            <StackPanel><TextBlock Text="CONNECTION" Style="{StaticResource SectionLabel}" /><TextBlock x:Name="ConnText" Style="{StaticResource StatValue}" FontSize="13" FontWeight="SemiBold" FontFamily="{ThemeResource ContentControlThemeFontFamily}" /></StackPanel>
+                            <StackPanel><TextBlock Text="ROLE" Style="{StaticResource SectionLabel}" /><TextBlock x:Name="RoleText" Style="{StaticResource StatValue}" FontSize="13" FontWeight="SemiBold" FontFamily="{ThemeResource ContentControlThemeFontFamily}" /></StackPanel>
                         </VariableSizedWrapGrid>
                         <Button Grid.Column="2" Style="{StaticResource IconButton}" Click="OnRefresh" VerticalAlignment="Center" AutomationProperties.Name="Re-scan monitors" ToolTipService.ToolTip="Re-scan monitors">
                             <FontIcon Glyph="&#xE72C;" FontSize="15" />
@@ -122,7 +122,7 @@
                                     <DataTemplate x:DataType="vm:ResolutionItem">
                                         <Grid Width="164" Height="78" Padding="12,10,6,10" AutomationProperties.Name="{x:Bind AutomationName}">
                                             <StackPanel Spacing="2">
-                                                <TextBlock Text="{x:Bind Text}" FontFamily="{StaticResource NoxelMono}" FontSize="15" FontWeight="SemiBold" Foreground="{ThemeResource NoxelTextPrimary}" />
+                                                <TextBlock Text="{x:Bind Text}" FontFamily="{StaticResource NoxelFontBrand}" FontSize="18" FontWeight="Bold" Foreground="{ThemeResource NoxelTextPrimary}" />
                                                 <TextBlock Text="{x:Bind Detail}" Style="{StaticResource FaintText}" />
                                                 <TextBlock Text="{x:Bind Badge}" Visibility="{x:Bind BadgeVisibility}" FontSize="10" FontWeight="Bold" CharacterSpacing="60" Foreground="{ThemeResource NoxelAccentText}" />
                                             </StackPanel>
@@ -155,11 +155,11 @@
                                         <RowDefinition /><RowDefinition /><RowDefinition />
                                     </Grid.RowDefinitions>
                                     <TextBlock Text="Current" Style="{StaticResource MutedText}" />
-                                    <TextBlock x:Name="HzCurrent" Grid.Column="1" Style="{StaticResource BodyText}" FontFamily="{StaticResource NoxelMono}" />
+                                    <TextBlock x:Name="HzCurrent" Grid.Column="1" Style="{StaticResource StatValue}" FontSize="15" />
                                     <TextBlock Grid.Row="1" Text="Highest for this mode" Style="{StaticResource MutedText}" />
-                                    <TextBlock x:Name="HzMax" Grid.Row="1" Grid.Column="1" Style="{StaticResource BodyText}" FontFamily="{StaticResource NoxelMono}" />
+                                    <TextBlock x:Name="HzMax" Grid.Row="1" Grid.Column="1" Style="{StaticResource StatValue}" FontSize="15" />
                                     <TextBlock Grid.Row="2" Text="Selected" Style="{StaticResource MutedText}" />
-                                    <TextBlock x:Name="HzSelected" Grid.Row="2" Grid.Column="1" Style="{StaticResource BodyText}" FontFamily="{StaticResource NoxelMono}" />
+                                    <TextBlock x:Name="HzSelected" Grid.Row="2" Grid.Column="1" Style="{StaticResource StatValue}" FontSize="15" />
                                 </Grid>
                                 <TextBlock Text="GPU SCALING" Style="{StaticResource SectionLabel}" />
                                 <ComboBox x:Name="ScalingBox" HorizontalAlignment="Stretch" SelectedIndex="0" SelectionChanged="OnScalingChanged" AutomationProperties.Name="GPU scaling">

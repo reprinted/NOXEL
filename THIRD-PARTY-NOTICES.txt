@@ -1,8 +1,9 @@
 NOXEL — THIRD-PARTY SOFTWARE NOTICES AND INFORMATION
 
-NOXEL is proprietary software (see LICENSE.txt). It incorporates the third-party components listed below, each
-under its own license, reproduced here verbatim. These licenses apply to those components only; they do not
-place NOXEL's own code under any of these licenses, and LICENSE.txt does not restrict rights they grant.
+NOXEL is free software under the GNU General Public License v3 only (GPL-3.0-only; see LICENSE). It
+incorporates the third-party components listed below, each under its own license, reproduced here verbatim.
+These licenses apply to those components only; they do not
+relicense those components under the GPL, and the GPL does not restrict rights their own licenses grant.
 
 Also used, not redistributed: Microsoft Windows SDK C#/WinRT projections (Microsoft.Windows.SDK.NET; Windows SDK
 license https://aka.ms/WinSDKLicenseURL), the NVIDIA driver's nvapi64.dll (installed by the NVIDIA driver; NVIDIA is
@@ -81,7 +82,7 @@ License notice for Unicode data
 
 https://www.unicode.org/license.html
 
-Copyright © 1991-2024 Unicode, Inc. All rights reserved.
+Copyright Â© 1991-2024 Unicode, Inc. All rights reserved.
 Distributed under the Terms of Use in https://www.unicode.org/copyright.html.
 
 Permission is hereby granted, free of charge, to any person obtaining a
@@ -291,7 +292,7 @@ By obtaining and/or copying this work, you (the licensee) agree that you have re
 Permission to copy, modify, and distribute this work, with or without modification, for any purpose and without fee or royalty is hereby granted, provided that you include the following on ALL copies of the work or portions thereof, including modifications:
 The full text of this NOTICE in a location viewable to users of the redistributed or derivative work.
 Any pre-existing intellectual property disclaimers, notices, or terms and conditions. If none exist, the W3C Software and Document Short Notice should be included.
-Notice of any changes or modifications, through a copyright statement on the new code or document such as "This software or document includes material copied from or derived from [title and URI of the W3C document]. Copyright © [YEAR] W3C® (MIT, ERCIM, Keio, Beihang)."
+Notice of any changes or modifications, through a copyright statement on the new code or document such as "This software or document includes material copied from or derived from [title and URI of the W3C document]. Copyright Â© [YEAR] W3CÂ® (MIT, ERCIM, Keio, Beihang)."
 Disclaimers
 THIS WORK IS PROVIDED "AS IS," AND COPYRIGHT HOLDERS MAKE NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO, WARRANTIES OF MERCHANTABILITY OR FITNESS FOR ANY PARTICULAR PURPOSE OR THAT THE USE OF THE SOFTWARE OR DOCUMENT WILL NOT INFRINGE ANY THIRD PARTY PATENTS, COPYRIGHTS, TRADEMARKS OR OTHER RIGHTS.
 COPYRIGHT HOLDERS WILL NOT BE LIABLE FOR ANY DIRECT, INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF ANY USE OF THE SOFTWARE OR DOCUMENT.
@@ -306,8 +307,8 @@ By Sean Eron Anderson
 seander@cs.stanford.edu
 
 Individually, the code snippets here are in the public domain (unless otherwise
-noted) — feel free to use them however you please. The aggregate collection and
-descriptions are © 1997-2005 Sean Eron Anderson. The code and descriptions are
+noted) â€” feel free to use them however you please. The aggregate collection and
+descriptions are Â© 1997-2005 Sean Eron Anderson. The code and descriptions are
 distributed in the hope that they will be useful, but WITHOUT ANY WARRANTY and
 without even the implied warranty of merchantability or fitness for a particular
 purpose.
@@ -1007,7 +1008,7 @@ License notice for musl
 
 musl as a whole is licensed under the following standard MIT license:
 
-Copyright © 2005-2020 Rich Felker, et al.
+Copyright Â© 2005-2020 Rich Felker, et al.
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
@@ -1379,7 +1380,7 @@ THE SOFTWARE.
 License notice for Avx512Vbmi base64 encoding / decoding
 --------------------------------------------------------
 
-Copyright (c) 2015-2018, Wojciech Muła
+Copyright (c) 2015-2018, Wojciech MuÅ‚a
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -1408,7 +1409,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --------------------------------------------------------
 
 Aspects of base64 encoding / decoding are based on algorithm described in "Base64 encoding and decoding at almost the speed of a memory
-copy", Wojciech Muła and Daniel Lemire. https://arxiv.org/pdf/1910.05109.pdf
+copy", Wojciech MuÅ‚a and Daniel Lemire. https://arxiv.org/pdf/1910.05109.pdf
 
 License for FormatJS Intl.Segmenter grapheme segmentation algorithm
 --------------------------------------------------------------------------
@@ -1471,10 +1472,10 @@ Microsoft Windows App SDK 2.6.5 (WinUI 3, Foundation, Interactive Experiences, B
 MICROSOFT SOFTWARE LICENSE TERMS
 MICROSOFT WINDOWS APP SDK
 ________________________________________
-IF YOU LIVE IN (OR ARE A BUSINESS WITH A PRINCIPAL PLACE OF BUSINESS IN) THE UNITED STATES, PLEASE READ THE “BINDING ARBITRATION AND CLASS ACTION WAIVER” SECTION BELOW. IT AFFECTS HOW DISPUTES ARE RESOLVED.
+IF YOU LIVE IN (OR ARE A BUSINESS WITH A PRINCIPAL PLACE OF BUSINESS IN) THE UNITED STATES, PLEASE READ THE â€œBINDING ARBITRATION AND CLASS ACTION WAIVERâ€ SECTION BELOW. IT AFFECTS HOW DISPUTES ARE RESOLVED.
 ________________________________________
 
-These license terms are an agreement between you and Microsoft Corporation (or one of its affiliates). They apply to the software named above and any Microsoft services or software updates (except to the extent such services or updates are accompanied by new or additional terms, in which case those different terms apply prospectively and do not alter your or Microsoft’s rights relating to pre-updated software or services). IF YOU COMPLY WITH THESE LICENSE TERMS, YOU HAVE THE RIGHTS BELOW.  BY USING THE SOFTWARE, YOU ACCEPT THESE TERMS.
+These license terms are an agreement between you and Microsoft Corporation (or one of its affiliates). They apply to the software named above and any Microsoft services or software updates (except to the extent such services or updates are accompanied by new or additional terms, in which case those different terms apply prospectively and do not alter your or Microsoftâ€™s rights relating to pre-updated software or services). IF YOU COMPLY WITH THESE LICENSE TERMS, YOU HAVE THE RIGHTS BELOW.  BY USING THE SOFTWARE, YOU ACCEPT THESE TERMS.
 
 1. INSTALLATION AND USE RIGHTS.
 
@@ -1482,7 +1483,7 @@ These license terms are an agreement between you and Microsoft Corporation (or o
 
     b) Included Microsoft Applications. The software may include other Microsoft applications. These license terms apply to those included applications, if any, unless other license terms are provided with the other Microsoft applications.
 
-    c) Microsoft Platforms. The software may include components from Microsoft Windows. These components are governed by separate agreements and their own product support policies, as described in the license terms found in the installation directory for that component or in the “Licenses” folder accompanying the software.
+    c) Microsoft Platforms. The software may include components from Microsoft Windows. These components are governed by separate agreements and their own product support policies, as described in the license terms found in the installation directory for that component or in the â€œLicensesâ€ folder accompanying the software.
 
 2. DATA.
 
@@ -1506,13 +1507,13 @@ These license terms are an agreement between you and Microsoft Corporation (or o
 
         ii. require distributors and external end users to agree to terms that protect it and Microsoft at least as much as this agreement; and
 
-        iii. indemnify, defend, and hold harmless Microsoft from any claims, including attorneys’ fees, related to the distribution or use of your applications, except to the extent that any claim is based solely on the unmodified distributable code.
+        iii. indemnify, defend, and hold harmless Microsoft from any claims, including attorneysâ€™ fees, related to the distribution or use of your applications, except to the extent that any claim is based solely on the unmodified distributable code.
 
     c) Distribution Restrictions. You may not:
 
-        i. use Microsoft’s trademarks or trade dress in your application in any way that suggests your application comes from or is endorsed by Microsoft; or
+        i. use Microsoftâ€™s trademarks or trade dress in your application in any way that suggests your application comes from or is endorsed by Microsoft; or
 
-        ii. modify or distribute the source code of any distributable code so that any part of it becomes subject to any license that requires that the distributable code, any other part of the software, or any of Microsoft’s other intellectual property be disclosed or distributed in source code form, or that others have the right to modify it.
+        ii. modify or distribute the source code of any distributable code so that any part of it becomes subject to any license that requires that the distributable code, any other part of the software, or any of Microsoftâ€™s other intellectual property be disclosed or distributed in source code form, or that others have the right to modify it.
 
 4. SCOPE OF LICENSE. The software is licensed, not sold. Microsoft reserves all other rights. Unless applicable law gives you more rights despite this limitation, you will not (and have no right to):
 
@@ -1528,11 +1529,11 @@ These license terms are an agreement between you and Microsoft Corporation (or o
 
 5. EXPORT RESTRICTIONS. You must comply with all domestic and international export laws and regulations that apply to the software, which include restrictions on destinations, end users, and end use. For further information on export restrictions, visit https://aka.ms/exporting.
 
-6. SUPPORT SERVICES. Microsoft is not obligated under this agreement to provide any support services for the software. Any support provided is “as is”, “with all faults”, and without warranty of any kind.
+6. SUPPORT SERVICES. Microsoft is not obligated under this agreement to provide any support services for the software. Any support provided is â€œas isâ€, â€œwith all faultsâ€, and without warranty of any kind.
 
 7. UPDATES. The software may periodically check for updates, and download and install them for you. You may obtain updates only from Microsoft or authorized sources. Microsoft may need to update your system to provide you with updates. You agree to receive these automatic updates without any additional notice. Updates may not include or support all existing software features, services, or peripheral devices.
 
-8. BINDING ARBITRATION AND CLASS ACTION WAIVER. This Section applies if you live in (or, if a business, your principal place of business is in) the United States.  If you and Microsoft have a dispute, you and Microsoft agree to try for 60 days to resolve it informally. If you and Microsoft can’t, you and Microsoft agree to binding individual arbitration before the American Arbitration Association under the Federal Arbitration Act (“FAA”), and not to sue in court in front of a judge or jury. Instead, a neutral arbitrator will decide. Class action lawsuits, class-wide arbitrations, private attorney-general actions, and any other proceeding where someone acts in a representative capacity are not allowed; nor is combining individual proceedings without the consent of all parties. The complete Arbitration Agreement contains more terms and is at https://aka.ms/arb-agreement-4. You and Microsoft agree to these terms.
+8. BINDING ARBITRATION AND CLASS ACTION WAIVER. This Section applies if you live in (or, if a business, your principal place of business is in) the United States.  If you and Microsoft have a dispute, you and Microsoft agree to try for 60 days to resolve it informally. If you and Microsoft canâ€™t, you and Microsoft agree to binding individual arbitration before the American Arbitration Association under the Federal Arbitration Act (â€œFAAâ€), and not to sue in court in front of a judge or jury. Instead, a neutral arbitrator will decide. Class action lawsuits, class-wide arbitrations, private attorney-general actions, and any other proceeding where someone acts in a representative capacity are not allowed; nor is combining individual proceedings without the consent of all parties. The complete Arbitration Agreement contains more terms and is at https://aka.ms/arb-agreement-4. You and Microsoft agree to these terms.
 
 9. ENTIRE AGREEMENT. This agreement, and any other terms Microsoft may provide for supplements, updates, or third-party applications, is the entire agreement for the software.
 
@@ -1552,7 +1553,7 @@ These license terms are an agreement between you and Microsoft Corporation (or o
 
         Subject to the foregoing clause ii., Microsoft will only be liable for slight negligence if Microsoft is in breach of such material contractual obligations, the fulfillment of which facilitate the due performance of this agreement, the breach of which would endanger the purpose of this agreement and the compliance with which a party may constantly trust in (so-called "cardinal obligations"). In other cases of slight negligence, Microsoft will not be liable for slight negligence.
 
-12. DISCLAIMER OF WARRANTY. THE SOFTWARE IS LICENSED “AS IS.” YOU BEAR THE RISK OF USING IT. MICROSOFT GIVES NO EXPRESS WARRANTIES, GUARANTEES, OR CONDITIONS. TO THE EXTENT PERMITTED UNDER APPLICABLE LAWS, MICROSOFT EXCLUDES ALL IMPLIED WARRANTIES, INCLUDING MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.
+12. DISCLAIMER OF WARRANTY. THE SOFTWARE IS LICENSED â€œAS IS.â€ YOU BEAR THE RISK OF USING IT. MICROSOFT GIVES NO EXPRESS WARRANTIES, GUARANTEES, OR CONDITIONS. TO THE EXTENT PERMITTED UNDER APPLICABLE LAWS, MICROSOFT EXCLUDES ALL IMPLIED WARRANTIES, INCLUDING MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.
 
 13. LIMITATION ON AND EXCLUSION OF DAMAGES. IF YOU HAVE ANY BASIS FOR RECOVERING DAMAGES DESPITE THE PRECEDING DISCLAIMER OF WARRANTY, YOU CAN RECOVER FROM MICROSOFT AND ITS SUPPLIERS ONLY DIRECT DAMAGES UP TO U.S. $5.00. YOU CANNOT RECOVER ANY OTHER DAMAGES, INCLUDING CONSEQUENTIAL, LOST PROFITS, SPECIAL, INDIRECT, OR INCIDENTAL DAMAGES.
 
@@ -1618,7 +1619,7 @@ Intel Simplified Software License (Version April 2018)
 
 Copyright (c) 2018 Intel Corporation.
 
-Use and Redistribution.  You may use and redistribute the software (the “Software”), without modification,
+Use and Redistribution.  You may use and redistribute the software (the â€œSoftwareâ€), without modification,
 provided the following conditions are met:
 
 * Redistributions must reproduce the above copyright notice and the following terms of use in the Software
@@ -1630,11 +1631,11 @@ derived from this Software without specific prior written permission.
 * No reverse engineering, decompilation, or disassembly of this Software is permitted.
 
 Limited patent license.  Intel grants you a world-wide, royalty-free, non-exclusive license under patents it now
-or hereafter owns or controls to make, have made, use, import, offer to sell and sell (“Utilize”) this Software,
+or hereafter owns or controls to make, have made, use, import, offer to sell and sell (â€œUtilizeâ€) this Software,
 but solely to the extent that any such patent is necessary to Utilize the Software alone. The patent license
 shall not apply to any combinations which include this software.  No hardware per se is licensed hereunder.
 
-Third party and other Intel programs.  “Third Party Programs” are the files listed in the “third-party-programs.txt”
+Third party and other Intel programs.  â€œThird Party Programsâ€ are the files listed in the â€œthird-party-programs.txtâ€
 text file that is included with the Software and may include Intel programs under separate license terms.
 Third Party Programs, even if included with the distribution of the Materials, are governed by
 separate license terms and those license terms solely govern your use of those programs.
@@ -1644,7 +1645,7 @@ INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNES
 FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT ARE DISCLAIMED. THIS SOFTWARE IS
 NOT INTENDED FOR USE IN SYSTEMS OR APPLICATIONS WHERE FAILURE OF THE SOFTWARE
 MAY CAUSE PERSONAL INJURY OR DEATH AND YOU AGREE THAT YOU ARE FULLY RESPONSIBLE FOR ANY
-CLAIMS, COSTS, DAMAGES, EXPENSES, AND ATTORNEYS’ FEES ARISING OUT OF ANY SUCH USE,
+CLAIMS, COSTS, DAMAGES, EXPENSES, AND ATTORNEYSâ€™ FEES ARISING OUT OF ANY SUCH USE,
 EVEN IF ANY CLAIM ALLEGES THAT INTEL WAS NEGLIGENT REGARDING THE DESIGN OR MANUFACTURE OF
 THE MATERIALS.
 
@@ -1664,7 +1665,7 @@ Termination. Intel may terminate your right to use the Software in the event of 
 and you fail to cure the breach within a reasonable period of time.
 
 Feedback.  Should you provide Intel with comments, modifications, corrections, enhancements or other input
-(“Feedback”) related to the Software Intel will be free to use, disclose, reproduce, license or otherwise
+(â€œFeedbackâ€) related to the Software Intel will be free to use, disclose, reproduce, license or otherwise
 distribute or exploit the Feedback in its sole discretion without any obligations or restrictions of any kind,
 including without limitation, intellectual property rights or licensing obligations.
 
@@ -2897,7 +2898,7 @@ Redistribution and use in source and binary forms, with or without modification,
     Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
     Neither the name of the NumPy Developers nor the names of any contributors may be used to endorse or promote products derived from this software without specific prior written permission.
 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS “AS IS” AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS â€œAS ISâ€ AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ---------------------------------------------------------
 
@@ -3364,7 +3365,7 @@ Ray Glover <ray.glover@uk.ibm.com>
 Robert Guo <robert.guo@mongodb.com>
 Roman Lebedev <lebedev.ri@gmail.com>
 Shuo Chen <chenshuo@chenshuo.com>
-Tobias Ulvgård <tobias.ulvgard@dirac.se>
+Tobias UlvgÃ¥rd <tobias.ulvgard@dirac.se>
 Tom Madams <tom.ej.madams@gmail.com> <tmadams@google.com>
 Yixuan Qiu <yixuanq@gmail.com>
 Yusuke Suzuki <utatane.tea@gmail.com>
@@ -3798,7 +3799,7 @@ For more information, please refer to <http://unlicense.org/>
 
 Scikit-learn
 
-Copyright (c) 2007–2018 The scikit-learn developers.
+Copyright (c) 2007â€“2018 The scikit-learn developers.
 All rights reserved.
 
 
@@ -5977,7 +5978,7 @@ Redistribution and use in source and binary forms, with or without modification,
 3.  Neither the name of the copyright holder(s) nor the names of any contributors may be used to endorse or promote products derived from this software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-© 2021 GitHub, Inc.
+Â© 2021 GitHub, Inc.
 
 ---------------------------------------------------------
 
@@ -6340,12 +6341,12 @@ THE SOFTWARE.
 
 The Python Imaging Library (PIL) is
 
-    Copyright © 1997-2011 by Secret Labs AB
-    Copyright © 1995-2011 by Fredrik Lundh
+    Copyright Â© 1997-2011 by Secret Labs AB
+    Copyright Â© 1995-2011 by Fredrik Lundh
 
 Pillow is the friendly PIL fork. It is
 
-    Copyright © 2010-2023 by Alex Clark and contributors
+    Copyright Â© 2010-2023 by Alex Clark and contributors
 
 Like PIL, Pillow is licensed under the open source HPND License:
 
@@ -7126,7 +7127,7 @@ https://github.com/tensorflow/tfjs
    See the License for the specific language governing permissions and
    limitations under the License.
 
-——
+â€”â€”
 
 curl/curl
 

@@ -44,9 +44,9 @@ First stable public release of NOXEL, a Windows 10/11 display utility.
 * Installed copies update through the installer and keep their settings. Portable copies replace `NOXEL.exe`, keep
   the previous version as `NOXEL.previous.exe` and reopen.
 
-### Licensing
-* NOXEL is proprietary software; see `LICENSE.txt`. Third-party components and their licenses are listed in
-  `THIRD-PARTY-NOTICES.txt` and in Settings › About.
+### License
+* NOXEL is free software under the GNU GPL v3 only (`GPL-3.0-only`); source code: github.com/reprinted/NOXEL.
+  Third-party components and their licenses are listed in `THIRD-PARTY-NOTICES.txt` and in Settings › About.
 
 ### Known issues
 See [KNOWN-LIMITATIONS.md](KNOWN-LIMITATIONS.md).

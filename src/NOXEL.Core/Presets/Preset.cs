@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-3.0-only
+// Copyright (C) 2026 barry
+
 using Noxel.Core.Color;
 
 namespace Noxel.Core.Presets;
