@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:anim="using:Noxel.App.Animations"
+    xmlns:ctl="using:Noxel.App.Controls"
     Title="NOXEL">
 
     <Grid x:Name="Root">
@@ -41,7 +42,7 @@
                     <ColumnDefinition x:Name="CaptionInset" Width="140" />
                 </Grid.ColumnDefinitions>
                 <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
-                    <TextBlock Text="NOXEL" Style="{StaticResource Wordmark}" VerticalAlignment="Center" />
+                    <ctl:ShadowText Text="NOXEL" TextStyle="{StaticResource Wordmark}" VerticalAlignment="Center" />
                     <Border x:Name="VersionBadge" Style="{StaticResource Badge}">
                         <TextBlock x:Name="VersionText" Text="v1.0" Style="{StaticResource BadgeText}" FontFamily="{StaticResource NoxelMono}" />
                     </Border>
@@ -93,7 +94,7 @@
             </NavigationView>
 
             <!-- Notices -->
-            <StackPanel x:Name="NoticeHost" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="16,0,16,16" MaxWidth="420" Spacing="8" />
+            <ctl:NotificationHost x:Name="NoticeHost" Grid.Row="1" Margin="16,0,20,20" />
         </Grid>
 
         <!-- Startup failure -->

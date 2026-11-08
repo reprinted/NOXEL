@@ -69,8 +69,25 @@ These are limits of Windows and graphics drivers, not bugs NOXEL hides. Each one
 ## Packaging
 
 * ~67 MB self-contained exe that extracts ≈155 MB to `%TEMP%\.net\NOXEL` on first run (see BUILD.md).
-* Not code-signed (SmartScreen may warn). Not tested on a clean VM: the build PC is Windows 11 Home without
+* Not code-signed (SmartScreen may warn on first run of `NOXEL.exe` or `NOXEL-Setup.exe`). Not tested on a clean VM: the build PC is Windows 11 Home without
   Windows Sandbox or Hyper-V.
 * English only.
 * Display scaling other than 100 % (125/150/200 %) was not tested: changing Windows' scaling is a system setting
   that was not altered on the user's PC. Layout uses DIPs and the minimum window size scales with DPI.
+
+## Updates
+
+* Update files are checked against the SHA-256 checksum GitHub publishes for each release file (and
+  `SHA256SUMS.txt`), the expected size and the version stamped in the program. This proves the file is complete and
+  is the one on the release page. It does not prove who published it: the checksum lives in the same GitHub
+  repository. Until NOXEL is code-signed, the protection is the GitHub account itself (keep two-factor sign-in on).
+  `UpdateService.RequiredSigner` is ready to require an Authenticode publisher once a certificate exists.
+* Releases without a SHA-256 checksum are never installed; NOXEL says so and links the release page.
+* Installs need a click (Install now / Install update), also in "Automatically download" mode, and are refused while
+  a display change waits for Keep / Revert.
+* GitHub allows 60 unauthenticated API requests per hour per IP address. NOXEL checks once at start and once a day,
+  and reports "GitHub is limiting requests" if the limit is hit (for example on a shared network).
+* A portable copy in a folder Windows won't let NOXEL write to (for example Program Files without admin rights)
+  can't replace itself. NOXEL then reopens the current version, explains why and opens the folder with the
+  verified download so it can be copied by hand.
+* Pre-releases are ignored; there is no beta channel yet.

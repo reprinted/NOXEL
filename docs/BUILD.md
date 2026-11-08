@@ -23,15 +23,27 @@ src/NOXEL.App/bin/Debug/net10.0-windows10.0.19041.0/win-x64/NOXEL.exe
 # Unit tests
 dotnet test tests/NOXEL.Tests
 
-# Release: tests + self-contained single-file NOXEL.exe in artifacts/release
+# Release: tests + self-contained single-file NOXEL.exe in artifacts/release (+ installer, see below)
 ./scripts/publish.ps1
 ./scripts/publish.ps1 -Developer "Your Name" -Build 42   # sets About > Developer and build number
 
+# A complete release folder (both files, SHA256SUMS.txt, release notes). Uploads nothing:
+./scripts/release.ps1 -Version 1.0.0     # must match <Version> in Directory.Build.props
+
+# Throwaway build with another version, for local update tests only:
+./scripts/publish.ps1 -Version 1.0.1 -OutRoot C:\temp\noxel-1.0.1 -SkipTests
+
+# After changing package versions, regenerate THIRD-PARTY-NOTICES.txt:
+./scripts/make_notices.ps1
+
 # The installer (artifacts/installer/NOXEL-Setup.exe) is built by publish.ps1 automatically when
 # Inno Setup 6 is installed, e.g.: winget install --id JRSoftware.InnoSetup --scope user
-# Manual build after publishing:
-& "$env:LOCALAPPDATA\Programs\Inno Setup 6\ISCC.exe" installer\NOXEL.iss
+# Manual build after publishing (publish.ps1 passes the version for you):
+& "$env:LOCALAPPDATA\Programs\Inno Setup 6\ISCC.exe" /DAppVersion=1.0.0 installer\NOXEL.iss
 ```
+
+The version lives only in `Directory.Build.props` (`<Version>`). The exe's file and product version, the About page,
+the update check and the installer (`/DAppVersion`) all come from it. Publishing steps: [HOW-TO-PUBLISH.md](HOW-TO-PUBLISH.md).
 
 Useful launch arguments: `--intro` (force the intro), `--page=Display|Color|Presets|Settings`,
 `--startup` (what the Start-with-Windows entry uses: tray only, no intro).

@@ -366,3 +366,89 @@ public class SettingsMigrationTests
         Assert.True(explicitChoice.RespectSystemReducedMotion);
     }
 }
+
+public class UpdateTests
+{
+    [Theory]
+    [InlineData("1.0.0", "1.0.1", true)]
+    [InlineData("1.1.0", "1.0.9", false)]
+    [InlineData("1.0.0", "1.0.0", false)]
+    [InlineData("1.9.0", "1.10.0", true)]
+    [InlineData("1.0.0", "v2.0.0", true)]
+    public void SemVerComparison(string installed, string available, bool newer)
+    {
+        Assert.True(Noxel.Core.Updates.SemVer.TryParse(installed, out var a));
+        Assert.True(Noxel.Core.Updates.SemVer.TryParse(available, out var b));
+        Assert.Equal(newer, b > a);
+    }
+
+    [Theory]
+    [InlineData("")] [InlineData("1.0")] [InlineData("v1.0.0.0")] [InlineData("abc")] [InlineData("1.0.0-")] [InlineData("-1.0.0")]
+    public void SemVerRejectsInvalid(string s) => Assert.False(Noxel.Core.Updates.SemVer.TryParse(s, out _));
+
+    [Fact]
+    public void PrereleaseSortsBelowRelease()
+    {
+        Noxel.Core.Updates.SemVer.TryParse("1.0.0-rc.1", out var rc);
+        Noxel.Core.Updates.SemVer.TryParse("1.0.0+build.5", out var rel);
+        Assert.True(rel > rc);
+        Assert.Equal("1.0.0", rel.ToString());
+    }
+
+    private const string Sample = """
+    { "tag_name": "v1.0.1", "name": "NOXEL v1.0.1", "body": "Fixes", "draft": false, "prerelease": false,
+      "published_at": "2026-11-08T10:00:00Z", "html_url": "https://github.com/reprinted/NOXEL-Releases/releases/tag/v1.0.1",
+      "assets": [
+        { "name": "NOXEL.exe", "size": 123, "digest": "sha256:AABBCCDDEEFF00112233445566778899AABBCCDDEEFF00112233445566778899",
+          "browser_download_url": "https://github.com/reprinted/NOXEL-Releases/releases/download/v1.0.1/NOXEL.exe" },
+        { "name": "evil.exe", "size": 1, "browser_download_url": "http://example.com/evil.exe" }
+      ] }
+    """;
+
+    [Fact]
+    public void ParsesRelease_DropsUntrustedAssets()
+    {
+        var r = Noxel.Core.Updates.GitHubReleaseParser.Parse(Sample, out var err);
+        Assert.NotNull(r);
+        Assert.Equal("1.0.1", r!.Version.ToString());
+        var a = Assert.Single(r.Assets);
+        Assert.Equal("aabbccddeeff00112233445566778899aabbccddeeff00112233445566778899", a.Sha256);
+        Noxel.Core.Updates.SemVer.TryParse("1.0.0", out var installed);
+        Assert.Equal(Noxel.Core.Updates.UpdateCheckStatus.UpdateAvailable, Noxel.Core.Updates.UpdateDecision.Evaluate(installed, r).Status);
+    }
+
+    [Theory]
+    [InlineData("""{ "tag_name": "latest" }""")]
+    [InlineData("[]")]
+    [InlineData("{ broken")]
+    public void InvalidReleaseDataIsRejected(string json) => Assert.Null(Noxel.Core.Updates.GitHubReleaseParser.Parse(json, out _));
+
+    [Fact]
+    public void PrereleasesIgnoredOnStableChannel()
+    {
+        var r = Noxel.Core.Updates.GitHubReleaseParser.Parse(Sample.Replace("\"prerelease\": false", "\"prerelease\": true"), out _);
+        Noxel.Core.Updates.SemVer.TryParse("1.0.0", out var installed);
+        Assert.Equal(Noxel.Core.Updates.UpdateCheckStatus.UpToDate, Noxel.Core.Updates.UpdateDecision.Evaluate(installed, r).Status);
+    }
+
+    [Fact]
+    public void ChecksumFileParsing()
+    {
+        var map = Noxel.Core.Updates.GitHubReleaseParser.ParseChecksums(
+            "AABBCCDDEEFF00112233445566778899AABBCCDDEEFF00112233445566778899  NOXEL.exe\r\n# comment\nzz  bad\n" +
+            "0011223344556677889900112233445566778899001122334455667788990011 *NOXEL-Setup.exe\n" +
+            "0011223344556677889900112233445566778899001122334455667788990011  ../escape.exe\n");
+        Assert.Equal(2, map.Count);
+        Assert.True(map.ContainsKey("noxel-setup.exe"));
+    }
+
+    [Fact]
+    public void OnlyGitHubHttpsHostsAreTrusted()
+    {
+        Assert.True(Noxel.Core.Updates.UpdateSource.IsTrustedDownloadUri(new Uri("https://objects.githubusercontent.com/x")));
+        Assert.False(Noxel.Core.Updates.UpdateSource.IsTrustedDownloadUri(new Uri("http://github.com/x")));
+        Assert.False(Noxel.Core.Updates.UpdateSource.IsTrustedDownloadUri(new Uri("https://github.com.evil.io/x")));
+        Assert.False(Noxel.Core.Updates.UpdateSource.IsTrustedDownloadUri(new Uri("http://127.0.0.1:8080/x")));
+        Assert.True(Noxel.Core.Updates.UpdateSource.IsTrustedDownloadUri(new Uri("http://127.0.0.1:8080/x"), allowLoopback: true));
+    }
+}

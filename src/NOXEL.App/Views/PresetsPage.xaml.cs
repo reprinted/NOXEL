@@ -297,20 +297,17 @@ public sealed partial class PresetsPage : Page
     private async void OnDelete(object sender, RoutedEventArgs e)
     {
         if (_sel is null || !_c.Presets.CanDelete(_sel.Id)) return;
-        var dlg = new ContentDialog
-        {
-            XamlRoot = XamlRoot, RequestedTheme = ActualTheme,
-            Title = $"Delete \"{_sel.Name}\"?",
-            Content = "This removes the preset from NOXEL. Export it first if you might want it back.",
-            PrimaryButtonText = "Delete", CloseButtonText = "Cancel", DefaultButton = ContentDialogButton.Close,
-        };
-        if (await dlg.ShowAsync() != ContentDialogResult.Primary) return;
+        var confirmed = await Dialogs.ConfirmDestructiveAsync(XamlRoot, ActualTheme, $"Delete \"{_sel.Name}\"?",
+            "This will permanently remove the preset from NOXEL. Export it first if you want to keep a backup.");
+        if (!confirmed) return;
         var id = _sel.Id;
+        var deletedName = _sel.Name;
         _sel = null;
         _c.Presets.Delete(id);
         if (App.Settings.ActivePresetId == id) { App.Settings.ActivePresetId = null; _c.SaveSoon(); }
         _sel = _c.Presets.All.FirstOrDefault();
         Refresh();
+        _c.Raise("Preset deleted", $"\"{deletedName}\" was removed.", NoticeKind.Success);
     }
 
     private async void OnNew(object sender, RoutedEventArgs e)
@@ -318,17 +315,13 @@ public sealed partial class PresetsPage : Page
         var name = new TextBox { PlaceholderText = "Preset name", MaxLength = 48 };
         var display = new CheckBox { Content = "Include the current resolution and refresh rate", IsChecked = true };
         var color = new CheckBox { Content = "Include the current Color Studio look", IsChecked = true };
-        var dlg = new ContentDialog
-        {
-            XamlRoot = XamlRoot, RequestedTheme = ActualTheme,
-            Title = "New preset from current settings",
-            Content = new StackPanel { Spacing = 12, Children = { name, display, color } },
-            PrimaryButtonText = "Create", CloseButtonText = "Cancel", DefaultButton = ContentDialogButton.Primary,
-        };
-        if (await dlg.ShowAsync() != ContentDialogResult.Primary) return;
+        var dlg = Dialogs.Create(XamlRoot, ActualTheme, "New preset from current settings",
+            new StackPanel { Spacing = 12, Children = { name, display, color } }, "Create", primaryIsDefault: true);
+        if (await dlg.ShowSafeAsync() != ContentDialogResult.Primary) return;
         if (display.IsChecked != true && color.IsChecked != true) { _c.Raise("Preset", "Include a display mode, colors, or both.", NoticeKind.Warning); return; }
         _sel = _c.CaptureCurrent(string.IsNullOrWhiteSpace(name.Text) ? "My preset" : name.Text.Trim(), display.IsChecked == true, color.IsChecked == true);
         Refresh();
+        _c.Raise("Preset created", $"\"{_sel.Name}\" is in your presets.", NoticeKind.Success);
     }
 
     private void OnRestoreBuiltIns(object sender, RoutedEventArgs e)

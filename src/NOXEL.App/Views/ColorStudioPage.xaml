@@ -2,6 +2,7 @@
     x:Class="Noxel.App.Views.ColorStudioPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ctl="using:Noxel.App.Controls"
     Background="Transparent">
     <Grid>
         <VisualStateManager.VisualStateGroups>
@@ -40,7 +41,7 @@
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                     <StackPanel>
-                        <TextBlock Text="Color Studio" Style="{StaticResource PageTitle}" />
+                        <ctl:ShadowText Text="Color Studio" TextStyle="{StaticResource PageTitle}" />
                         <TextBlock x:Name="Subtitle" Text="Adjust your display colors. Changes apply to all displays." Style="{StaticResource PageSubtitle}" />
                     </StackPanel>
                     <StackPanel x:Name="MasterPanel" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" Orientation="Horizontal" Spacing="12">
@@ -66,7 +67,7 @@
                         <StackPanel Spacing="4">
                             <Grid Margin="0,0,0,8">
                                 <StackPanel>
-                                    <TextBlock x:Name="LookName" Text="Custom look" Style="{StaticResource CardTitle}" FontSize="18" />
+                                    <ctl:ShadowText x:Name="LookName" Text="Custom look" TextStyle="{StaticResource CardTitle}" />
                                     <TextBlock x:Name="LookSummary" Style="{StaticResource FaintText}" />
                                 </StackPanel>
                                 <ToggleSwitch x:Name="LiveSwitch" HorizontalAlignment="Right" OnContent="Live preview" OffContent="Live preview" Toggled="OnLiveToggled"

@@ -98,12 +98,14 @@ public sealed partial class MainWindow : Window
         LoadingRing.Visibility = Visibility.Collapsed;
         var c = C!;
         c.NoticeRaised += ShowNotice;
+        c.NoticeDismissed += NoticeHost.Dismiss;
         c.ColorChanged += UpdateStatus;
         c.MonitorsChanged += UpdateStatus;
         c.PresetsChanged += UpdateStatus;
         Closed += (_, _) =>
         {
             c.NoticeRaised -= ShowNotice;
+            c.NoticeDismissed -= NoticeHost.Dismiss;
             c.ColorChanged -= UpdateStatus;
             c.MonitorsChanged -= UpdateStatus;
             c.PresetsChanged -= UpdateStatus;
@@ -215,32 +217,5 @@ public sealed partial class MainWindow : Window
         StatusText.Text = $"{(on ? "Look on" : "Look off")} · {c.ActivePresetLabel}" + (m is null ? "" : $" · {m.Current.Width}×{m.Current.Height} @ {m.CurrentRefreshText}");
     }
 
-    private void ShowNotice(Notice n)
-    {
-        var bar = new InfoBar
-        {
-            Title = n.Title,
-            Message = n.Message,
-            IsOpen = true,
-            Severity = n.Kind switch
-            {
-                NoticeKind.Success => InfoBarSeverity.Success,
-                NoticeKind.Warning => InfoBarSeverity.Warning,
-                NoticeKind.Error => InfoBarSeverity.Error,
-                _ => InfoBarSeverity.Informational,
-            },
-        };
-        bar.Closed += (s, _) => NoticeHost.Children.Remove((UIElement)s);
-        NoticeHost.Children.Add(bar);
-        Motion.Appear(bar, 12);
-        while (NoticeHost.Children.Count > 3) NoticeHost.Children.RemoveAt(0);
-        if (n.Kind is NoticeKind.Success or NoticeKind.Info)
-        {
-            var t = DispatcherQueue.CreateTimer();
-            t.Interval = TimeSpan.FromSeconds(n.Kind == NoticeKind.Success ? 3.5 : 6);
-            t.IsRepeating = false;
-            t.Tick += (_, _) => Motion.Disappear(bar, () => { bar.IsOpen = false; NoticeHost.Children.Remove(bar); });
-            t.Start();
-        }
-    }
+    private void ShowNotice(Notice n) => NoticeHost.Show(n);
 }

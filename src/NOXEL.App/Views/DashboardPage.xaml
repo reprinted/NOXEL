@@ -2,6 +2,7 @@
     x:Class="Noxel.App.Views.DashboardPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ctl="using:Noxel.App.Controls"
     xmlns:anim="using:Noxel.App.Animations"
     Background="Transparent">
     <Grid>
@@ -37,7 +38,7 @@
     <ScrollView x:Name="PageScroll">
         <StackPanel x:Name="PagePanel" Padding="28,6,28,28" Spacing="16" MaxWidth="1320">
             <StackPanel>
-                <TextBlock Text="Dashboard" Style="{StaticResource PageTitle}" />
+                <ctl:ShadowText Text="Dashboard" TextStyle="{StaticResource PageTitle}" />
                 <TextBlock Text="Your display, colors and presets in one place." Style="{StaticResource PageSubtitle}" />
             </StackPanel>
 
@@ -90,19 +91,19 @@
                         <VariableSizedWrapGrid x:Name="StatsGrid" Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal" ItemWidth="190" ItemHeight="64">
                             <StackPanel Spacing="2">
                                 <TextBlock Text="RESOLUTION" Style="{StaticResource SectionLabel}" />
-                                <TextBlock x:Name="ResText" Style="{StaticResource StatValue}" />
+                                <ctl:ShadowText x:Name="ResText" TextStyle="{StaticResource StatValue}" />
                             </StackPanel>
                             <StackPanel Spacing="2">
                                 <TextBlock Text="REFRESH RATE" Style="{StaticResource SectionLabel}" />
-                                <TextBlock x:Name="HzText" Style="{StaticResource StatValue}" />
+                                <ctl:ShadowText x:Name="HzText" TextStyle="{StaticResource StatValue}" />
                             </StackPanel>
                             <StackPanel Spacing="2">
                                 <TextBlock Text="MAX FOR THIS MODE" Style="{StaticResource SectionLabel}" />
-                                <TextBlock x:Name="MaxHzText" Style="{StaticResource StatValue}" />
+                                <ctl:ShadowText x:Name="MaxHzText" TextStyle="{StaticResource StatValue}" />
                             </StackPanel>
                             <StackPanel Spacing="2">
                                 <TextBlock Text="NATIVE" Style="{StaticResource SectionLabel}" />
-                                <TextBlock x:Name="NativeText" Style="{StaticResource StatValue}" />
+                                <ctl:ShadowText x:Name="NativeText" TextStyle="{StaticResource StatValue}" />
                             </StackPanel>
                             <StackPanel Spacing="2">
                                 <TextBlock Text="COLOR LOOK" Style="{StaticResource SectionLabel}" />

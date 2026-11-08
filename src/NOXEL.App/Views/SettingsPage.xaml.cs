@@ -31,12 +31,14 @@ public sealed partial class SettingsPage : Page
         BuildHotkeyRows();
         Loaded += (_, _) =>
         {
+            _c.Updates.Changed += RefreshUpdates;
             _c.Hotkeys.RegistrationChanged += RefreshHotkeyErrors;
             _c.MonitorsChanged += RefreshDisplay;
             Load();
         };
         Unloaded += (_, _) =>
         {
+            _c.Updates.Changed -= RefreshUpdates;
             _c.Hotkeys.RegistrationChanged -= RefreshHotkeyErrors;
             _c.MonitorsChanged -= RefreshDisplay;
         };
@@ -83,6 +85,8 @@ public sealed partial class SettingsPage : Page
             RefreshDisplay();
             ConfirmSlider.Value = S.ConfirmSeconds;
             LoggingSwitch.IsOn = S.DiagnosticLogging;
+            UpdateModeBox.SelectedIndex = (int)S.UpdateMode;
+            RefreshUpdates();
 
             var asm = Assembly.GetExecutingAssembly();
             var info = asm.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "";
@@ -138,10 +142,13 @@ public sealed partial class SettingsPage : Page
 
     private void OnThemeChanged(object sender, SelectionChangedEventArgs e)
     {
-        if (_updating) return;
-        S.Theme = ThemeRadios.SelectedIndex switch { 1 => ThemePreference.Light, 2 => ThemePreference.System, _ => ThemePreference.Dark };
+        if (_updating || ThemeRadios.SelectedIndex < 0) return;
+        var theme = ThemeRadios.SelectedIndex switch { 1 => ThemePreference.Light, 2 => ThemePreference.System, _ => ThemePreference.Dark };
+        if (theme == S.Theme) return; // RadioButtons can report the old item while selection moves
+        S.Theme = theme;
         App.Current.ApplyThemeToAllWindows();
         Save();
+        _c.Raise("Theme changed", S.Theme switch { ThemePreference.Light => "Light", ThemePreference.System => "Following Windows", _ => "Dark" }, NoticeKind.Success);
     }
 
     private void OnAppearanceToggled(object sender, RoutedEventArgs e)
@@ -354,6 +361,50 @@ public sealed partial class SettingsPage : Page
         _c.Raise("Built-in presets restored", "Favorites and shortcuts of built-in presets were reset and the Custom slot was cleared.", NoticeKind.Success);
     }
 
+    // ------------------------------------------------------------ updates
+
+    private void RefreshUpdates()
+    {
+        var u = _c.Updates;
+        UpdCurrent.Text = $"v{u.Current} · {(u.Kind == InstallKind.Installed ? "installed copy" : "portable NOXEL.exe")}";
+        UpdLatest.Text = u.Latest is { } r ? $"v{r.Version}" + (r.PublishedAt is { } p ? $" · {p.LocalDateTime:d MMM yyyy}" : "")
+            : S.LatestKnownVersion is { } k ? $"v{k}" : "Not checked yet";
+        UpdChecked.Text = S.LastUpdateCheck is { } t ? t.LocalDateTime.ToString("g") : "Never";
+        UpdStatus.Text = u.Checking ? "Checking GitHub…"
+            : u.Stage is DownloadStage.Downloading or DownloadStage.Verifying or DownloadStage.Ready or DownloadStage.Failed ? u.StageMessage
+            : u.LastResult?.Message ?? "";
+        bool available = u.LastResult?.Status == Noxel.Core.Updates.UpdateCheckStatus.UpdateAvailable;
+        UpdCheck.IsEnabled = !u.Checking && u.Stage != DownloadStage.Downloading;
+        UpdNotes.IsEnabled = u.Latest is not null;
+        UpdDownload.IsEnabled = available && u.Stage is DownloadStage.None or DownloadStage.Failed;
+        UpdInstall.IsEnabled = u.Stage == DownloadStage.Ready;
+        bool busy = u.Stage is DownloadStage.Downloading or DownloadStage.Verifying;
+        UpdProgressPanel.Visibility = busy ? Visibility.Visible : Visibility.Collapsed;
+        if (busy)
+        {
+            UpdFile.Text = u.AssetName;
+            double pct = u.Total > 0 ? u.Received * 100.0 / u.Total : 0;
+            UpdBar.Value = pct;
+            UpdBar.IsIndeterminate = u.Stage == DownloadStage.Verifying;
+            UpdProgressText.Text = u.Stage == DownloadStage.Verifying ? "Verifying SHA-256…"
+                : $"{u.Received / 1048576.0:0.0} MB of {u.Total / 1048576.0:0.0} MB · {pct:0}% · {u.BytesPerSecond / 1048576.0:0.0} MB/s";
+            UpdCancel.IsEnabled = u.Stage == DownloadStage.Downloading;
+        }
+    }
+
+    private void OnUpdateModeChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (_updating || UpdateModeBox.SelectedIndex < 0) return;
+        S.UpdateMode = (UpdateMode)UpdateModeBox.SelectedIndex;
+        Save();
+    }
+
+    private async void OnUpdateCheck(object sender, RoutedEventArgs e) => await _c.Updates.CheckAsync(manual: true);
+    private async void OnUpdateNotes(object sender, RoutedEventArgs e) => await App.Current.ShowReleaseNotesAsync();
+    private async void OnUpdateDownload(object sender, RoutedEventArgs e) => await _c.Updates.DownloadAsync();
+    private void OnUpdateCancel(object sender, RoutedEventArgs e) => _c.Updates.CancelDownload();
+    private async void OnUpdateInstall(object sender, RoutedEventArgs e) => await App.Current.ConfirmInstallUpdateAsync();
+
     // ------------------------------------------------------------ diagnostics
 
     private void OnLoggingToggled(object sender, RoutedEventArgs e)
@@ -367,6 +418,26 @@ public sealed partial class SettingsPage : Page
     private void OnOpenLogs(object sender, RoutedEventArgs e) => App.OpenFolder(AppPaths.Logs);
     private void OnOpenSettingsFolder(object sender, RoutedEventArgs e) => App.OpenFolder(AppPaths.Root);
     private void OnOpenProgramFolder(object sender, RoutedEventArgs e) => App.OpenFolder(Path.GetDirectoryName(StartupRegistration.ExePath()) ?? AppContext.BaseDirectory);
+
+    private void OnOpenLicense(object sender, RoutedEventArgs e) => OpenTextFile("LICENSE.txt");
+    private void OnOpenNotices(object sender, RoutedEventArgs e) => OpenTextFile("THIRD-PARTY-NOTICES.txt");
+
+    // The copy next to NOXEL.exe (installer / release folder) wins; the bundled copy is the fallback for a lone exe.
+    private void OpenTextFile(string name)
+    {
+        var beside = Path.Combine(Path.GetDirectoryName(StartupRegistration.ExePath()) ?? "", name);
+        var path = File.Exists(beside) ? beside : Path.Combine(AppContext.BaseDirectory, name);
+        try
+        {
+            if (!File.Exists(path)) throw new FileNotFoundException(name);
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(path) { UseShellExecute = true });
+        }
+        catch (Exception ex)
+        {
+            Log.Warn($"Could not open {name}: {ex.Message}");
+            _c.Raise(name, "The file could not be opened.", NoticeKind.Warning);
+        }
+    }
 
     private void OnDeleteLogs(object sender, RoutedEventArgs e)
     {

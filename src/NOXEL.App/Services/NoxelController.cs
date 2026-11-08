@@ -12,7 +12,17 @@ using Noxel.Windows.SystemIntegration;
 namespace Noxel.App.Services;
 
 public enum NoticeKind { Info, Success, Warning, Error }
-public sealed record Notice(string Title, string Message, NoticeKind Kind);
+public sealed record NoticeAction(string Label, Action Run, bool Closes = true);
+
+/// <summary>A notification. Errors, Persistent notices and notices with Actions never auto-dismiss.</summary>
+public sealed record Notice(string Title, string Message, NoticeKind Kind)
+{
+    public IReadOnlyList<NoticeAction>? Actions { get; init; }
+    public bool Persistent { get; init; }
+    /// <summary>Optional identity: a newer notice with the same key replaces the older one.</summary>
+    public string? Key { get; init; }
+    public Action? OnDismissed { get; init; }
+}
 public enum WindowRequest { Main, Compact, Settings, Toggle }
 
 /// <summary>
@@ -44,6 +54,21 @@ public sealed class NoxelController
     public event Action? ColorChanged;
     public event Action? PresetsChanged;
     public event Action<Notice>? NoticeRaised;
+    public event Action<string>? NoticeDismissed;
+    public event Action? ReleaseNotesRequested;
+    public event Action? InstallUpdateRequested;
+    public UpdateService Updates { get; private set; } = null!;
+
+    public void RaiseNotice(Notice n)
+    {
+        Log.Info($"[{n.Kind}] {n.Title}: {n.Message}");
+        if (n.Key is { } key) NoticeDismissed?.Invoke(key);
+        NoticeRaised?.Invoke(n);
+    }
+
+    public void DismissNotice(string key) => NoticeDismissed?.Invoke(key);
+    public void RequestReleaseNotes() => ReleaseNotesRequested?.Invoke();
+    public void RequestInstallUpdate() => InstallUpdateRequested?.Invoke();
     public event Action<WindowRequest>? WindowRequested;
     public event Action? ExitRequested;
 
@@ -87,6 +112,8 @@ public sealed class NoxelController
         Host.TrayMenuProvider = () => _traySnapshot;
 
         Hotkeys.RegisterAll();
+        Updates = new UpdateService(this);
+        Updates.Start();
         Host.ShowTray(Path.Combine(AppContext.BaseDirectory, "Assets", "noxel.ico"), "NOXEL");
         if (Settings.StartWithWindows != StartupRegistration.IsEnabled() && Settings.StartWithWindows)
             StartupRegistration.SetEnabled(true); // exe moved since last run: refresh the path
@@ -169,6 +196,7 @@ public sealed class NoxelController
         ColorApplyResult? r = null;
         if (on) r = ApplyColorInternal(report: true);
         else Color.Disable();
+        Raise(on ? "Color effects on" : "Color effects off", on ? ActivePresetLabel : "Original colors restored.", NoticeKind.Success, quietWhenHidden: true);
         SaveSoon();
         UpdateTray();
         ColorChanged?.Invoke();
@@ -522,6 +550,7 @@ public sealed class NoxelController
     /// <summary>Explicit exit: revert unconfirmed display changes, restore colors, release hotkeys and the tray icon.</summary>
     public void Shutdown()
     {
+        try { Updates?.Stop(); } catch { }
         if (_shutDown) return;
         _shutDown = true;
         try { Changes?.RevertPendingOnExit(); } catch (Exception ex) { Log.Error("Revert on exit", ex); }

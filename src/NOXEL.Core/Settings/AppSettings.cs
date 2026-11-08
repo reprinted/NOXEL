@@ -7,6 +7,9 @@ namespace Noxel.Core.Settings;
 
 public enum ThemePreference { Dark, Light, System }
 
+/// <summary>Notify only (default) · download automatically · check only when asked.</summary>
+public enum UpdateMode { NotifyOnly, AutoDownload, Manual }
+
 public sealed class StoredMode
 {
     public int Width { get; set; }
@@ -87,6 +90,11 @@ public sealed class AppSettings
     public bool CompactAlwaysOnTop { get; set; } = true;
     public WindowPlacement CompactPlacement { get; set; } = new();
     public WindowPlacement MainPlacement { get; set; } = new();
+
+    // Updates
+    public UpdateMode UpdateMode { get; set; } = UpdateMode.NotifyOnly;
+    public DateTimeOffset? LastUpdateCheck { get; set; }
+    public string? LatestKnownVersion { get; set; }
 
     // Diagnostics
     public bool DiagnosticLogging { get; set; }

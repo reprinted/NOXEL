@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Noxel.App.Infrastructure;
 using Noxel.App.Services;
 using Noxel.App.Views;
@@ -54,7 +55,8 @@ public partial class App : Application
 
         bool startupLaunch = Program.Args.Any(a => a.Equals(StartupRegistration.StartupArg, StringComparison.OrdinalIgnoreCase));
         bool forceIntro = Program.Args.Any(a => a.Equals("--intro", StringComparison.OrdinalIgnoreCase));
-        bool intro = !startupLaunch && (forceIntro || ThemeService.IntroAllowed(Settings));
+        bool justUpdated = Program.Args.Any(a => a.Equals("--updated", StringComparison.OrdinalIgnoreCase));
+        bool intro = !startupLaunch && !justUpdated && (forceIntro || ThemeService.IntroAllowed(Settings));
 
         Controller = new NoxelController(_ui, _settingsStore);
         Controller.WindowRequested += OnWindowRequested;
@@ -85,6 +87,11 @@ public partial class App : Application
         }
 
         Controller.Changes.PendingStarted += OnPendingDisplayChange;
+        Controller.ReleaseNotesRequested += () => _ = ShowReleaseNotesAsync();
+        Controller.InstallUpdateRequested += () => _ = ConfirmInstallUpdateAsync();
+        if (justUpdated)
+            _ui.TryEnqueue(() => Controller.RaiseNotice(new Notice($"Updated to NOXEL v{Services.UpdateService.CurrentVersion()}",
+                "Your settings, presets and shortcuts were kept.", NoticeKind.Success)));
         _main?.OnBackendReady();
         if (startupLaunch && Settings.StartupOpensCompact) ShowCompact();
     }
@@ -215,6 +222,94 @@ public partial class App : Application
         try { _compact?.Close(); } catch { }
         try { _main?.Close(); } catch { }
         Exit();
+    }
+
+    // ------------------------------------------------------------ updates
+
+    public async Task ShowReleaseNotesAsync()
+    {
+        ShowMain();
+        var r = Controller?.Updates.Latest;
+        if (_main?.Content?.XamlRoot is not { } root || r is null) return;
+        var text = FormatNotes(string.IsNullOrWhiteSpace(r.Notes) ? "No release notes were published for this version." : r.Notes);
+        var content = new StackPanel { Spacing = 10, MinWidth = 400, MaxWidth = 500 };
+        content.Children.Add(new TextBlock
+        {
+            Text = $"Published {(r.PublishedAt is { } p ? p.LocalDateTime.ToString("d MMM yyyy") : "date unknown")} · installed v{Controller!.Updates.Current}",
+            Style = (Style)Resources["FaintText"],
+        });
+        content.Children.Add(new ScrollViewer { Content = text, MaxHeight = 320 });
+        var d = Dialogs.Create(root, _main.Content is FrameworkElement fe ? fe.ActualTheme : ElementTheme.Default,
+            r.Title, content, "Open on GitHub", "Close");
+        if (await d.ShowSafeAsync() == Microsoft.UI.Xaml.Controls.ContentDialogResult.Primary && (r.PageUrl ?? new Uri(Noxel.Core.Updates.UpdateSource.ReleasesPage)) is { } url)
+            await global::Windows.System.Launcher.LaunchUriAsync(url);
+    }
+
+    /// <summary>Light Markdown for GitHub release notes: headings, bullets, **bold**, `code` and [links](url) as text.</summary>
+    private UIElement FormatNotes(string markdown)
+    {
+        var panel = new StackPanel { Spacing = 4, Padding = new Thickness(0, 0, 12, 0) };
+        var body = (Style)Resources["BodyText"];
+        foreach (var raw in markdown.Replace("\r", "").Split('\n'))
+        {
+            var line = raw.TrimEnd();
+            if (line.Trim().Length == 0) continue;
+            var heading = System.Text.RegularExpressions.Regex.Match(line, @"^\s*#{1,6}\s+(.*)$");
+            var bullet = System.Text.RegularExpressions.Regex.Match(line, @"^(\s*)[-*+]\s+(.*)$");
+            var tb = new TextBlock { Style = body, IsTextSelectionEnabled = true, TextWrapping = TextWrapping.Wrap };
+            if (heading.Success)
+            {
+                AddInlines(tb, heading.Groups[1].Value);
+                tb.FontWeight = Microsoft.UI.Text.FontWeights.SemiBold;
+                tb.Margin = new Thickness(0, panel.Children.Count == 0 ? 0 : 8, 0, 0);
+                panel.Children.Add(tb);
+            }
+            else if (bullet.Success)
+            {
+                AddInlines(tb, bullet.Groups[2].Value);
+                var row = new Grid { ColumnSpacing = 8, Margin = new Thickness(Math.Min(bullet.Groups[1].Value.Length, 8) * 6, 0, 0, 0) };
+                row.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+                row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+                row.Children.Add(new TextBlock { Text = "•", Style = body });
+                Grid.SetColumn(tb, 1);
+                row.Children.Add(tb);
+                panel.Children.Add(row);
+            }
+            else { AddInlines(tb, line.Trim()); panel.Children.Add(tb); }
+        }
+        return panel;
+
+        static void AddInlines(TextBlock tb, string s)
+        {
+            s = System.Text.RegularExpressions.Regex.Replace(s, @"\[([^\]]+)\]\([^)]+\)", "$1").Replace("`", "");
+            var parts = System.Text.RegularExpressions.Regex.Split(s.Replace("__", "**"), @"\*\*(.+?)\*\*"); // odd indexes = bold
+            for (int i = 0; i < parts.Length; i++)
+            {
+                if (parts[i].Length == 0) continue;
+                var run = new Microsoft.UI.Xaml.Documents.Run { Text = parts[i] };
+                if (i % 2 == 1) run.FontWeight = Microsoft.UI.Text.FontWeights.SemiBold;
+                tb.Inlines.Add(run);
+            }
+        }
+    }
+
+    public async Task ConfirmInstallUpdateAsync()
+    {
+        var u = Controller?.Updates;
+        if (u is null) return;
+        ShowMain();
+        if (_main?.Content?.XamlRoot is not { } root) return;
+        var blocker = u.InstallBlocker();
+        if (blocker is not null) { Controller!.RaiseNotice(new Notice("Can't install yet", blocker, NoticeKind.Warning)); return; }
+        var how = u.Kind == InstallKind.Installed
+            ? "NOXEL will close, run the verified installer and reopen."
+            : "NOXEL will close, replace this NOXEL.exe with the verified new version (the old one is kept as NOXEL.previous.exe) and reopen.";
+        var d = Dialogs.Create(root, _main.Content is FrameworkElement fe ? fe.ActualTheme : ElementTheme.Default,
+            $"Install NOXEL v{u.ReadyVersion}?", how + " Your color look is turned off first and your settings and presets are kept.",
+            "Install and restart", "Not now", primaryIsDefault: true);
+        if (await d.ShowSafeAsync() != Microsoft.UI.Xaml.Controls.ContentDialogResult.Primary) return;
+        var err = u.Install();
+        if (err is not null) Controller!.RaiseNotice(new Notice("Update not installed", err, NoticeKind.Error));
     }
 
     public static void EmergencyRestore()

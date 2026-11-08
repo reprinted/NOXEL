@@ -415,17 +415,9 @@ public sealed partial class ColorStudioPage : Page
         Flush();
         var name = new TextBox { PlaceholderText = "Preset name", MaxLength = 48, Text = "" };
         var withDisplay = new CheckBox { Content = "Also save the current resolution and refresh rate", IsChecked = false };
-        var dlg = new ContentDialog
-        {
-            XamlRoot = XamlRoot,
-            Title = "Save as preset",
-            Content = new StackPanel { Spacing = 12, Children = { name, withDisplay } },
-            PrimaryButtonText = "Save",
-            CloseButtonText = "Cancel",
-            DefaultButton = ContentDialogButton.Primary,
-            RequestedTheme = ActualTheme,
-        };
-        if (await dlg.ShowAsync() != ContentDialogResult.Primary) return;
+        var dlg = Dialogs.Create(XamlRoot, ActualTheme, "Save as preset",
+            new StackPanel { Spacing = 12, Children = { name, withDisplay } }, "Save", primaryIsDefault: true);
+        if (await dlg.ShowSafeAsync() != ContentDialogResult.Primary) return;
         var n = string.IsNullOrWhiteSpace(name.Text) ? "My look" : name.Text.Trim();
         var p = _c.CaptureCurrent(n, withDisplay.IsChecked == true, includeColor: true);
         _c.Raise("Preset saved", $"\"{p.Name}\" is in your presets.", NoticeKind.Success);
@@ -441,20 +433,5 @@ public sealed partial class ColorStudioPage : Page
             _c.Raise("Preset updated", $"\"{p.Name}\" now uses these colors.", NoticeKind.Success);
             Refresh();
         }
-    }
-}
-
-internal static class ResourceExtensions
-{
-    /// <summary>Looks up a theme-dependent resource for the page's current theme.</summary>
-    public static object ThemeDictionariesLookup(this ResourceDictionary _, string key)
-    {
-        var app = Application.Current.Resources;
-        var theme = App.Main?.Content is FrameworkElement fe && fe.ActualTheme == ElementTheme.Light ? "Light" : "Dark";
-        foreach (var md in app.MergedDictionaries)
-        {
-            if (md.ThemeDictionaries.TryGetValue(theme, out var d) && d is ResourceDictionary rd && rd.TryGetValue(key, out var v)) return v;
-        }
-        return app[key];
     }
 }

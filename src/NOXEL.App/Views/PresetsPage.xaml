@@ -36,7 +36,7 @@
         <ScrollView x:Name="PageScroll">
             <StackPanel x:Name="PagePanel" Padding="28,6,28,28" Spacing="16" MaxWidth="1320">
                 <StackPanel>
-                    <TextBlock Text="Presets" Style="{StaticResource PageTitle}" />
+                    <ctl:ShadowText Text="Presets" TextStyle="{StaticResource PageTitle}" />
                     <TextBlock Text="Save complete setups: resolution, refresh rate and colors together. Star favorites for the dashboard, tray and Ctrl + Shift + 1/2." Style="{StaticResource PageSubtitle}" />
                 </StackPanel>
 

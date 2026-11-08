@@ -16,6 +16,11 @@
             <SolidColorBrush x:Key="NavigationViewDefaultPaneBackground" Color="#FF121325" />
             <SolidColorBrush x:Key="NoxelGlassFill" Color="#A6191A2E" />
             <SolidColorBrush x:Key="NoxelGlassFillStrong" Color="#D91D1E34" />
+            <SolidColorBrush x:Key="NoxelNoticeFill" Color="#F51B1C31" />
+            <SolidColorBrush x:Key="NoxelDialogBackground" Color="#FA17182B" />
+            <SolidColorBrush x:Key="NoxelDangerFill" Color="#B23A4C" />
+            <SolidColorBrush x:Key="NoxelDangerFillHover" Color="#C14658" />
+            <SolidColorBrush x:Key="NoxelDangerFillPressed" Color="#96303F" />
             <SolidColorBrush x:Key="NoxelGlassFillSubtle" Color="#0FFFFFFF" />
             <SolidColorBrush x:Key="NoxelGlassHover" Color="#17FFFFFF" />
             <LinearGradientBrush x:Key="NoxelGlassStroke" StartPoint="0,0" EndPoint="1,1">
@@ -52,6 +57,11 @@
             <SolidColorBrush x:Key="NavigationViewDefaultPaneBackground" Color="#FFF8F6FD" />
             <SolidColorBrush x:Key="NoxelGlassFill" Color="#B8FFFFFF" />
             <SolidColorBrush x:Key="NoxelGlassFillStrong" Color="#EBFFFFFF" />
+            <SolidColorBrush x:Key="NoxelNoticeFill" Color="#FAFFFFFF" />
+            <SolidColorBrush x:Key="NoxelDialogBackground" Color="#FCFBFAFF" />
+            <SolidColorBrush x:Key="NoxelDangerFill" Color="#C93C4F" />
+            <SolidColorBrush x:Key="NoxelDangerFillHover" Color="#D54A5C" />
+            <SolidColorBrush x:Key="NoxelDangerFillPressed" Color="#AE3143" />
             <SolidColorBrush x:Key="NoxelGlassFillSubtle" Color="#0A2A1F60" />
             <SolidColorBrush x:Key="NoxelGlassHover" Color="#122A1F60" />
             <LinearGradientBrush x:Key="NoxelGlassStroke" StartPoint="0,0" EndPoint="1,1">
@@ -87,6 +97,11 @@
             <SolidColorBrush x:Key="NavigationViewDefaultPaneBackground" Color="{ThemeResource SystemColorWindowColor}" />
             <SolidColorBrush x:Key="NoxelGlassFill" Color="{ThemeResource SystemColorWindowColor}" />
             <SolidColorBrush x:Key="NoxelGlassFillStrong" Color="{ThemeResource SystemColorWindowColor}" />
+            <SolidColorBrush x:Key="NoxelNoticeFill" Color="{ThemeResource SystemColorWindowColor}" />
+            <SolidColorBrush x:Key="NoxelDialogBackground" Color="{ThemeResource SystemColorWindowColor}" />
+            <SolidColorBrush x:Key="NoxelDangerFill" Color="{ThemeResource SystemColorHighlightColor}" />
+            <SolidColorBrush x:Key="NoxelDangerFillHover" Color="{ThemeResource SystemColorHighlightColor}" />
+            <SolidColorBrush x:Key="NoxelDangerFillPressed" Color="{ThemeResource SystemColorHighlightColor}" />
             <SolidColorBrush x:Key="NoxelGlassFillSubtle" Color="{ThemeResource SystemColorWindowColor}" />
             <SolidColorBrush x:Key="NoxelGlassHover" Color="{ThemeResource SystemColorHighlightColor}" />
             <SolidColorBrush x:Key="NoxelGlassStroke" Color="{ThemeResource SystemColorWindowTextColor}" />
@@ -143,6 +158,74 @@
     </Style>
     <Style TargetType="ContentDialog">
         <Setter Property="CornerRadius" Value="{StaticResource NoxelRadiusDialog}" />
+        <Setter Property="Background" Value="{ThemeResource NoxelDialogBackground}" />
+        <Setter Property="BorderBrush" Value="{ThemeResource NoxelGlassStroke}" />
+        <Setter Property="BorderThickness" Value="1" />
+    </Style>
+    <Style TargetType="NavigationViewItem">
+        <Setter Property="FontWeight" Value="Medium" />
+    </Style>
+    <Style TargetType="ToggleSwitch">
+        <Setter Property="FontWeight" Value="Medium" />
+    </Style>
+
+    <!-- Dialog buttons: identical height, padding, radius and type; Cancel is neutral, destructive is red. -->
+    <Style x:Key="NoxelDialogButton" TargetType="Button" BasedOn="{StaticResource DefaultButtonStyle}">
+        <Setter Property="CornerRadius" Value="{StaticResource NoxelRadiusControl}" />
+        <Setter Property="MinHeight" Value="36" />
+        <Setter Property="Padding" Value="18,7" />
+        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+    </Style>
+    <Style x:Key="NoxelDialogAccentButton" TargetType="Button" BasedOn="{StaticResource AccentButtonStyle}">
+        <Setter Property="CornerRadius" Value="{StaticResource NoxelRadiusControl}" />
+        <Setter Property="MinHeight" Value="36" />
+        <Setter Property="Padding" Value="18,7" />
+        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+    </Style>
+    <Style x:Key="NoxelDangerButton" TargetType="Button">
+        <Setter Property="Background" Value="{ThemeResource NoxelDangerFill}" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="{StaticResource NoxelRadiusControl}" />
+        <Setter Property="MinHeight" Value="36" />
+        <Setter Property="Padding" Value="18,7" />
+        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="UseSystemFocusVisuals" Value="True" />
+        <Setter Property="FocusVisualMargin" Value="-3" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid x:Name="RootGrid" Background="{TemplateBinding Background}" CornerRadius="{TemplateBinding CornerRadius}">
+                        <Grid.BackgroundTransition>
+                            <BrushTransition Duration="0:0:0.12" />
+                        </Grid.BackgroundTransition>
+                        <ContentPresenter x:Name="ContentPresenter" Padding="{TemplateBinding Padding}" Foreground="{TemplateBinding Foreground}"
+                                          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" />
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal" />
+                                <VisualState x:Name="PointerOver">
+                                    <VisualState.Setters><Setter Target="RootGrid.Background" Value="{ThemeResource NoxelDangerFillHover}" /></VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="Pressed">
+                                    <VisualState.Setters><Setter Target="RootGrid.Background" Value="{ThemeResource NoxelDangerFillPressed}" /></VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="Disabled">
+                                    <VisualState.Setters><Setter Target="RootGrid.Opacity" Value="0.5" /></VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
     <Style TargetType="ToolTip">
         <Setter Property="CornerRadius" Value="10" />
@@ -178,8 +261,8 @@
     </Style>
 
     <Style x:Key="PageTitle" TargetType="TextBlock">
-        <Setter Property="FontFamily" Value="{StaticResource NoxelFontDisplay}" />
-        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="FontFamily" Value="{StaticResource NoxelFontBrand}" />
+        <Setter Property="FontWeight" Value="Bold" />
         <Setter Property="FontSize" Value="34" />
         <Setter Property="TextWrapping" Value="Wrap" />
         <Setter Property="Foreground" Value="{ThemeResource NoxelTextPrimary}" />
@@ -231,10 +314,27 @@
     </Style>
 
     <Style x:Key="StatValue" TargetType="TextBlock">
-        <Setter Property="FontFamily" Value="{StaticResource NoxelFontDisplay}" />
+        <Setter Property="FontFamily" Value="{StaticResource NoxelFontBrand}" />
         <Setter Property="FontSize" Value="20" />
-        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="FontWeight" Value="Bold" />
         <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+        <Setter Property="Foreground" Value="{ThemeResource NoxelTextPrimary}" />
+    </Style>
+
+    <Style x:Key="StatValueLarge" TargetType="TextBlock" BasedOn="{StaticResource StatValue}">
+        <Setter Property="FontSize" Value="28" />
+    </Style>
+
+    <Style x:Key="WordmarkLarge" TargetType="TextBlock" BasedOn="{StaticResource Wordmark}">
+        <Setter Property="FontSize" Value="26" />
+    </Style>
+
+    <Style x:Key="CompactTitle" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource NoxelFontBody}" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+        <Setter Property="TextWrapping" Value="NoWrap" />
         <Setter Property="Foreground" Value="{ThemeResource NoxelTextPrimary}" />
     </Style>
 

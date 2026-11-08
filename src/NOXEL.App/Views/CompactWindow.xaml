@@ -2,6 +2,7 @@
     x:Class="Noxel.App.Views.CompactWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ctl="using:Noxel.App.Controls"
     Title="NOXEL">
     <Grid x:Name="Root">
         <Rectangle Fill="{ThemeResource NoxelWindowTint}" />
@@ -19,11 +20,11 @@
                     <Image Source="ms-appx:///Assets/noxel-256.png" Stretch="UniformToFill" />
                 </Border>
                 <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
-                    <TextBlock x:Name="PresetName" Text="NOXEL" FontSize="16" FontWeight="SemiBold" Foreground="{ThemeResource NoxelTextPrimary}" TextTrimming="CharacterEllipsis" />
+                    <ctl:ShadowText x:Name="PresetName" Text="NOXEL" TextStyle="{StaticResource CompactTitle}" />
                     <TextBlock x:Name="ModeText" Style="{StaticResource MutedText}" FontFamily="{StaticResource NoxelMono}" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
                 </StackPanel>
             </Grid>
-            <ToggleSwitch x:Name="ColorSwitch" OnContent="" OffContent="" MinWidth="0" HorizontalAlignment="Right" VerticalAlignment="Center"
+            <ToggleSwitch x:Name="ColorSwitch" OnContent="" OffContent="" MinWidth="0" Width="44" HorizontalAlignment="Right" VerticalAlignment="Center"
                           Margin="0,6,34,0" Toggled="OnColorToggled" AutomationProperties.Name="Color effects" ToolTipService.ToolTip="Color effects on/off" />
             <Grid Grid.Row="1" ColumnSpacing="6">
                 <Grid.ColumnDefinitions>
