@@ -41,7 +41,6 @@
                     <ColumnDefinition x:Name="CaptionInset" Width="140" />
                 </Grid.ColumnDefinitions>
                 <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
-                    <Image Source="ms-appx:///Assets/noxel-64.png" Width="22" Height="22" />
                     <TextBlock Text="NOXEL" Style="{StaticResource Wordmark}" VerticalAlignment="Center" />
                     <Border x:Name="VersionBadge" Style="{StaticResource Badge}">
                         <TextBlock x:Name="VersionText" Text="v1.0" Style="{StaticResource BadgeText}" FontFamily="{StaticResource NoxelMono}" />
