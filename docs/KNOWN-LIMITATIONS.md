@@ -45,11 +45,11 @@ These are limits of Windows and graphics drivers, not bugs NOXEL hides. Each one
 
 ## Intro and motion
 
-* With the default *Respect Windows reduced-motion settings* on, NOXEL plays no animations, no intro and no
-  smooth scrolling while Windows *Animation effects* is off (Settings ▸ Accessibility ▸ Visual effects). The test
-  PC has it off. Turn the NOXEL switch off to use NOXEL's own settings; the Settings page says which applies.
-* The intro never replays when NOXEL is reopened from the tray or by launching it again while it runs (single
-  instance). Exit from the tray for a fresh launch.
+* NOXEL's own motion settings decide by default. If *Respect Windows reduced-motion settings* is turned on and
+  Windows *Animation effects* is off, NOXEL plays no animations, intro or smooth scrolling. NOXEL's own *Reduced
+  motion* always stops all motion.
+* The intro plays when NOXEL is started, and when it is opened again while it waits in the tray; clicking the tray
+  icon reopens instantly without it.
 * Motion blur is a compositor motion trail (live copies of the page trailing and fading during the 220 ms
   transition), not a per-pixel directional blur: Windows' composition effects have no directional blur, and a
   Gaussian pass would need an extra effects library.

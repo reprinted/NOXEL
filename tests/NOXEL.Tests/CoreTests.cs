@@ -310,3 +310,59 @@ public class PersistenceTests : IDisposable
         Assert.Equal(70, s.GlassIntensity);
     }
 }
+
+public class LookCodeTests
+{
+    [Fact]
+    public void EncodeParse_RoundTrips()
+    {
+        var s = new ColorSettings { Vibrance = 85, Saturation = 129, Brightness = 2, Contrast = 108, Gamma = 1.0, Temperature = -12 };
+        var code = LookCode.Encode(s);
+        Assert.StartsWith("NOXEL-LOOK", code);
+        var r = LookCode.Parse(code);
+        Assert.True(r.Success);
+        Assert.Equal(s, r.Settings);
+    }
+
+    [Fact]
+    public void Parse_ClampsAndIgnoresUnknownKeys_MissingKeysAreNeutral()
+    {
+        var r = LookCode.Parse("noxel-look s=999 zzz=4 c=108%");
+        Assert.True(r.Success);
+        Assert.Equal(200, r.Settings!.Saturation);
+        Assert.Equal(108, r.Settings.Contrast);
+        Assert.Equal(50, r.Settings.Vibrance);
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("hello world")]
+    [InlineData("NOXEL-LOOK")]
+    [InlineData("NOXEL-LOOK s=abc")]
+    [InlineData("{ not json")]
+    [InlineData("{ \"name\": \"x\" }")]
+    public void Parse_RejectsBadInput(string input) => Assert.False(LookCode.Parse(input).Success);
+
+    [Fact]
+    public void Parse_AcceptsColorJson_AndPresetFiles()
+    {
+        Assert.Equal(140, LookCode.Parse("{ \"saturation\": 140 }").Settings!.Saturation);
+        var preset = "{ \"format\": \"noxel-presets\", \"presets\": [ { \"name\": \"Night\", \"color\": { \"temperature\": 60 } } ] }";
+        var r = LookCode.Parse(preset);
+        Assert.Equal(60, r.Settings!.Temperature);
+        Assert.Equal("Night", r.Name);
+    }
+}
+
+public class SettingsMigrationTests
+{
+    [Fact]
+    public void Version1_StopsObeyingWindowsAnimationSettingByDefault()
+    {
+        var s = new AppSettings { Version = 1, RespectSystemReducedMotion = true }.Sanitized();
+        Assert.False(s.RespectSystemReducedMotion);
+        Assert.Equal(2, s.Version);
+        var explicitChoice = new AppSettings { Version = 2, RespectSystemReducedMotion = true }.Sanitized();
+        Assert.True(explicitChoice.RespectSystemReducedMotion);
+    }
+}

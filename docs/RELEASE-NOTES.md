@@ -1,5 +1,17 @@
 # NOXEL release notes
 
+## 1.1.1
+
+* **Intro, animations, motion blur and smooth scrolling were still off on PCs where Windows "Animation effects"
+  is off**, because 1.1 obeyed that Windows option by default. NOXEL's own settings now decide; following Windows
+  is an opt-in switch under Accessibility (existing settings are migrated once).
+* **Opening NOXEL again while it waits in the tray now plays the intro** (it counts as opening the app). Clicking
+  the tray icon still reopens instantly without it.
+* **Import a look** in Color Studio: paste a `NOXEL-LOOK ...` code or preset JSON, or load a preset file.
+  **Copy current look code** shares the current sliders as text.
+* Sliders: the track after the thumb is neutral grey; before it is the accent colour.
+* The Compare button keeps its rounded corners when highlighted.
+
 ## 1.1.0 — interface overhaul
 
 ### Fixed

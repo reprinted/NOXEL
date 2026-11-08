@@ -29,7 +29,7 @@ public sealed class WindowPlacement
 
 public sealed class AppSettings
 {
-    public int Version { get; set; } = 1;
+    public int Version { get; set; } = 2;
 
     // Appearance
     public ThemePreference Theme { get; set; } = ThemePreference.Dark;
@@ -39,8 +39,11 @@ public sealed class AppSettings
     public bool AnimationsEnabled { get; set; } = true;
     /// <summary>NOXEL's own reduced-motion switch: stops all motion including the intro and smooth scrolling.</summary>
     public bool ReducedMotion { get; set; }
-    /// <summary>Honour Windows "Animation effects" (Settings > Accessibility > Visual effects). Default on.</summary>
-    public bool RespectSystemReducedMotion { get; set; } = true;
+    /// <summary>
+    /// Opt-in: also obey Windows "Animation effects" (Settings > Accessibility > Visual effects). Off by default, because
+    /// many people turn that Windows option off for speed rather than accessibility; NOXEL's own "Reduced motion" always works.
+    /// </summary>
+    public bool RespectSystemReducedMotion { get; set; }
     /// <summary>Compositor motion trail on page transitions. Off by default; inactive when animations are off.</summary>
     public bool MotionBlur { get; set; }
     /// <summary>Eased mouse-wheel scrolling. Touchpad/touch always stay native.</summary>
@@ -95,6 +98,13 @@ public sealed class AppSettings
     {
         ConfirmSeconds = Math.Clamp(ConfirmSeconds, 5, 60);
         if (IntroIgnoresSystemMotion) { RespectSystemReducedMotion = false; IntroIgnoresSystemMotion = false; }
+        if (Version < 2)
+        {
+            // 1.0/1.1 defaulted to obeying Windows' animation setting, which silently disabled the intro, animations and
+            // smooth scrolling on PCs where that Windows option is off. From 2 on it is an explicit opt-in.
+            RespectSystemReducedMotion = false;
+            Version = 2;
+        }
         GlassIntensity = Math.Clamp(double.IsFinite(GlassIntensity) ? GlassIntensity : 70, 0, 100);
         WorkingColor = (WorkingColor ?? ColorSettings.Default).Clamped();
         if (!IsHex(AccentHex)) AccentHex = "#9B7BFF";

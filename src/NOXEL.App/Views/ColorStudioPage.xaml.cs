@@ -311,6 +311,62 @@ public sealed partial class ColorStudioPage : Page
 
     private void OnRetry(object sender, RoutedEventArgs e) => _c.RetryColorEngines();
 
+    // ------------------------------------------------------------ import / copy a look
+
+    private void OnImportKey(object sender, Microsoft.UI.Xaml.Input.KeyRoutedEventArgs e)
+    {
+        bool ctrl = Microsoft.UI.Input.InputKeyboardSource.GetKeyStateForCurrentThread(global::Windows.System.VirtualKey.Control)
+            .HasFlag(global::Windows.UI.Core.CoreVirtualKeyStates.Down);
+        if (e.Key == global::Windows.System.VirtualKey.Enter && ctrl) { OnImportLook(sender, e); e.Handled = true; }
+    }
+
+    private void OnImportLook(object sender, RoutedEventArgs e) => ImportText(ImportBox.Text, source: null);
+
+    private async void OnImportFile(object sender, RoutedEventArgs e)
+    {
+        var picker = new global::Windows.Storage.Pickers.FileOpenPicker { SuggestedStartLocation = global::Windows.Storage.Pickers.PickerLocationId.DocumentsLibrary };
+        picker.FileTypeFilter.Add(".json");
+        picker.FileTypeFilter.Add(".noxel");
+        picker.FileTypeFilter.Add(".txt");
+        WinRT.Interop.InitializeWithWindow.Initialize(picker, WindowHelper.Hwnd(App.Main!));
+        var file = await picker.PickSingleFileAsync();
+        if (file is null) return;
+        var props = await file.GetBasicPropertiesAsync();
+        if (props.Size > LookCode.MaxInputChars) { ShowImport("That file is too large to be a NOXEL look.", ok: false); return; }
+        ImportText(await global::Windows.Storage.FileIO.ReadTextAsync(file), file.Name);
+    }
+
+    private void ImportText(string text, string? source)
+    {
+        var r = LookCode.Parse(text);
+        if (!r.Success) { ShowImport(r.Error ?? "Not a NOXEL look.", ok: false); return; }
+        _pending = r.Settings!;
+        _dirty = true;
+        Flush();
+        if (!_c.ColorEnabled) _c.SetColorEnabled(true);
+        Refresh();
+        var from = r.Name is not null ? $" from \"{r.Name}\"" : source is not null ? $" from {source}" : "";
+        ShowImport($"Imported{from}: {r.Settings!.Summary()}. Use \"Save as preset…\" to keep it.", ok: true);
+        ImportBox.Text = "";
+    }
+
+    private void ShowImport(string message, bool ok)
+    {
+        ImportStatus.Text = message;
+        ImportStatus.Foreground = (Microsoft.UI.Xaml.Media.Brush)Resources.ThemeDictionariesLookup(ok ? "NoxelSuccess" : "NoxelWarning");
+        ImportStatus.Visibility = Visibility.Visible;
+    }
+
+    private void OnCopyLook(object sender, RoutedEventArgs e)
+    {
+        Flush();
+        var code = LookCode.Encode(_c.WorkingColor);
+        var data = new global::Windows.ApplicationModel.DataTransfer.DataPackage();
+        data.SetText(code);
+        global::Windows.ApplicationModel.DataTransfer.Clipboard.SetContent(data);
+        ShowImport($"Copied: {code}", ok: true);
+    }
+
     private void OnMasterToggled(object sender, RoutedEventArgs e)
     {
         if (_updating) return;

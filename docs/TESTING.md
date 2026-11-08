@@ -116,3 +116,18 @@ resources); the bundled fonts add a few MB.
 * 125 / 150 / 200 % display scaling (would require changing the user's Windows scaling).
 * Precision touchpad and touchscreen scrolling (no such hardware); behaviour is by design native or 1:1.
 * Stock WinUI control animations with Windows *Animation effects* on (it is off on this PC).
+
+---
+
+# 1.1.1 — test results
+
+| Check | Result |
+|---|---|
+| Fresh launch with the user's real 1.1 settings (respect Windows = on, Windows animations off) | migrated; intro plays; Motion blur / Smooth scrolling / Play intro switches enabled |
+| Close to tray, then open NOXEL again (second launch) | intro plays, still one process |
+| Close to tray, then click the tray icon | reopens instantly, no intro |
+| Import a look: `NOXEL-LOOK v=70 s=120 b=0 c=106 g=1.00 t=10` | applied; driver vibrance read back 70/70; restored to 50/50 on exit |
+| Import invalid text | clear message, nothing changed |
+| Compare button checked | rounded corners kept |
+| Sliders | accent before the thumb, grey after |
+| Unit tests | 63 passed (adds look-code parsing and settings migration) |

@@ -208,8 +208,8 @@ public static class ThemeService
         if (!s.PlayIntro) return "Off: NOXEL opens straight to the dashboard.";
         if (s.ReducedMotion) return "Not playing: NOXEL's Reduced motion is on.";
         if (!MotionAllowedBySystem(s))
-            return "Not playing: Windows \"Animation effects\" is off on this PC and \"Respect Windows reduced-motion settings\" is on. Turn that off below to play the intro anyway.";
-        return "Plays on the next fresh launch. It doesn't replay when NOXEL is reopened from the tray (exit NOXEL from the tray to start it fresh).";
+            return "Not playing: you turned on \"Respect Windows reduced-motion settings\" and Windows \"Animation effects\" is off.";
+        return "Plays whenever you open NOXEL (starting it, or opening it again while it waits in the tray). Clicking the tray icon reopens instantly without it.";
     }
 
     public static bool SystemReducedMotion => !UiSettings.AnimationsEnabled;

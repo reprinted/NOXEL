@@ -83,13 +83,34 @@
                             <StackPanel Spacing="10">
                                 <TextBlock Text="Actions" Style="{StaticResource CardTitle}" />
                                 <Button x:Name="ApplyButton" Content="Apply look" Style="{StaticResource AccentButtonStyle}" HorizontalAlignment="Stretch" Click="OnApply" />
-                                <ToggleButton x:Name="CompareButton" HorizontalAlignment="Stretch" Checked="OnCompare" Unchecked="OnCompare"
+                                <ToggleButton x:Name="CompareButton" HorizontalAlignment="Stretch" CornerRadius="{StaticResource NoxelRadiusControl}" Checked="OnCompare" Unchecked="OnCompare"
                                               Content="Compare with original" AutomationProperties.Name="Compare with original colors" />
                                 <Button Content="Save as preset…" HorizontalAlignment="Stretch" Click="OnSave" />
                                 <Button x:Name="UpdatePresetButton" HorizontalAlignment="Stretch" Click="OnUpdatePreset" />
                                 <Button Content="Reset all sliders" HorizontalAlignment="Stretch" Click="OnResetAll" />
                                 <Button Content="Restore original colors" HorizontalAlignment="Stretch" Click="OnRestore"
                                         ToolTipService.ToolTip="Turns every effect off and restores the colors Windows had before NOXEL." />
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource GlassCard}">
+                            <StackPanel Spacing="10">
+                                <TextBlock Text="Import a look" Style="{StaticResource CardTitle}" />
+                                <TextBox x:Name="ImportBox" PlaceholderText="Paste a NOXEL-LOOK code or preset JSON" AcceptsReturn="True" TextWrapping="Wrap"
+                                         MaxHeight="110" ScrollViewer.VerticalScrollBarVisibility="Auto" FontFamily="{StaticResource NoxelMono}" FontSize="12"
+                                         AutomationProperties.Name="Look code to import" KeyDown="OnImportKey" />
+                                <Grid ColumnSpacing="8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Button Content="Import" Style="{StaticResource AccentButtonStyle}" HorizontalAlignment="Stretch" Click="OnImportLook" />
+                                    <Button Grid.Column="1" Content="From file…" HorizontalAlignment="Stretch" Click="OnImportFile"
+                                            ToolTipService.ToolTip="Load colours from a NOXEL preset file (.json / .noxel)" />
+                                </Grid>
+                                <TextBlock x:Name="ImportStatus" Style="{StaticResource FaintText}" Visibility="Collapsed" />
+                                <Rectangle Height="1" Fill="{ThemeResource NoxelDivider}" />
+                                <Button Content="Copy current look code" HorizontalAlignment="Stretch" Click="OnCopyLook"
+                                        ToolTipService.ToolTip="Copies a short text code anyone can paste into NOXEL" />
                             </StackPanel>
                         </Border>
                         <Border Style="{StaticResource GlassCard}">

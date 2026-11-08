@@ -28,6 +28,11 @@
                 <GradientStop Color="#00FFFFFF" Offset="0.35" />
             </LinearGradientBrush>
             <SolidColorBrush x:Key="NoxelDivider" Color="#1CFFFFFF" />
+            <!-- Slider: the part after the thumb is neutral grey; the part before it is the accent (SliderTrackValueFill). -->
+            <SolidColorBrush x:Key="SliderTrackFill" Color="#33FFFFFF" />
+            <SolidColorBrush x:Key="SliderTrackFillPointerOver" Color="#45FFFFFF" />
+            <SolidColorBrush x:Key="SliderTrackFillPressed" Color="#3DFFFFFF" />
+            <SolidColorBrush x:Key="SliderTrackFillDisabled" Color="#1AFFFFFF" />
             <SolidColorBrush x:Key="NoxelTextPrimary" Color="#F3F1FB" />
             <SolidColorBrush x:Key="NoxelTextSecondary" Color="#B6B2CC" />
             <SolidColorBrush x:Key="NoxelTextTertiary" Color="#8A86A2" />
@@ -59,6 +64,10 @@
                 <GradientStop Color="#00FFFFFF" Offset="0.4" />
             </LinearGradientBrush>
             <SolidColorBrush x:Key="NoxelDivider" Color="#1A2A1F60" />
+            <SolidColorBrush x:Key="SliderTrackFill" Color="#29000000" />
+            <SolidColorBrush x:Key="SliderTrackFillPointerOver" Color="#3D000000" />
+            <SolidColorBrush x:Key="SliderTrackFillPressed" Color="#33000000" />
+            <SolidColorBrush x:Key="SliderTrackFillDisabled" Color="#14000000" />
             <SolidColorBrush x:Key="NoxelTextPrimary" Color="#1B1830" />
             <SolidColorBrush x:Key="NoxelTextSecondary" Color="#4F4A68" />
             <SolidColorBrush x:Key="NoxelTextTertiary" Color="#6E698A" />
@@ -129,6 +138,8 @@
     </Style>
     <Style TargetType="ToggleButton">
         <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="CornerRadius" Value="{StaticResource NoxelRadiusControl}" />
+        <Setter Property="BackgroundSizing" Value="InnerBorderEdge" />
     </Style>
     <Style TargetType="ContentDialog">
         <Setter Property="CornerRadius" Value="{StaticResource NoxelRadiusDialog}" />

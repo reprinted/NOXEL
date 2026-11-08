@@ -68,7 +68,8 @@ public partial class App : Application
             _main.Activate();
         }
 
-        Program.Instance?.ListenForActivation(() => _ui.TryEnqueue(() => ShowMain()));
+        // Opening NOXEL again (exe, shortcut, Start menu) while it runs in the tray is a launch: play the intro.
+        Program.Instance?.ListenForActivation(() => _ui.TryEnqueue(() => ShowMain(page: null, relaunch: true)));
 
         try
         {
@@ -103,13 +104,13 @@ public partial class App : Application
         }
     }
 
-    public void ShowMain(string? page = null)
+    public void ShowMain(string? page = null, bool relaunch = false)
     {
         if (IsExiting) return;
         if (_main is null)
         {
-            // Restoring from the tray never replays the intro (unless the user asked for that).
-            bool intro = !Settings.SkipIntroOnRestore && ThemeService.IntroAllowed(Settings);
+            // Tray icon / tray menu restore is instant; launching NOXEL again counts as opening it and plays the intro.
+            bool intro = (relaunch || !Settings.SkipIntroOnRestore) && ThemeService.IntroAllowed(Settings);
             _main = new MainWindow(intro);
             if (Controller?.IsReady == true) _main.OnBackendReady();
         }

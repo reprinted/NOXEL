@@ -183,9 +183,9 @@ public sealed partial class SettingsPage : Page
         IntroStatus.Text = ThemeService.IntroStatus(S);
         SystemMotionNote.Text = systemOff
             ? (S.RespectSystemReducedMotion
-                ? "Windows \"Animation effects\" is OFF on this PC, so NOXEL is currently not animating and the intro is skipped. Turn this switch off to use NOXEL's own animation settings instead."
-                : "Windows \"Animation effects\" is off, but NOXEL is using its own animation settings.")
-            : "Windows \"Animation effects\" is on.";
+                ? "On: Windows \"Animation effects\" is off on this PC, so NOXEL plays no intro, animations or smooth scrolling."
+                : "Off (default): NOXEL uses its own settings above. Windows \"Animation effects\" is off on this PC; turn this on to follow it.")
+            : "Windows \"Animation effects\" is on, so this switch makes no difference right now.";
     }
 
     private void OnGlassChanged(object sender, Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
