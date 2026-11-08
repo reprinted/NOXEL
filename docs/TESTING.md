@@ -192,3 +192,15 @@ backup.
 
 ### Unit tests
 82 passed (adds semantic-version comparison, release parsing, untrusted-host filtering, checksum parsing).
+
+## GPL relicensing and typography pass (still v1.0.0)
+
+* `LICENSE` matches the official gnu.org GPL v3 text byte for byte (SHA-256 `3972dc97…6986`); the release folder's
+  `LICENSE.txt` is the same file.
+* Typography checked by screenshots in dark and light: Dashboard, Display (Rajdhani Bold resolution and refresh
+  values), Presets (shadowed selected-preset title), Settings (Medium labels), About (GPL notice and buttons).
+  125–200 % scaling was not tested (it would change a system setting).
+* Unit tests: 82 passed. Final `NOXEL.exe` against the loopback API: no releases, up to date, checksum mismatch
+  rejected, portable update to a 1.0.1 test build (backup kept, settings kept).
+* Installer upgrade over an existing install: not re-run for this build, because the installer correctly waits for
+  the running NOXEL and the user's copy was open.
