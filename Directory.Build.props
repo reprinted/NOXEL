@@ -6,7 +6,7 @@
     <Version>1.1.1</Version>
     <Product>NOXEL</Product>
     <!-- Developer / company name is configurable at build time: dotnet publish -p:NoxelDeveloper="Your Name" -->
-    <NoxelDeveloper Condition="'$(NoxelDeveloper)' == ''">Unspecified developer</NoxelDeveloper>
+    <NoxelDeveloper Condition="'$(NoxelDeveloper)' == ''">barry</NoxelDeveloper>
     <Company>$(NoxelDeveloper)</Company>
     <Authors>$(NoxelDeveloper)</Authors>
     <!-- Build number shown in About. Override with -p:NoxelBuild=123 in CI. -->

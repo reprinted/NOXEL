@@ -15,6 +15,7 @@ AppId={{7F3C2A91-5E2B-4C8E-9D6A-0E4B1A6C9F21}
 AppName={#AppName}
 AppVersion={#AppVersion}
 AppVerName={#AppName} {#AppVersion}
+AppPublisher=barry
 DefaultDirName={autopf}\{#AppName}
 DefaultGroupName={#AppName}
 DisableProgramGroupPage=yes
