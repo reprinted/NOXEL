@@ -24,10 +24,15 @@ $m = [regex]::Match($notesText, "(?ms)^## $([regex]::Escape($Version))\b.*?(?=^#
 if (-not $m.Success) { throw "docs\RELEASE-NOTES.md has no '## $Version' section. Write the release notes first." }
 if ((git -C $root status --porcelain).Length -gt 0) { Write-Warning "The working tree has uncommitted changes. Commit them so the release matches a commit." }
 
+# Windows locks a running exe, so a NOXEL started from the release or build folders would make the rebuild fail halfway.
+$dest = Join-Path $root "artifacts\release-v$Version"
+$artifacts = Join-Path $root "artifacts"
+$inUse = Get-Process NOXEL -ErrorAction SilentlyContinue | Where-Object { $_.Path -and $_.Path.StartsWith($artifacts, [StringComparison]::OrdinalIgnoreCase) }
+if ($inUse) { throw "NOXEL is running from $($inUse[0].Path). Exit it (tray icon > Exit) and run the script again. Nothing was changed." }
+
 & (Join-Path $PSScriptRoot "publish.ps1")
 if ($LASTEXITCODE -ne 0 -and $LASTEXITCODE -ne $null) { throw "Build failed." }
 
-$dest = Join-Path $root "artifacts\release-v$Version"
 if (Test-Path $dest) { Remove-Item $dest -Recurse -Force }
 New-Item -ItemType Directory $dest | Out-Null
 Copy-Item (Join-Path $root "artifacts\release\NOXEL.exe"), (Join-Path $root "artifacts\installer\NOXEL-Setup.exe"), (Join-Path $root "THIRD-PARTY-NOTICES.txt") $dest

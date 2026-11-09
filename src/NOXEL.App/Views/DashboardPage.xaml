@@ -91,19 +91,19 @@
                         <VariableSizedWrapGrid x:Name="StatsGrid" Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal" ItemWidth="190" ItemHeight="64">
                             <StackPanel Spacing="2">
                                 <TextBlock Text="RESOLUTION" Style="{StaticResource SectionLabel}" />
-                                <TextBlock x:Name="ResText" Style="{StaticResource StatValue}" />
+                                <ctl:ShadowText x:Name="ResText" TextStyle="{StaticResource StatValue}" />
                             </StackPanel>
                             <StackPanel Spacing="2">
                                 <TextBlock Text="REFRESH RATE" Style="{StaticResource SectionLabel}" />
-                                <TextBlock x:Name="HzText" Style="{StaticResource StatValue}" />
+                                <ctl:ShadowText x:Name="HzText" TextStyle="{StaticResource StatValue}" />
                             </StackPanel>
                             <StackPanel Spacing="2">
                                 <TextBlock Text="MAX FOR THIS MODE" Style="{StaticResource SectionLabel}" />
-                                <TextBlock x:Name="MaxHzText" Style="{StaticResource StatValue}" />
+                                <ctl:ShadowText x:Name="MaxHzText" TextStyle="{StaticResource StatValue}" />
                             </StackPanel>
                             <StackPanel Spacing="2">
                                 <TextBlock Text="NATIVE" Style="{StaticResource SectionLabel}" />
-                                <TextBlock x:Name="NativeText" Style="{StaticResource StatValue}" />
+                                <ctl:ShadowText x:Name="NativeText" TextStyle="{StaticResource StatValue}" />
                             </StackPanel>
                             <StackPanel Spacing="2">
                                 <TextBlock Text="COLOR LOOK" Style="{StaticResource SectionLabel}" />

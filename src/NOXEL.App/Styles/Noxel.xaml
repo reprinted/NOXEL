@@ -327,6 +327,12 @@
         <Setter Property="Foreground" Value="{ThemeResource NoxelTextPrimary}" />
     </Style>
 
+    <Style x:Key="StatValueMedium" TargetType="TextBlock" BasedOn="{StaticResource StatValue}">
+        <Setter Property="FontSize" Value="17" />
+    </Style>
+    <Style x:Key="StatValueSmall" TargetType="TextBlock" BasedOn="{StaticResource StatValue}">
+        <Setter Property="FontSize" Value="15" />
+    </Style>
     <Style x:Key="StatValueLarge" TargetType="TextBlock" BasedOn="{StaticResource StatValue}">
         <Setter Property="FontSize" Value="28" />
     </Style>
