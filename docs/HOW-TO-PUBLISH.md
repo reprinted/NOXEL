@@ -24,6 +24,8 @@ starts and then once a day. It offers an update when **all** of these are true:
 
 Files must be named exactly `NOXEL.exe`, `NOXEL-Setup.exe` and `SHA256SUMS.txt`.
 
+**Public release naming:** Always identify `NOXEL-Setup.exe` as **Installer (recommended)** and `NOXEL.exe` as **Portable Version (no installation required)** in every release description and download guide. Keep the asset filenames unchanged because the updater depends on them. The recommended public download is the installer. If GitHub asset display labels are set, use these same descriptions.
+
 ## Publishing v1.0.1 (example)
 
 1. **Set the version.** In `Directory.Build.props` change `<Version>1.0.0</Version>` to `<Version>1.0.1</Version>`.
