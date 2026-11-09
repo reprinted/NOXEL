@@ -3,6 +3,23 @@
 `scripts/release.ps1` copies the section for the version being released into the GitHub release, so each version
 needs a `## x.y.z` section here before it can be released.
 
+## 1.0.1
+
+**Downloads**
+* `NOXEL-Setup.exe` — **Installer (recommended).** Installs NOXEL for your user account; no administrator rights.
+* `NOXEL.exe` — **Portable Version (no installation required).** Self-contained Windows x64 executable.
+
+Copies of NOXEL 1.0.0 offer this update automatically (Settings › Updates).
+
+### Changes
+* The developer and copyright holder are now shown as **reprinted** (About page, installer, file properties).
+* Cleaner text: the text shadow is kept only on the NOXEL wordmark; page titles, preset names, resolutions and
+  refresh rates are crisp without it.
+* Bolder interface text: navigation, buttons and settings labels are SemiBold; section headings use Rajdhani Bold.
+* Shortcut boxes in Settings have rounded corners like the other controls.
+* Window material (Settings › Visual effects): **Mica** or **Translucent**, which shows whatever is behind NOXEL,
+  blurred, under the glass.
+
 ## 1.0.0
 
 First stable public release of NOXEL, a Windows 10/11 display utility.

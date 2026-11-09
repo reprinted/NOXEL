@@ -26,8 +26,8 @@ if ((git -C $root status --porcelain).Length -gt 0) { Write-Warning "The working
 
 # Windows locks a running exe, so a NOXEL started from the release or build folders would make the rebuild fail halfway.
 $dest = Join-Path $root "artifacts\release-v$Version"
-$artifacts = Join-Path $root "artifacts"
-$inUse = Get-Process NOXEL -ErrorAction SilentlyContinue | Where-Object { $_.Path -and $_.Path.StartsWith($artifacts, [StringComparison]::OrdinalIgnoreCase) }
+$locked = @($dest, (Join-Path $root "artifacts\release"), (Join-Path $root "artifacts\installer"))
+$inUse = Get-Process NOXEL -ErrorAction SilentlyContinue | Where-Object { $p = $_.Path; $p -and ($locked | Where-Object { $p.StartsWith($_ + "\", [StringComparison]::OrdinalIgnoreCase) }) }
 if ($inUse) { throw "NOXEL is running from $($inUse[0].Path). Exit it (tray icon > Exit) and run the script again. Nothing was changed." }
 
 & (Join-Path $PSScriptRoot "publish.ps1")
