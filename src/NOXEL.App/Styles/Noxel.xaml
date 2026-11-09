@@ -149,10 +149,10 @@
         <Setter Property="CornerRadius" Value="5" />
     </Style>
     <Style TargetType="Button" BasedOn="{StaticResource DefaultButtonStyle}">
-        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="FontWeight" Value="SemiBold" />
     </Style>
     <Style TargetType="ToggleButton">
-        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="FontWeight" Value="SemiBold" />
         <Setter Property="CornerRadius" Value="{StaticResource NoxelRadiusControl}" />
         <Setter Property="BackgroundSizing" Value="InnerBorderEdge" />
     </Style>
@@ -163,16 +163,16 @@
         <Setter Property="BorderThickness" Value="1" />
     </Style>
     <Style TargetType="NavigationViewItem">
-        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="FontWeight" Value="SemiBold" />
     </Style>
     <Style TargetType="ToggleSwitch">
-        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="FontWeight" Value="SemiBold" />
     </Style>
-    <!-- Settings labels (control headers) are Medium; the values inside the controls stay Regular. -->
-    <FontWeight x:Key="ComboBoxHeaderThemeFontWeight">Medium</FontWeight>
-    <FontWeight x:Key="SliderHeaderThemeFontWeight">Medium</FontWeight>
+    <!-- Settings labels (control headers) are SemiBold; the values inside the controls stay Regular. -->
+    <FontWeight x:Key="ComboBoxHeaderThemeFontWeight">SemiBold</FontWeight>
+    <FontWeight x:Key="SliderHeaderThemeFontWeight">SemiBold</FontWeight>
     <Style TargetType="RadioButtons">
-        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="FontWeight" Value="SemiBold" />
     </Style>
 
     <!-- Dialog buttons: identical height, padding, radius and type; Cancel is neutral, destructive is red. -->
@@ -180,14 +180,14 @@
         <Setter Property="CornerRadius" Value="{StaticResource NoxelRadiusControl}" />
         <Setter Property="MinHeight" Value="36" />
         <Setter Property="Padding" Value="18,7" />
-        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="FontWeight" Value="SemiBold" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />
     </Style>
     <Style x:Key="NoxelDialogAccentButton" TargetType="Button" BasedOn="{StaticResource AccentButtonStyle}">
         <Setter Property="CornerRadius" Value="{StaticResource NoxelRadiusControl}" />
         <Setter Property="MinHeight" Value="36" />
         <Setter Property="Padding" Value="18,7" />
-        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="FontWeight" Value="SemiBold" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />
     </Style>
     <Style x:Key="NoxelDangerButton" TargetType="Button">
@@ -197,7 +197,7 @@
         <Setter Property="CornerRadius" Value="{StaticResource NoxelRadiusControl}" />
         <Setter Property="MinHeight" Value="36" />
         <Setter Property="Padding" Value="18,7" />
-        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="FontWeight" Value="SemiBold" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
@@ -283,9 +283,9 @@
     </Style>
 
     <Style x:Key="CardTitle" TargetType="TextBlock">
-        <Setter Property="FontFamily" Value="{StaticResource NoxelFontDisplay}" />
-        <Setter Property="FontWeight" Value="SemiBold" />
-        <Setter Property="FontSize" Value="18" />
+        <Setter Property="FontFamily" Value="{StaticResource NoxelFontBrand}" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="FontSize" Value="20" />
         <Setter Property="TextWrapping" Value="Wrap" />
         <Setter Property="Foreground" Value="{ThemeResource NoxelTextPrimary}" />
     </Style>
@@ -337,7 +337,7 @@
 
     <Style x:Key="CompactTitle" TargetType="TextBlock">
         <Setter Property="FontFamily" Value="{StaticResource NoxelFontBody}" />
-        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="FontWeight" Value="Bold" />
         <Setter Property="FontSize" Value="16" />
         <Setter Property="TextTrimming" Value="CharacterEllipsis" />
         <Setter Property="TextWrapping" Value="NoWrap" />
@@ -377,7 +377,7 @@
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CornerRadius" Value="14" />
         <Setter Property="Padding" Value="10,14" />
-        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="FontWeight" Value="SemiBold" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="VerticalAlignment" Value="Stretch" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
@@ -436,7 +436,7 @@
         <Setter Property="Background" Value="{ThemeResource NoxelGlassFillSubtle}" />
         <Setter Property="BorderBrush" Value="{ThemeResource NoxelDivider}" />
         <Setter Property="CornerRadius" Value="{StaticResource NoxelRadiusControl}" />
-        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="FontWeight" Value="SemiBold" />
         <Setter Property="Padding" Value="12,7" />
     </Style>
 

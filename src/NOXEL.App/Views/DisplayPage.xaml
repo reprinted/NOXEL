@@ -143,7 +143,7 @@
                         <Border Style="{StaticResource GlassCard}">
                             <StackPanel Spacing="10">
                                 <TextBlock Text="Mode" Style="{StaticResource CardTitle}" />
-                                <ctl:ShadowText x:Name="SelText" Text="Select a resolution" TextStyle="{StaticResource StatValueLarge}" />
+                                <TextBlock x:Name="SelText" Text="Select a resolution" Style="{StaticResource StatValueLarge}" />
                                 <TextBlock Text="REFRESH RATE" Style="{StaticResource SectionLabel}" />
                                 <ComboBox x:Name="HzBox" HorizontalAlignment="Stretch" SelectionChanged="OnHzChanged" AutomationProperties.Name="Refresh rate" />
                                 <Grid ColumnSpacing="8" RowSpacing="4">

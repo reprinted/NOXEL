@@ -250,7 +250,7 @@ public sealed partial class SettingsPage : Page
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
             grid.RowDefinitions.Add(new RowDefinition());
             grid.RowDefinitions.Add(new RowDefinition());
-            var label = new TextBlock { Text = HotkeyDefaults.Describe(action), Style = (Style)Application.Current.Resources["BodyText"], VerticalAlignment = VerticalAlignment.Center };
+            var label = new TextBlock { Text = HotkeyDefaults.Describe(action), Style = (Style)Application.Current.Resources["BodyText"], FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, VerticalAlignment = VerticalAlignment.Center };
             var box = new HotkeyRecorder { HorizontalAlignment = HorizontalAlignment.Stretch };
             var a = action;
             box.Validator = g => _c.Hotkeys.FindConflict(g, a);

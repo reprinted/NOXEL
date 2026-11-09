@@ -39,6 +39,8 @@ public sealed class HotkeyRecorder : Button
         MinWidth = 170;
         HorizontalContentAlignment = HorizontalAlignment.Left;
         FontFamily = (Microsoft.UI.Xaml.Media.FontFamily)Application.Current.Resources["NoxelMono"];
+        // Implicit Button styles don't reach subclasses, so take NOXEL's control radius explicitly.
+        CornerRadius = (CornerRadius)Application.Current.Resources["NoxelRadiusControl"];
         Click += (_, _) => { if (!_recording) Start(); };
         PreviewKeyDown += OnKey;
         LostFocus += (_, _) => { if (_recording) Finish(); };
