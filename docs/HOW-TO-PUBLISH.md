@@ -40,7 +40,7 @@ Files must be named exactly `NOXEL.exe`, `NOXEL-Setup.exe` and `SHA256SUMS.txt`.
    nothing.
 5. **Test the files in `artifacts\release-v1.0.1\`** on your PC: install over 1.0.0, run the portable exe, check the
    things you changed.
-6. **Publish the matching source:** `git tag v1.0.1`, then `git push origin main v1.0.1` (origin =
+6. **Publish the matching source:** `git tag v1.0.1`, then `git push origin HEAD:main v1.0.1` (origin =
    github.com/reprinted/NOXEL). Don't put source in NOXEL-Releases; link to the tag instead (the release notes
    from the script already contain the link).
 7. **Create the release** at https://github.com/reprinted/NOXEL-Releases/releases/new:

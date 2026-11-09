@@ -204,3 +204,7 @@ backup.
   rejected, portable update to a 1.0.1 test build (backup kept, settings kept).
 * Installer upgrade over an existing install: not re-run for this build, because the installer correctly waits for
   the running NOXEL and the user's copy was open.
+* Installer upgrade (final `NOXEL-Setup.exe` over an earlier 1.0.0 build in a temp folder): same folder and AppId,
+  one uninstaller, exe replaced with the release build, `LICENSE.txt` replaced by the GPL v3 text, notices present,
+  NOXEL not launched by a plain silent install; uninstall removed files and the registry entry. The user's own
+  shortcuts were backed up and restored.

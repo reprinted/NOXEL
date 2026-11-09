@@ -52,7 +52,7 @@ Get-ChildItem $dest | ForEach-Object { "  {0,-28} {1,10:N0} bytes" -f $_.Name, $
 ""
 "To publish (only after testing):"
 "  1. Tag the source and publish it FIRST (GPL: the matching source must be available):"
-"       git tag v$Version; git push origin main v$Version   (origin = github.com/reprinted/NOXEL)"
+"       git tag v$Version; git push origin HEAD:main v$Version   (origin = github.com/reprinted/NOXEL)"
 "  2. Open https://github.com/reprinted/NOXEL-Releases/releases/new"
 "  3. Tag: v$Version   Title: NOXEL v$Version   Notes: paste RELEASE-NOTES-v$Version.md"
 "  4. Attach NOXEL.exe, NOXEL-Setup.exe, SHA256SUMS.txt, LICENSE.txt and THIRD-PARTY-NOTICES.txt"
