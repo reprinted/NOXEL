@@ -38,7 +38,7 @@
     <ScrollView x:Name="PageScroll">
         <StackPanel x:Name="PagePanel" Padding="28,6,28,28" Spacing="16" MaxWidth="1320">
             <StackPanel>
-                <ctl:ShadowText Text="Dashboard" TextStyle="{StaticResource PageTitle}" />
+                <TextBlock Text="Dashboard" Style="{StaticResource PageTitle}" />
                 <TextBlock Text="Your display, colors and presets in one place." Style="{StaticResource PageSubtitle}" />
             </StackPanel>
 

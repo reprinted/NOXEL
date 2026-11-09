@@ -20,7 +20,7 @@
                     <Image Source="ms-appx:///Assets/noxel-256.png" Stretch="UniformToFill" />
                 </Border>
                 <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
-                    <ctl:ShadowText x:Name="PresetName" Text="NOXEL" TextStyle="{StaticResource CompactTitle}" />
+                    <TextBlock x:Name="PresetName" Text="NOXEL" Style="{StaticResource CompactTitle}" />
                     <TextBlock x:Name="ModeText" Style="{StaticResource MutedText}" FontFamily="{StaticResource NoxelMono}" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
                 </StackPanel>
             </Grid>

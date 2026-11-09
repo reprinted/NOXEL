@@ -36,7 +36,7 @@
         <ScrollView x:Name="PageScroll">
             <StackPanel x:Name="PagePanel" Padding="28,6,28,28" Spacing="16" MaxWidth="1320">
                 <StackPanel>
-                    <ctl:ShadowText Text="Presets" TextStyle="{StaticResource PageTitle}" />
+                    <TextBlock Text="Presets" Style="{StaticResource PageTitle}" />
                     <TextBlock Text="Save complete setups: resolution, refresh rate and colors together. Star favorites for the dashboard, tray and Ctrl + Shift + 1/2." Style="{StaticResource PageSubtitle}" />
                 </StackPanel>
 
@@ -115,7 +115,7 @@
                     <!-- Editor -->
                     <Border x:Name="Editor" Grid.Column="1" Style="{StaticResource GlassCard}" VerticalAlignment="Top">
                         <StackPanel Spacing="10">
-                            <ctl:ShadowText x:Name="EditorTitle" Text="Preset" TextStyle="{StaticResource CardTitle}" />
+                            <TextBlock x:Name="EditorTitle" Text="Preset" Style="{StaticResource CardTitle}" />
                             <TextBlock x:Name="BuiltInNote" Style="{StaticResource FaintText}" Text="Built-in presets can't be edited or deleted. Duplicate one to make your own copy. You can still star it and give it a shortcut." />
                             <TextBox x:Name="NameBox" Header="Name" MaxLength="48" />
                             <TextBox x:Name="DescBox" Header="Description" MaxLength="160" />

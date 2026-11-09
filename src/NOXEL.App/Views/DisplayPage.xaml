@@ -41,7 +41,7 @@
         <ScrollView x:Name="PageScroll">
             <StackPanel x:Name="PagePanel" Padding="28,6,28,28" Spacing="16" MaxWidth="1320">
                 <StackPanel>
-                    <ctl:ShadowText Text="Display" TextStyle="{StaticResource PageTitle}" />
+                    <TextBlock Text="Display" Style="{StaticResource PageTitle}" />
                     <TextBlock Text="Switch to any mode your graphics driver exposes. Every change asks you to confirm and reverts on its own if you don't." Style="{StaticResource PageSubtitle}" />
                 </StackPanel>
 

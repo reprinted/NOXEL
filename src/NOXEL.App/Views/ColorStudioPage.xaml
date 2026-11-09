@@ -41,7 +41,7 @@
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                     <StackPanel>
-                        <ctl:ShadowText Text="Color Studio" TextStyle="{StaticResource PageTitle}" />
+                        <TextBlock Text="Color Studio" Style="{StaticResource PageTitle}" />
                         <TextBlock x:Name="Subtitle" Text="Adjust your display colors. Changes apply to all displays." Style="{StaticResource PageSubtitle}" />
                     </StackPanel>
                     <StackPanel x:Name="MasterPanel" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" Orientation="Horizontal" Spacing="12">
@@ -67,7 +67,7 @@
                         <StackPanel Spacing="4">
                             <Grid Margin="0,0,0,8">
                                 <StackPanel>
-                                    <ctl:ShadowText x:Name="LookName" Text="Custom look" TextStyle="{StaticResource CardTitle}" />
+                                    <TextBlock x:Name="LookName" Text="Custom look" Style="{StaticResource CardTitle}" />
                                     <TextBlock x:Name="LookSummary" Style="{StaticResource FaintText}" />
                                 </StackPanel>
                                 <ToggleSwitch x:Name="LiveSwitch" HorizontalAlignment="Right" OnContent="Live preview" OffContent="Live preview" Toggled="OnLiveToggled"

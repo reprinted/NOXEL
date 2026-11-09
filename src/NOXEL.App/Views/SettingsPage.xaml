@@ -20,7 +20,7 @@
     <ScrollView x:Name="PageScroll">
         <StackPanel x:Name="PagePanel" Padding="28,6,28,28" Spacing="16" MaxWidth="956" HorizontalAlignment="Left">
             <StackPanel>
-                <ctl:ShadowText Text="Settings" TextStyle="{StaticResource PageTitle}" />
+                <TextBlock Text="Settings" Style="{StaticResource PageTitle}" />
                 <TextBlock Text="Everything is stored locally in %LOCALAPPDATA%\NOXEL. The only network use is the update check." Style="{StaticResource PageSubtitle}" />
             </StackPanel>
 
