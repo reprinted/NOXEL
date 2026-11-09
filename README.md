@@ -3,8 +3,9 @@
 A lightweight Windows 10/11 display utility: resolution and refresh-rate switching, native/stretched toggling,
 real color adjustments, unified presets, global hotkeys, a tray icon and a compact view, in one native WinUI 3 app.
 
-**Download:** [NOXEL-Releases](https://github.com/reprinted/NOXEL-Releases/releases/latest): `NOXEL-Setup.exe`
-(per-user installer, no admin rights) or `NOXEL.exe` (portable, self-contained, x64; no .NET install needed).
+**Official download (recommended):** [NOXEL-Setup.exe — Installer](https://github.com/reprinted/NOXEL-Releases/releases/latest). Installs NOXEL normally (per-user install, no administrator rights required).
+
+**Alternative download:** [NOXEL.exe — Portable Version](https://github.com/reprinted/NOXEL-Releases/releases/latest). Runs directly without installation (self-contained Windows x64 executable; no separate .NET installation needed). **This is the portable version, not the installer.**
 
 NOXEL is free software under the [GNU General Public License v3.0 only](LICENSE) (`GPL-3.0-only`).
 
