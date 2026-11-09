@@ -33,3 +33,4 @@ noxel.log
 *.cer
 .env
 *.env
+artifacts/preview/
