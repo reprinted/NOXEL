@@ -67,14 +67,11 @@ public sealed class ShadowText : Grid
         _shadow!.Mask = _text.GetAlphaMask();
         _sprite.Size = new Vector2((float)_text.ActualWidth, (float)_text.ActualHeight);
         bool dark = ActualTheme != ElementTheme.Light;
-        // Large text (titles, 26 px+) gets a slightly deeper offset than values so the depth reads at every size.
-        float size = (float)_text.FontSize;
-        float drop = size >= 26 ? 3.5f : 2.5f;
-        // Crisp dark drop shadow, no colour and no halo: short blur, small downward offset.
+        // One shadow for every ShadowText (the look of the title-bar wordmark): crisp dark drop, no colour, no halo.
         _shadow.Color = dark ? Color.FromArgb(255, 0x00, 0x00, 0x00) : Color.FromArgb(255, 0x1E, 0x18, 0x34);
         _shadow.Opacity = dark ? 0.9f : 0.30f;
         _shadow.BlurRadius = dark ? 2.5f : 3f;
-        _shadow.Offset = new Vector3(0, drop - 0.5f, 0);
+        _shadow.Offset = new Vector3(0, 2f, 0);
     }
 
     private void Release()
