@@ -27,6 +27,8 @@ First stable public release of NOXEL, a Windows 10/11 display utility.
 
 ### Interface
 * Liquid Glass interface with dark, light and follow-Windows themes, accent colors and glass intensity.
+* Window material: Mica (tinted from your wallpaper) or Translucent (whatever is behind NOXEL, blurred, under the
+  glass).
 * Responsive layout down to 420 × 520, Rajdhani and Inter typography, consistent rounded corners, subtle text
   depth on headings and key values.
 * Composition-driven animations, smooth scrolling and optional motion blur (off by default). NOXEL's own motion
