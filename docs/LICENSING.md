@@ -1,7 +1,7 @@
 # Licensing
 
 NOXEL's own code is licensed under **GPL-3.0-only** ([LICENSE](../LICENSE), the unmodified text from
-gnu.org). Copyright (C) 2026 barry. Each binary release on NOXEL-Releases has a matching source tag in
+gnu.org). Copyright (C) 2026 reprinted. Each binary release on NOXEL-Releases has a matching source tag in
 github.com/reprinted/NOXEL (`v1.0.0` ↔ `v1.0.0`).
 
 ## Shipped third-party components
@@ -26,7 +26,7 @@ GPL v3 requires that whoever distributes the program also offers the Correspondi
 needs to run, except "System Libraries". The Windows App SDK is bundled inside `NOXEL.exe` and is proprietary, and
 it does not clearly qualify as a System Library.
 
-* **For barry (the copyright holder):** not a problem. You can distribute your own code with any components you
+* **For reprinted (the copyright holder):** not a problem. You can distribute your own code with any components you
   are allowed to redistribute, and Microsoft's terms allow redistributing it inside applications.
 * **For anyone else redistributing NOXEL binaries or a modified version:** strictly, plain GPL-3.0-only doesn't
   grant permission to ship it with a proprietary non-system library.

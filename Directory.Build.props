@@ -6,14 +6,14 @@
     <Version>1.0.0</Version>
     <Product>NOXEL</Product>
     <!-- Developer / company name is configurable at build time: dotnet publish -p:NoxelDeveloper="Your Name" -->
-    <NoxelDeveloper Condition="'$(NoxelDeveloper)' == ''">barry</NoxelDeveloper>
+    <NoxelDeveloper Condition="'$(NoxelDeveloper)' == ''">reprinted</NoxelDeveloper>
     <Company>$(NoxelDeveloper)</Company>
     <Authors>$(NoxelDeveloper)</Authors>
     <!-- Build number shown in About. Override with -p:NoxelBuild=123 in CI. -->
     <NoxelBuild Condition="'$(NoxelBuild)' == ''">$([System.DateTime]::UtcNow.ToString("yyyyMMdd.HHmm"))</NoxelBuild>
     <InformationalVersion>$(Version)+$(NoxelBuild)</InformationalVersion>
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
-    <Copyright>Copyright (C) 2026 barry. GPL-3.0-only.</Copyright>
+    <Copyright>Copyright (C) 2026 reprinted. GPL-3.0-only.</Copyright>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
   </PropertyGroup>
 </Project>

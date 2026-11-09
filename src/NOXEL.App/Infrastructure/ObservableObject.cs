@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-only
-// Copyright (C) 2026 barry
+// Copyright (C) 2026 reprinted
 
 using System.ComponentModel;
 using System.Runtime.CompilerServices;

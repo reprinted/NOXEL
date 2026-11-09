@@ -61,7 +61,7 @@ The version is set only in `Directory.Build.props`. More in [docs/BUILD.md](docs
 
 ## License
 
-Copyright (C) 2026 barry
+Copyright (C) 2026 reprinted
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
 License as published by the Free Software Foundation, version 3 of the License only. It is distributed in the hope
