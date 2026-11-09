@@ -13,6 +13,10 @@ public enum ThemePreference { Dark, Light, System }
 /// <summary>Notify only (default) · download automatically · check only when asked.</summary>
 public enum UpdateMode { NotifyOnly, AutoDownload, Manual }
 
+/// <summary>Window backdrop when transparency is on: Mica (tinted from the wallpaper) or Translucent (Acrylic:
+/// the desktop and windows behind NOXEL, blurred).</summary>
+public enum WindowMaterial { Mica, Translucent }
+
 public sealed class StoredMode
 {
     public int Width { get; set; }
@@ -42,6 +46,7 @@ public sealed class AppSettings
     public string AccentHex { get; set; } = "#9B7BFF";
     public bool TransparencyEnabled { get; set; } = true;
     public double GlassIntensity { get; set; } = 70;
+    public WindowMaterial WindowMaterial { get; set; } = WindowMaterial.Mica;
     public bool AnimationsEnabled { get; set; } = true;
     /// <summary>NOXEL's own reduced-motion switch: stops all motion including the intro and smooth scrolling.</summary>
     public bool ReducedMotion { get; set; }

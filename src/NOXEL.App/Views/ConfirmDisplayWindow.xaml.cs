@@ -46,7 +46,7 @@ public sealed partial class ConfirmDisplayWindow : Window
         AppWindow.Closing += (_, _) => { if (!_resolved) Resolve(ChangeDecision.Revert); };
     }
 
-    public void ApplyTheme() => ThemeService.ApplyToWindow(this, Root, App.Settings);
+    public void ApplyTheme() => ThemeService.ApplyToWindow(this, Root, App.Settings, allowTranslucent: false);
 
     public void ShowCentered()
     {

@@ -119,7 +119,7 @@ public static class ThemeService
             }
         }
         ApplyAccent(ParseHex(settings.AccentHex) ?? Accent);
-        ApplyGlass(settings.TransparencyEnabled, settings.GlassIntensity);
+        ApplyGlass(settings);
         UiSettings.ColorValuesChanged += (_, _) => SystemThemeChanged?.Invoke();
     }
 
@@ -153,8 +153,11 @@ public static class ThemeService
     }
 
     /// <summary>Glass intensity 0..100. Higher = more see-through backdrop, more translucent panels.</summary>
-    public static void ApplyGlass(bool transparency, double intensity)
+    public static void ApplyGlass(AppSettings s)
     {
+        bool transparency = s.TransparencyEnabled;
+        bool translucent = transparency && s.WindowMaterial == WindowMaterial.Translucent && DesktopAcrylicController.IsSupported();
+        double intensity = s.GlassIntensity;
         var own = _resources is null ? null : FindOwnDictionary(_resources);
         if (own is null) return;
         double k = Math.Clamp(intensity, 0, 100) / 100.0;
@@ -165,8 +168,9 @@ public static class ThemeService
         }
         foreach (var theme in new[] { "Dark", "Light" })
         {
-            SetAlpha(theme, "NoxelWindowTint", transparency ? Lerp(0.97, 0.58, k) : 1.0);
-            SetAlpha(theme, "NoxelGlassFill", transparency ? Lerp(0.92, 0.55, k) : (theme == "Dark" ? 0.95 : 0.92));
+            // Translucent lets the blurred desktop through: a much lighter window tint, slightly lighter cards.
+            SetAlpha(theme, "NoxelWindowTint", !transparency ? 1.0 : translucent ? Lerp(0.62, 0.12, k) : Lerp(0.97, 0.58, k));
+            SetAlpha(theme, "NoxelGlassFill", !transparency ? (theme == "Dark" ? 0.95 : 0.92) : translucent ? Lerp(0.85, 0.48, k) : Lerp(0.92, 0.55, k));
             SetAlpha(theme, "NoxelGlassFillStrong", transparency ? Lerp(0.97, 0.78, k) : 1.0);
         }
     }
@@ -218,11 +222,16 @@ public static class ThemeService
     public static bool SystemReducedMotion => !UiSettings.AnimationsEnabled;
 
     /// <summary>Applies theme, backdrop and caption colours to a window.</summary>
-    public static void ApplyToWindow(Window window, FrameworkElement root, AppSettings s)
+    /// <param name="allowTranslucent">False for the display Keep/Revert prompt, which always stays easy to read.</param>
+    public static void ApplyToWindow(Window window, FrameworkElement root, AppSettings s, bool allowTranslucent = true)
     {
         root.RequestedTheme = ToElementTheme(s.Theme);
         bool dark = IsDark(s.Theme);
-        if (s.TransparencyEnabled)
+        if (s.TransparencyEnabled && allowTranslucent && s.WindowMaterial == WindowMaterial.Translucent && DesktopAcrylicController.IsSupported())
+        {
+            if (window.SystemBackdrop is not TranslucentBackdrop tb0 || tb0.Dark != dark) window.SystemBackdrop = new TranslucentBackdrop(dark);
+        }
+        else if (s.TransparencyEnabled)
         {
             if (MicaController.IsSupported())
             {

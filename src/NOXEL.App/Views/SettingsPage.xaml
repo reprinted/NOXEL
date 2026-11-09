@@ -53,7 +53,12 @@
                 <StackPanel Spacing="10">
                     <TextBlock Text="Visual effects" Style="{StaticResource CardTitle}" />
                     <ToggleSwitch x:Name="TransparencySwitch" Header="Transparency" Toggled="OnAppearanceToggled" />
-                    <TextBlock Style="{StaticResource FaintText}" Text="Mica glass behind the window. Off uses solid backgrounds." Margin="0,-6,0,0" />
+                    <TextBlock Style="{StaticResource FaintText}" Text="Glass behind the window. Off uses solid backgrounds." Margin="0,-6,0,0" />
+                    <ComboBox x:Name="MaterialBox" Header="Window material" MinWidth="280" SelectionChanged="OnMaterialChanged">
+                        <ComboBoxItem Content="Mica (tinted from your wallpaper)" />
+                        <ComboBoxItem Content="Translucent (your desktop, blurred)" />
+                    </ComboBox>
+                    <TextBlock Style="{StaticResource FaintText}" Text="Translucent shows whatever is behind NOXEL through the glass, blurred. Glass intensity sets how much shows through. Windows turns the blur off by itself when Transparency effects or battery saver are off." Margin="0,-6,0,0" />
                     <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="*" MaxWidth="360" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
                         <Slider x:Name="GlassSlider" Header="Glass intensity" Minimum="0" Maximum="100" StepFrequency="5" ValueChanged="OnGlassChanged" />
                     </Grid>

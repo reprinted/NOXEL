@@ -56,6 +56,7 @@ public sealed partial class SettingsPage : Page
             HexBox.Text = S.AccentHex;
             TransparencySwitch.IsOn = S.TransparencyEnabled;
             GlassSlider.Value = S.GlassIntensity;
+            MaterialBox.SelectedIndex = S.WindowMaterial == WindowMaterial.Translucent ? 1 : 0;
             AnimationsSwitch.IsOn = S.AnimationsEnabled;
             MotionBlurSwitch.IsOn = S.MotionBlur;
             SmoothScrollSwitch.IsOn = S.SmoothScrolling;
@@ -163,7 +164,7 @@ public sealed partial class SettingsPage : Page
         S.SmoothScrolling = SmoothScrollSwitch.IsOn;
         S.RespectSystemReducedMotion = RespectSystemSwitch.IsOn;
         S.ReducedMotion = ReducedMotionSwitch.IsOn;
-        ThemeService.ApplyGlass(S.TransparencyEnabled, S.GlassIntensity);
+        ThemeService.ApplyGlass(S);
         App.Current.ApplyThemeToAllWindows();
         UpdateMotionDependencies();
         SmoothScroll.ApplySettings();
@@ -179,6 +180,7 @@ public sealed partial class SettingsPage : Page
         bool anim = ThemeService.AnimationsAllowed(S);
         bool systemOff = ThemeService.SystemReducedMotion;
         GlassSlider.IsEnabled = S.TransparencyEnabled;
+        MaterialBox.IsEnabled = S.TransparencyEnabled;
         AnimationsSwitch.IsEnabled = !S.ReducedMotion;
         MotionBlurSwitch.IsEnabled = anim;
         MotionBlurNote.Text = anim
@@ -198,11 +200,20 @@ public sealed partial class SettingsPage : Page
             : "Windows \"Animation effects\" is on, so this switch makes no difference right now.";
     }
 
+    private void OnMaterialChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (_updating || MaterialBox.SelectedIndex < 0) return;
+        S.WindowMaterial = MaterialBox.SelectedIndex == 1 ? WindowMaterial.Translucent : WindowMaterial.Mica;
+        ThemeService.ApplyGlass(S);
+        App.Current.ApplyThemeToAllWindows();
+        Save();
+    }
+
     private void OnGlassChanged(object sender, Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
     {
         if (_updating) return;
         S.GlassIntensity = e.NewValue;
-        ThemeService.ApplyGlass(S.TransparencyEnabled, S.GlassIntensity);
+        ThemeService.ApplyGlass(S);
         Save();
     }
 
