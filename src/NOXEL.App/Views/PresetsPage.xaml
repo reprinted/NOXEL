@@ -21,7 +21,9 @@
                         <Setter Target="SideCol.Width" Value="0" />
                         <Setter Target="Editor.(Grid.Column)" Value="0" />
                         <Setter Target="Editor.(Grid.Row)" Value="1" />
-                        <Setter Target="PagePanel.Padding" Value="16,4,16,20" />
+                        <Setter Target="PagePanel.Padding" Value="16,8,16,24" />
+                        <Setter Target="PagePanel.Spacing" Value="16" />
+                        <Setter Target="PageHeading.FontSize" Value="26" />
                         <Setter Target="Toolbar.(Grid.Row)" Value="1" />
                         <Setter Target="Toolbar.(Grid.Column)" Value="0" />
                         <Setter Target="SearchBox.MaxWidth" Value="Infinity" />
@@ -34,9 +36,9 @@
         </VisualStateManager.VisualStateGroups>
 
         <ScrollView x:Name="PageScroll">
-            <StackPanel x:Name="PagePanel" Padding="28,6,28,28" Spacing="16" MaxWidth="1320">
+            <StackPanel x:Name="PagePanel" Padding="32,12,32,32" Spacing="24" MaxWidth="1320">
                 <StackPanel>
-                    <TextBlock Text="Presets" Style="{StaticResource PageTitle}" />
+                    <TextBlock Text="Presets" x:Name="PageHeading" Style="{StaticResource PageTitle}" />
                     <TextBlock Text="Save complete setups: resolution, refresh rate and colors together. Star favorites for the dashboard, tray and Ctrl + Shift + 1/2." Style="{StaticResource PageSubtitle}" />
                 </StackPanel>
 
@@ -51,16 +53,16 @@
                     </Grid.RowDefinitions>
                     <TextBox x:Name="SearchBox" PlaceholderText="Search presets" MaxWidth="320" HorizontalAlignment="Stretch" TextChanged="OnSearch" AutomationProperties.Name="Search presets" />
                     <StackPanel x:Name="Toolbar" Grid.Column="1" Orientation="Horizontal" Spacing="8">
-                        <Button Click="OnNew" Style="{StaticResource AccentButtonStyle}">
+                        <Button Click="OnNew" Style="{StaticResource NoxelPrimaryButton}" AutomationProperties.Name="New preset from current settings">
                             <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE710;" FontSize="13" /><TextBlock x:Name="LblNewfromcurrent" Text="New from current" /></StackPanel>
                         </Button>
-                        <Button Click="OnImport" ToolTipService.ToolTip="Import presets from a .json file (you can also drop files here)">
+                        <Button Click="OnImport" AutomationProperties.Name="Import presets" ToolTipService.ToolTip="Import presets from a .json file (you can also drop files here)">
                             <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE8B5;" FontSize="13" /><TextBlock x:Name="LblImport" Text="Import" /></StackPanel>
                         </Button>
-                        <Button Click="OnExportAll">
+                        <Button Click="OnExportAll" AutomationProperties.Name="Export all presets">
                             <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE72D;" FontSize="13" /><TextBlock x:Name="LblExportall" Text="Export all" /></StackPanel>
                         </Button>
-                        <Button Click="OnRestoreBuiltIns" ToolTipService.ToolTip="Reset built-in favorites and hotkeys and clear the Custom slot">
+                        <Button Click="OnRestoreBuiltIns" AutomationProperties.Name="Restore built-in presets" ToolTipService.ToolTip="Reset built-in favorites and hotkeys and clear the Custom slot">
                             <FontIcon Glyph="&#xE777;" FontSize="13" />
                         </Button>
                     </StackPanel>
@@ -87,7 +89,7 @@
                                             <ColumnDefinition Width="*" />
                                             <ColumnDefinition Width="Auto" />
                                         </Grid.ColumnDefinitions>
-                                        <Button Tag="{x:Bind}" Click="OnStar" Padding="6" Background="Transparent" BorderThickness="0" VerticalAlignment="Center"
+                                        <Button Tag="{x:Bind}" IsEnabled="{x:Bind CanChangeFavorite}" Click="OnStar" Padding="6" Background="Transparent" BorderThickness="0" VerticalAlignment="Center"
                                                 ToolTipService.ToolTip="{x:Bind FavTip}" AutomationProperties.Name="{x:Bind FavTip}">
                                             <FontIcon Glyph="{x:Bind FavGlyph}" FontSize="15" />
                                         </Button>
@@ -154,7 +156,7 @@
                                 <Grid.RowDefinitions>
                                     <RowDefinition /><RowDefinition />
                                 </Grid.RowDefinitions>
-                                <Button x:Name="SaveButton" Content="Save" Style="{StaticResource AccentButtonStyle}" HorizontalAlignment="Stretch" Click="OnSave" />
+                                <Button x:Name="SaveButton" Content="Save" Style="{StaticResource NoxelPrimaryButton}" HorizontalAlignment="Stretch" Click="OnSave" />
                                 <Button x:Name="ApplyButton" Grid.Column="1" Content="Apply" HorizontalAlignment="Stretch" Click="OnApply" />
                                 <Button Grid.Column="2" Content="Duplicate" HorizontalAlignment="Stretch" Click="OnDuplicate" />
                                 <Button Grid.Row="1" Content="Export…" HorizontalAlignment="Stretch" Click="OnExportOne" />

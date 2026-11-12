@@ -7,7 +7,7 @@ using Microsoft.UI.Xaml.Controls;
 namespace Noxel.App.Infrastructure;
 
 /// <summary>
-/// One place that builds NOXEL's dialogs so they all share the glass background, 22 px corners, equal button
+/// One place that builds NOXEL's dialogs so they all share the glass background, 24 px corners, equal button
 /// heights/padding/typography and safe keyboard defaults. Destructive actions use the rounded red
 /// "NoxelDangerButton" style and Cancel is always the default (Enter) and Escape action.
 /// The display Keep/Revert prompt is a separate always-on-top window and is deliberately not built here.
@@ -23,7 +23,7 @@ public static class Dialogs
             XamlRoot = root,
             RequestedTheme = theme,
             Title = title,
-            Content = content is string s ? new TextBlock { Text = s, Style = (Style)res["BodyText"], Foreground = (Microsoft.UI.Xaml.Media.Brush)res.ThemeDictionariesLookup("NoxelTextSecondary"), MaxWidth = 420 } : content,
+            Content = content is string s ? new TextBlock { Text = s, Style = (Style)res["DialogBodyText"], MaxWidth = 420 } : content,
             PrimaryButtonText = primaryText,
             CloseButtonText = closeText,
             // A ContentDialog paints its default button in the accent colour. Cancel should stay neutral, so when Cancel
@@ -32,9 +32,60 @@ public static class Dialogs
             PrimaryButtonStyle = (Style)res[destructive ? "NoxelDangerButton" : primaryIsDefault ? "NoxelDialogAccentButton" : "NoxelDialogButton"],
             CloseButtonStyle = (Style)res["NoxelDialogButton"],
         };
+        // WinUI's default-button state replaces the Style with its built-in AccentButtonStyle.
+        // Apply our existing template locally once the button exists; retain the native default-button semantics.
+        if (d.DefaultButton == ContentDialogButton.Primary)
+            WhenPartReady(d, "PrimaryButton", button =>
+            {
+                var style = (Style)res["NoxelPrimaryButton"];
+                var template = style.Setters.OfType<Setter>().First(s => s.Property == Control.TemplateProperty);
+                button.Template = (ControlTemplate)template.Value;
+                button.CornerRadius = (CornerRadius)res["NoxelRadiusPill"];
+                button.Padding = new Thickness(18, 9, 18, 9);
+                button.MinHeight = 44;
+                // The stock accent style also resets these; keep them equal to NoxelPrimaryButton / the Cancel button.
+                button.FontWeight = Microsoft.UI.Text.FontWeights.SemiBold;
+                button.BorderThickness = new Thickness(1);
+                button.HorizontalContentAlignment = HorizontalAlignment.Center;
+                button.VerticalContentAlignment = VerticalAlignment.Center;
+                button.FocusVisualMargin = new Thickness(-3);
+                button.UseSystemFocusVisuals = true;
+                Animations.Motion.SetHoverLift(button, true);
+            });
         if (d.DefaultButton == ContentDialogButton.None)
-            d.Opened += (_, _) => (FindByName(d, "CloseButton") as Control)?.Focus(FocusState.Programmatic);
+        {
+            WhenPartReady(d, "CloseButton", button => button.Focus(FocusState.Programmatic));
+            // Focus that nobody asked for (the dialog's own initial focus, or focus restored when the window becomes
+            // active again) must never land on the action button, or a stray Enter would delete. Send it to Cancel.
+            // Focus moved by the user (Tab, arrow keys, click, touch) is left alone.
+            d.GettingFocus += (_, a) =>
+            {
+                if (a.FocusState == FocusState.Programmatic && a.NewFocusedElement is Button { Name: "PrimaryButton" }
+                    && FindByName(d, "CloseButton") is Button close)
+                    a.TrySetNewFocusedElement(close);
+            };
+        }
         return d;
+    }
+
+    /// <summary>
+    /// Runs <paramref name="action"/> on a dialog button as soon as it exists. At Opened the dialog's template is not
+    /// always applied yet (for example when it opens while NOXEL is not the active window), so a lookup made only
+    /// there can find nothing and silently skip the styling or the safe "focus Cancel" default.
+    /// </summary>
+    private static void WhenPartReady(ContentDialog d, string name, Action<Button> action)
+    {
+        bool done = false;
+        void OnLayout(object? sender, object e) => Try();
+        void Try()
+        {
+            if (done || FindByName(d, name) is not Button button) return;
+            done = true;
+            d.LayoutUpdated -= OnLayout;
+            action(button);
+        }
+        d.Opened += (_, _) => { Try(); if (!done) d.LayoutUpdated += OnLayout; };
+        d.Closed += (_, _) => d.LayoutUpdated -= OnLayout;
     }
 
     private static ContentDialog? _open;

@@ -20,17 +20,23 @@
                         <Setter Target="SideCol.Width" Value="0" />
                         <Setter Target="SidePanel.(Grid.Column)" Value="0" />
                         <Setter Target="SidePanel.(Grid.Row)" Value="1" />
-                        <Setter Target="PagePanel.Padding" Value="16,4,16,20" />
+                        <Setter Target="PagePanel.Padding" Value="16,8,16,24" />
+                        <Setter Target="PagePanel.Spacing" Value="16" />
+                        <Setter Target="PageHeading.FontSize" Value="26" />
                         <Setter Target="MasterPanel.(Grid.Row)" Value="1" />
                         <Setter Target="MasterPanel.(Grid.Column)" Value="0" />
                         <Setter Target="MasterPanel.HorizontalAlignment" Value="Left" />
+                        <Setter Target="LiveSwitch.(Grid.Row)" Value="1" />
+                        <Setter Target="LiveSwitch.(Grid.Column)" Value="0" />
+                        <Setter Target="LiveSwitch.HorizontalAlignment" Value="Left" />
+                        <Setter Target="LookDetails.(Grid.ColumnSpan)" Value="2" />
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
 
         <ScrollView x:Name="PageScroll">
-            <StackPanel x:Name="PagePanel" Padding="28,6,28,28" Spacing="16" MaxWidth="1320">
+            <StackPanel x:Name="PagePanel" Padding="32,12,32,32" Spacing="24" MaxWidth="1320">
                 <Grid x:Name="HeaderGrid" RowSpacing="8">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
@@ -41,7 +47,7 @@
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                     <StackPanel>
-                        <TextBlock Text="Color Studio" Style="{StaticResource PageTitle}" />
+                        <TextBlock Text="Color Studio" x:Name="PageHeading" Style="{StaticResource PageTitle}" />
                         <TextBlock x:Name="Subtitle" Text="Adjust your display colors. Changes apply to all displays." Style="{StaticResource PageSubtitle}" />
                     </StackPanel>
                     <StackPanel x:Name="MasterPanel" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" Orientation="Horizontal" Spacing="12">
@@ -65,12 +71,20 @@
 
                     <Border Style="{StaticResource GlassCard}" VerticalAlignment="Top" Padding="20,18">
                         <StackPanel Spacing="4">
-                            <Grid Margin="0,0,0,8">
-                                <StackPanel>
+                            <Grid Margin="0,0,0,8" ColumnSpacing="12" RowSpacing="8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <StackPanel x:Name="LookDetails">
                                     <TextBlock x:Name="LookName" Text="Custom look" Style="{StaticResource CardTitle}" />
                                     <TextBlock x:Name="LookSummary" Style="{StaticResource FaintText}" />
                                 </StackPanel>
-                                <ToggleSwitch x:Name="LiveSwitch" HorizontalAlignment="Right" OnContent="Live preview" OffContent="Live preview" Toggled="OnLiveToggled"
+                                <ToggleSwitch x:Name="LiveSwitch" Grid.Column="1" HorizontalAlignment="Right" OnContent="Live preview" OffContent="Live preview" Toggled="OnLiveToggled"
                                               AutomationProperties.Name="Live preview" ToolTipService.ToolTip="Apply changes while you drag" />
                             </Grid>
                             <StackPanel x:Name="Rows" Spacing="6" />
@@ -83,8 +97,8 @@
                         <Border Style="{StaticResource GlassCard}">
                             <StackPanel Spacing="10">
                                 <TextBlock Text="Actions" Style="{StaticResource CardTitle}" />
-                                <Button x:Name="ApplyButton" Content="Apply look" Style="{StaticResource AccentButtonStyle}" HorizontalAlignment="Stretch" Click="OnApply" />
-                                <ToggleButton x:Name="CompareButton" HorizontalAlignment="Stretch" CornerRadius="{StaticResource NoxelRadiusControl}" Checked="OnCompare" Unchecked="OnCompare"
+                                <Button x:Name="ApplyButton" Content="Apply look" Style="{StaticResource NoxelPrimaryButton}" HorizontalAlignment="Stretch" Click="OnApply" />
+                                <ToggleButton x:Name="CompareButton" HorizontalAlignment="Stretch" CornerRadius="{StaticResource NoxelRadiusPill}" Checked="OnCompare" Unchecked="OnCompare"
                                               Content="Compare with original" AutomationProperties.Name="Compare with original colors" />
                                 <Button Content="Save as preset…" HorizontalAlignment="Stretch" Click="OnSave" />
                                 <Button x:Name="UpdatePresetButton" HorizontalAlignment="Stretch" Click="OnUpdatePreset" />
@@ -96,15 +110,23 @@
                         <Border Style="{StaticResource GlassCard}">
                             <StackPanel Spacing="10">
                                 <TextBlock Text="Import a look" Style="{StaticResource CardTitle}" />
-                                <TextBox x:Name="ImportBox" PlaceholderText="Paste a NOXEL-LOOK code or preset JSON" AcceptsReturn="True" TextWrapping="Wrap"
-                                         MaxHeight="110" ScrollViewer.VerticalScrollBarVisibility="Auto" FontFamily="{StaticResource NoxelMono}" FontSize="12"
+                                <Grid>
+                                <TextBox x:Name="ImportBox" AcceptsReturn="True" TextWrapping="Wrap" TextChanged="OnImportTextChanged"
+                                         MinHeight="44" MaxHeight="110" Padding="12,10" VerticalContentAlignment="Center"
+                                         ScrollViewer.VerticalScrollBarVisibility="Auto" FontFamily="{StaticResource NoxelMono}" FontSize="12"
                                          AutomationProperties.Name="Look code to import" KeyDown="OnImportKey" />
+                                <TextBlock x:Name="ImportPlaceholder" Text="Paste a NOXEL-LOOK code or preset JSON"
+                                           HorizontalAlignment="Stretch" VerticalAlignment="Center" TextAlignment="Left"
+                                           Margin="12,10" TextWrapping="Wrap" IsHitTestVisible="False"
+                                           FontFamily="{StaticResource NoxelMono}" FontSize="12"
+                                           Foreground="{ThemeResource NoxelTextSecondary}" AutomationProperties.AccessibilityView="Raw" />
+                                </Grid>
                                 <Grid ColumnSpacing="8">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
-                                    <Button Content="Import" Style="{StaticResource AccentButtonStyle}" HorizontalAlignment="Stretch" Click="OnImportLook" />
+                                    <Button Content="Import" Style="{StaticResource NoxelPrimaryButton}" HorizontalAlignment="Stretch" Click="OnImportLook" />
                                     <Button Grid.Column="1" Content="From file…" HorizontalAlignment="Stretch" Click="OnImportFile"
                                             ToolTipService.ToolTip="Load colours from a NOXEL preset file (.json / .noxel)" />
                                 </Grid>

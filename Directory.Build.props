@@ -3,7 +3,7 @@
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
     <Product>NOXEL</Product>
     <!-- Developer / company name is configurable at build time: dotnet publish -p:NoxelDeveloper="Your Name" -->
     <NoxelDeveloper Condition="'$(NoxelDeveloper)' == ''">reprinted</NoxelDeveloper>

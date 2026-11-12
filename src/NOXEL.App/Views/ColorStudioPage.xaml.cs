@@ -128,6 +128,8 @@ public sealed partial class ColorStudioPage : Page
             var number = new NumberBox
             {
                 Minimum = range.Min, Maximum = range.Max, Value = range.Default, Width = 92,
+                MinHeight = 44, Padding = new Thickness(12, 10, 12, 10),
+                VerticalContentAlignment = VerticalAlignment.Center,
                 SpinButtonPlacementMode = NumberBoxSpinButtonPlacementMode.Hidden,
                 SmallChange = range.Step, LargeChange = range.Step * 10, VerticalAlignment = VerticalAlignment.Center,
                 NumberFormatter = new global::Windows.Globalization.NumberFormatting.DecimalFormatter
@@ -315,6 +317,12 @@ public sealed partial class ColorStudioPage : Page
     private void OnRetry(object sender, RoutedEventArgs e) => _c.RetryColorEngines();
 
     // ------------------------------------------------------------ import / copy a look
+
+    private void OnImportTextChanged(object sender, TextChangedEventArgs e)
+    {
+        if (ImportPlaceholder is not null)
+            ImportPlaceholder.Visibility = string.IsNullOrEmpty(ImportBox.Text) ? Visibility.Visible : Visibility.Collapsed;
+    }
 
     private void OnImportKey(object sender, Microsoft.UI.Xaml.Input.KeyRoutedEventArgs e)
     {

@@ -3,6 +3,27 @@
 `scripts/release.ps1` copies the section for the version being released into the GitHub release, so each version
 needs a `## x.y.z` section here before it can be released.
 
+## 1.0.2
+
+**Downloads**
+* `NOXEL-Setup.exe` — Installer for Windows x64.
+* `NOXEL.exe` — Portable, self-contained Windows x64 app.
+* `NOXEL-source.zip` — Matching source code and build instructions (GPL-3.0-only).
+
+### Changes
+* Refreshed typography, rounded controls, spacing, layered surfaces and responsive layouts.
+* Left-aligned, vertically centered text entry and neutral buttons with grey hover feedback.
+* Theme-aware dropdown surfaces, with translucent material where supported by Windows.
+* Compact view shows favorite presets only. Original is always a favorite.
+* New installations default to dark translucent styling with a purple accent and 75% glass intensity.
+  Existing saved preferences are preserved. Glass intensity now changes in single steps.
+* Window placement is saved when the window is resized or moved.
+* Improved dialog focus, disabled controls, screen-reader labels and motion cleanup.
+
+### Validation
+* 84 automated tests pass. The settings were also tested by the user.
+* High-contrast themes, large Windows text, physical touch and some dropdown edge cases still need broader testing.
+
 ## 1.0.1
 
 **Downloads**

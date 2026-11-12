@@ -11,16 +11,18 @@
                 <VisualState x:Name="Medium" />
                 <VisualState x:Name="Narrow">
                     <VisualState.Setters>
-                        <Setter Target="PagePanel.Padding" Value="16,4,16,20" />
+                        <Setter Target="PagePanel.Padding" Value="16,8,16,24" />
+                        <Setter Target="PagePanel.Spacing" Value="16" />
+                        <Setter Target="PageHeading.FontSize" Value="26" />
                         <Setter Target="ThemeRadios.MaxColumns" Value="1" />
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
     <ScrollView x:Name="PageScroll">
-        <StackPanel x:Name="PagePanel" Padding="28,6,28,28" Spacing="16" MaxWidth="956" HorizontalAlignment="Left">
+        <StackPanel x:Name="PagePanel" Padding="32,12,32,32" Spacing="24" MaxWidth="956" HorizontalAlignment="Left">
             <StackPanel>
-                <TextBlock Text="Settings" Style="{StaticResource PageTitle}" />
+                <TextBlock Text="Settings" x:Name="PageHeading" Style="{StaticResource PageTitle}" />
                 <TextBlock Text="Everything is stored locally in %LOCALAPPDATA%\NOXEL. The only network use is the update check." Style="{StaticResource PageSubtitle}" />
             </StackPanel>
 
@@ -34,7 +36,7 @@
                         <x:String>Follow Windows</x:String>
                     </RadioButtons>
                     <TextBlock Text="Accent color" Style="{StaticResource BodyText}" />
-                    <VariableSizedWrapGrid x:Name="Swatches" Orientation="Horizontal" ItemWidth="42" ItemHeight="42" />
+                    <VariableSizedWrapGrid x:Name="Swatches" Orientation="Horizontal" ItemWidth="48" ItemHeight="48" />
                     <Grid ColumnSpacing="8" RowSpacing="6">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
@@ -60,7 +62,7 @@
                     </ComboBox>
                     <TextBlock Style="{StaticResource FaintText}" Text="Translucent shows whatever is behind NOXEL through the glass, blurred. Glass intensity sets how much shows through. Windows turns the blur off by itself when Transparency effects or battery saver are off." Margin="0,-6,0,0" />
                     <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="*" MaxWidth="360" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
-                        <Slider x:Name="GlassSlider" Header="Glass intensity" Minimum="0" Maximum="100" StepFrequency="5" ValueChanged="OnGlassChanged" />
+                        <Slider x:Name="GlassSlider" Header="Glass intensity" Minimum="0" Maximum="100" StepFrequency="1" SmallChange="1" LargeChange="1" ValueChanged="OnGlassChanged" />
                     </Grid>
                     <ToggleSwitch x:Name="AnimationsSwitch" Header="Enable animations" Toggled="OnAppearanceToggled" />
                     <TextBlock Style="{StaticResource FaintText}" Text="Page transitions, hover and press feedback, notices and slider movement. Off makes every change instant." Margin="0,-6,0,0" />
@@ -180,7 +182,7 @@
                         <Button x:Name="UpdCheck" Content="Check for updates" Click="OnUpdateCheck" />
                         <Button x:Name="UpdNotes" Content="View release notes" Click="OnUpdateNotes" />
                         <Button x:Name="UpdDownload" Content="Download update" Click="OnUpdateDownload" />
-                        <Button x:Name="UpdInstall" Content="Install update" Style="{StaticResource AccentButtonStyle}" Click="OnUpdateInstall" />
+                        <Button x:Name="UpdInstall" Content="Install update" Style="{StaticResource NoxelPrimaryButton}" Click="OnUpdateInstall" />
                     </VariableSizedWrapGrid>
                     <TextBlock Style="{StaticResource FaintText}"
                                Text="Updates come only from github.com/reprinted/NOXEL-Releases over HTTPS. A download is installed only after its size, SHA-256 checksum and version match the release, and never during a display Keep/Revert confirmation. Checks happen shortly after start and once a day; nothing runs in between." />

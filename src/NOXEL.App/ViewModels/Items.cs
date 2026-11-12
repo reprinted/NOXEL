@@ -42,7 +42,8 @@ public sealed class PresetItem
     public string Summary => Preset.Summary();
     public string Description => string.IsNullOrWhiteSpace(Preset.Description) ? Summary : Preset.Description;
     public string FavGlyph => Preset.IsFavorite ? "" : "";
-    public string FavTip => Preset.IsFavorite ? "Remove from favorites" : "Add to favorites";
+    public bool CanChangeFavorite => Preset.Id != BuiltInPresets.OriginalId;
+    public string FavTip => !CanChangeFavorite ? "Original is always a favorite" : Preset.IsFavorite ? "Remove from favorites" : "Add to favorites";
     public Visibility LockVisibility => Preset.IsBuiltIn ? Visibility.Visible : Visibility.Collapsed;
     public Visibility ActiveVisibility => IsActive ? Visibility.Visible : Visibility.Collapsed;
     public string HotkeyText => Preset.Hotkey ?? "";

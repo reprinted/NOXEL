@@ -19,11 +19,17 @@ public static class Program
         Args = args;
         // Testing only: keep a throwaway copy's settings, presets and downloads apart from the real ones.
         var testScope = "";
+#if NOXEL_LIVE_PREVIEW
+        // The fixed local preview EXE works by double-click, without an environment-variable launcher.
+        AppPaths.Root = Path.Combine(Path.GetDirectoryName(Environment.ProcessPath!)!, "data");
+        testScope = ".live-preview";
+#else
         if (Environment.GetEnvironmentVariable("NOXEL_TEST_DATA_DIR") is { Length: > 0 } testData && Path.IsPathFullyQualified(testData))
         {
             AppPaths.Root = testData;
             testScope = ".test";
         }
+#endif
         AppDomain.CurrentDomain.UnhandledException += (_, e) =>
         {
             if (e.ExceptionObject is Exception ex) Log.Crash("Unhandled exception", ex);

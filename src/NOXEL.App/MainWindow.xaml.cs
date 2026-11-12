@@ -44,7 +44,6 @@ public sealed partial class MainWindow : Window
         Root.SizeChanged += (_, e) => UpdateTitleBar(e.NewSize.Width);
         AppWindow.Closing += OnClosing;
         AppWindow.Changed += OnWindowChanged;
-        ThemeService.SystemThemeChanged += () => DispatcherQueue.TryEnqueue(ApplyTheme);
 
         if (_intro)
         {
@@ -166,6 +165,11 @@ public sealed partial class MainWindow : Window
 
     private void OnWindowChanged(AppWindow sender, AppWindowChangedEventArgs args)
     {
+        if (_ready && (args.DidSizeChange || args.DidPositionChange || args.DidPresenterChange))
+        {
+            WindowHelper.SavePlacement(this, App.Settings.MainPlacement);
+            C?.SaveSoon();
+        }
         if (args.DidPresenterChange || args.DidSizeChange)
         {
             if (App.Settings.MinimizeToTray && _ready && sender.Presenter is OverlappedPresenter { State: OverlappedPresenterState.Minimized })

@@ -320,6 +320,9 @@ public sealed partial class PresetsPage : Page
         var color = new CheckBox { Content = "Include the current Color Studio look", IsChecked = true };
         var dlg = Dialogs.Create(XamlRoot, ActualTheme, "New preset from current settings",
             new StackPanel { Spacing = 12, Children = { name, display, color } }, "Create", primaryIsDefault: true);
+        // A preset needs a display mode, colors, or both: Create is unavailable (and Enter does nothing) until one is ticked.
+        void Sync(object s, RoutedEventArgs a) => dlg.IsPrimaryButtonEnabled = display.IsChecked == true || color.IsChecked == true;
+        display.Checked += Sync; display.Unchecked += Sync; color.Checked += Sync; color.Unchecked += Sync;
         if (await dlg.ShowSafeAsync() != ContentDialogResult.Primary) return;
         if (display.IsChecked != true && color.IsChecked != true) { _c.Raise("Preset", "Include a display mode, colors, or both.", NoticeKind.Warning); return; }
         _sel = _c.CaptureCurrent(string.IsNullOrWhiteSpace(name.Text) ? "My preset" : name.Text.Trim(), display.IsChecked == true, color.IsChecked == true);

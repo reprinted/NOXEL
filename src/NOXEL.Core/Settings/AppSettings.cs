@@ -45,8 +45,8 @@ public sealed class AppSettings
     public ThemePreference Theme { get; set; } = ThemePreference.Dark;
     public string AccentHex { get; set; } = "#9B7BFF";
     public bool TransparencyEnabled { get; set; } = true;
-    public double GlassIntensity { get; set; } = 70;
-    public WindowMaterial WindowMaterial { get; set; } = WindowMaterial.Mica;
+    public double GlassIntensity { get; set; } = 75;
+    public WindowMaterial WindowMaterial { get; set; } = WindowMaterial.Translucent;
     public bool AnimationsEnabled { get; set; } = true;
     /// <summary>NOXEL's own reduced-motion switch: stops all motion including the intro and smooth scrolling.</summary>
     public bool ReducedMotion { get; set; }
@@ -62,8 +62,8 @@ public sealed class AppSettings
 
     // Startup & window
     public bool StartWithWindows { get; set; }
-    public bool MinimizeToTray { get; set; }
-    public bool CloseToTray { get; set; } = true;
+    public bool MinimizeToTray { get; set; } = true;
+    public bool CloseToTray { get; set; }
     public bool PlayIntro { get; set; } = true;
     /// <summary>Legacy (1.0 builds): migrated to <see cref="RespectSystemReducedMotion"/> = false.</summary>
     public bool IntroIgnoresSystemMotion { get; set; }
@@ -73,7 +73,7 @@ public sealed class AppSettings
     public bool TrayHintShown { get; set; }
 
     // Hotkeys
-    public bool HotkeysEnabled { get; set; } = true;
+    public bool HotkeysEnabled { get; set; }
     public Dictionary<HotkeyAction, HotkeyBinding> Hotkeys { get; set; } = HotkeyDefaults.Create();
 
     // Display

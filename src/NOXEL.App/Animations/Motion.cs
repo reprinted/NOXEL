@@ -5,6 +5,7 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Input;
 using Noxel.App.Services;
@@ -130,25 +131,47 @@ public static class Motion
 
     private static void OnHoverLiftChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
-        if (d is not FrameworkElement fe || e.NewValue is not true || Wired.TryGetValue(fe, out _)) return;
+        if (d is not FrameworkElement fe) return;
+        if (e.NewValue is not true) { ResetInteraction(fe); return; }
+        if (Wired.TryGetValue(fe, out _)) return;
         Wired.Add(fe, new object());
         // handledEventsToo: Buttons mark pointer events handled; we still want the visual response.
         fe.AddHandler(UIElement.PointerEnteredEvent, new PointerEventHandler((_, _) => Lift(fe, -2)), true);
         fe.AddHandler(UIElement.PointerExitedEvent, new PointerEventHandler((_, _) => { Lift(fe, 0); Squeeze(fe, 1f); }), true);
         fe.AddHandler(UIElement.PointerCanceledEvent, new PointerEventHandler((_, _) => { Lift(fe, 0); Squeeze(fe, 1f); }), true);
+        fe.AddHandler(UIElement.PointerCaptureLostEvent, new PointerEventHandler((_, _) => { Lift(fe, 0); Squeeze(fe, 1f); }), true);
         fe.AddHandler(UIElement.PointerPressedEvent, new PointerEventHandler((_, _) => Squeeze(fe, 0.985f)), true);
         fe.AddHandler(UIElement.PointerReleasedEvent, new PointerEventHandler((_, _) => Squeeze(fe, 1f)), true);
+        fe.Unloaded += (_, _) => ResetInteraction(fe);
+        if (fe is Control control)
+            control.IsEnabledChanged += (_, _) => { if (!control.IsEnabled) ResetInteraction(control); };
+    }
+
+    /// <summary>Release transient transforms immediately when motion preferences change.</summary>
+    public static void ResetInteractions()
+    {
+        foreach (var entry in Wired)
+            if (entry.Key is FrameworkElement { IsLoaded: true }) ResetInteraction(entry.Key);
+    }
+
+    private static void ResetInteraction(UIElement element)
+    {
+        var visual = V(element);
+        visual.StopAnimation("Translation");
+        visual.StopAnimation("Scale");
+        visual.Properties.InsertVector3("Translation", Vector3.Zero);
+        visual.Scale = Vector3.One;
     }
 
     private static void Lift(FrameworkElement fe, float y)
     {
-        if (!Enabled) return;
+        if (!Enabled || !GetHoverLift(fe) || fe is Control { IsEnabled: false }) { ResetInteraction(fe); return; }
         AnimateTranslation(V(fe), new Vector3(0, y, 0), Hover);
     }
 
     private static void Squeeze(FrameworkElement fe, float s)
     {
-        if (!Enabled) return;
+        if (!Enabled || !GetHoverLift(fe) || fe is Control { IsEnabled: false }) { ResetInteraction(fe); return; }
         var v = V(fe);
         v.CenterPoint = new Vector3((float)fe.ActualWidth / 2, (float)fe.ActualHeight / 2, 0);
         var c = v.Compositor;

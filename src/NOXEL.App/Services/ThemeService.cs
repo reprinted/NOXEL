@@ -2,6 +2,8 @@
 // Copyright (C) 2026 reprinted
 
 using Microsoft.UI;
+using System.Runtime.CompilerServices;
+using Microsoft.UI.System;
 using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
@@ -80,6 +82,11 @@ public static class ThemeService
         ("ListViewItemSelectionIndicatorBrush", Role.Fill),
         ("ListViewItemSelectionIndicatorPointerOverBrush", Role.Fill),
         ("ListViewItemSelectionIndicatorPressedBrush", Role.Fill),
+        ("ComboBoxItemPillFillBrush", Role.Fill),
+        ("ComboBoxBackgroundBorderBrushFocused", Role.Fill),
+        ("ComboBoxItemBackgroundSelected", Role.Soft),
+        ("ComboBoxItemBackgroundSelectedUnfocused", Role.Soft),
+        ("ComboBoxItemBackgroundSelectedPointerOver", Role.Soft),
         ("ProgressRingForegroundThemeBrush", Role.Fill),
         ("ProgressBarForeground", Role.Fill),
         ("HyperlinkButtonForeground", Role.AccentText),
@@ -92,6 +99,10 @@ public static class ThemeService
     private static readonly Dictionary<(string Theme, Role Role), List<SolidColorBrush>> Brushes = new();
     private static ResourceDictionary? _resources;
     private static readonly UISettings UiSettings = new();
+    private static readonly AccessibilitySettings Accessibility = new();
+    private static readonly ConditionalWeakTable<Window, ThemeSettings> ObservedWindows = new();
+
+    public static bool HighContrast => Accessibility.HighContrast;
 
     public static Color Accent { get; private set; } = Color.FromArgb(255, 0x9B, 0x7B, 0xFF);
     public static event Action? SystemThemeChanged;
@@ -121,6 +132,8 @@ public static class ThemeService
         ApplyAccent(ParseHex(settings.AccentHex) ?? Accent);
         ApplyGlass(settings);
         UiSettings.ColorValuesChanged += (_, _) => SystemThemeChanged?.Invoke();
+        if (OperatingSystem.IsWindowsVersionAtLeast(10, 0, 19041))
+            UiSettings.AnimationsEnabledChanged += (_, _) => SystemThemeChanged?.Invoke();
     }
 
     private static ResourceDictionary? FindOwnDictionary(ResourceDictionary app) =>
@@ -169,6 +182,12 @@ public static class ThemeService
         foreach (var theme in new[] { "Dark", "Light" })
         {
             // Translucent lets the blurred desktop through: a much lighter window tint, slightly lighter cards.
+            if (own.ThemeDictionaries.TryGetValue(theme, out var dictionary) && dictionary is ResourceDictionary resources
+                && resources.TryGetValue("ComboBoxDropDownBackground", out var popupBrush) && popupBrush is AcrylicBrush acrylic)
+            {
+                acrylic.AlwaysUseFallback = !translucent;
+                acrylic.TintOpacity = Lerp(0.9, 0.55, k);
+            }
             SetAlpha(theme, "NoxelWindowTint", !transparency ? 1.0 : translucent ? Lerp(0.62, 0.12, k) : Lerp(0.97, 0.58, k));
             SetAlpha(theme, "NoxelGlassFill", !transparency ? (theme == "Dark" ? 0.95 : 0.92) : translucent ? Lerp(0.85, 0.48, k) : Lerp(0.92, 0.55, k));
             SetAlpha(theme, "NoxelGlassFillStrong", transparency ? Lerp(0.97, 0.78, k) : 1.0);
@@ -225,9 +244,30 @@ public static class ThemeService
     /// <param name="allowTranslucent">False for the display Keep/Revert prompt, which always stays easy to read.</param>
     public static void ApplyToWindow(Window window, FrameworkElement root, AppSettings s, bool allowTranslucent = true)
     {
+        if (!ObservedWindows.TryGetValue(window, out _))
+        {
+            // AccessibilitySettings.HighContrastChanged requires CoreWindow; use the desktop API here.
+            var themeSettings = ThemeSettings.CreateForWindowId(window.AppWindow.Id);
+            ObservedWindows.Add(window, themeSettings);
+            void Refresh() => root.DispatcherQueue.TryEnqueue(() =>
+            {
+                if (!Animations.Motion.Enabled) Animations.Motion.ResetInteractions();
+                ApplyToWindow(window, root, s, allowTranslucent);
+            });
+            void OnContrastChanged(ThemeSettings sender, object args) => SystemThemeChanged?.Invoke();
+            themeSettings.Changed += OnContrastChanged;
+            SystemThemeChanged += Refresh;
+            window.Closed += (_, _) =>
+            {
+                themeSettings.Changed -= OnContrastChanged;
+                SystemThemeChanged -= Refresh;
+                ObservedWindows.Remove(window);
+            };
+        }
         root.RequestedTheme = ToElementTheme(s.Theme);
         bool dark = IsDark(s.Theme);
-        if (s.TransparencyEnabled && allowTranslucent && s.WindowMaterial == WindowMaterial.Translucent && DesktopAcrylicController.IsSupported())
+        if (HighContrast) window.SystemBackdrop = null;
+        else if (s.TransparencyEnabled && allowTranslucent && s.WindowMaterial == WindowMaterial.Translucent && DesktopAcrylicController.IsSupported())
         {
             if (window.SystemBackdrop is not TranslucentBackdrop tb0 || tb0.Dark != dark) window.SystemBackdrop = new TranslucentBackdrop(dark);
         }
@@ -246,6 +286,15 @@ public static class ThemeService
         else window.SystemBackdrop = null;
 
         var tb = window.AppWindow.TitleBar;
+        if (HighContrast)
+        {
+            tb.ButtonBackgroundColor = tb.ButtonInactiveBackgroundColor = UiSettings.UIElementColor(UIElementType.Window);
+            tb.ButtonForegroundColor = UiSettings.UIElementColor(UIElementType.WindowText);
+            tb.ButtonInactiveForegroundColor = UiSettings.UIElementColor(UIElementType.GrayText);
+            tb.ButtonHoverBackgroundColor = tb.ButtonPressedBackgroundColor = UiSettings.UIElementColor(UIElementType.Highlight);
+            tb.ButtonHoverForegroundColor = tb.ButtonPressedForegroundColor = UiSettings.UIElementColor(UIElementType.HighlightText);
+            return;
+        }
         var fg = dark ? Color.FromArgb(255, 0xEE, 0xEC, 0xF8) : Color.FromArgb(255, 0x1B, 0x18, 0x30);
         tb.ButtonBackgroundColor = Colors.Transparent;
         tb.ButtonInactiveBackgroundColor = Colors.Transparent;

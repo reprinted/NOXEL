@@ -49,6 +49,21 @@ public sealed partial class CompactWindow : Window
         };
         Refresh();
         Root.Loaded += (_, _) => Motion.WindowContentEnter(Root);
+        ContentLayout.SizeChanged += (_, _) => FitContentHeight();
+    }
+
+    private void FitContentHeight()
+    {
+        // The compact view stays narrow but grows vertically with Windows text size. ContentLayout is top-aligned in the
+        // ScrollViewer: if it stretched, ActualHeight would be the viewport height and the window would grow to the screen.
+        // On a short work area the surrounding ScrollViewer keeps the lower controls reachable.
+        double scale = WindowHelper.Scale(this);
+        int available = DisplayArea.GetFromWindowId(AppWindow.Id, DisplayAreaFallback.Nearest).WorkArea.Height;
+        // Size the whole window (not the client area: ResizeClient adds the hidden caption and made it ~40 units taller
+        // than the content). 12 units cover the bottom window border, so the controls sit tight like in 1.0.1.
+        int height = Math.Min(available - (int)(16 * scale), (int)Math.Ceiling((ContentLayout.ActualHeight + 12) * scale));
+        if (ContentLayout.ActualHeight > 0 && AppWindow.Size.Height != height)
+            AppWindow.Resize(new global::Windows.Graphics.SizeInt32((int)(420 * scale), height));
     }
 
     public void ApplyTheme() => ThemeService.ApplyToWindow(this, Root, App.Settings);
@@ -70,8 +85,8 @@ public sealed partial class CompactWindow : Window
             ModeText.Text = (m is null ? "No display" : $"{m.Current.Width}×{m.Current.Height} · {m.CurrentRefreshText}") +
                             (hk is null ? "" : $" · {hk}");
             ColorSwitch.IsOn = _c.ColorEnabled;
-            var list = _c.Presets.Favorites.Concat(_c.Presets.All.Where(p => !p.IsFavorite)).ToList();
-            PresetBox.ItemsSource = list.Select(p => p.IsFavorite ? "★ " + p.Name : p.Name).ToList();
+            var list = _c.Presets.Favorites.ToList();
+            PresetBox.ItemsSource = list.Select(p => p.Name).ToList();
             PresetBox.Tag = list;
             int idx = list.FindIndex(p => p.Id == App.Settings.ActivePresetId);
             PresetBox.SelectedIndex = idx;

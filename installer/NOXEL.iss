@@ -19,6 +19,7 @@
   #define SourceExe "..\artifacts\release\NOXEL.exe"
 #endif
 #define AppMutex "Local\NOXEL.SingleInstance.7f3c2a91"
+#define AppNumericVersion GetFileVersion(SourceExe)
 
 [Setup]
 AppId={{7F3C2A91-5E2B-4C8E-9D6A-0E4B1A6C9F21}
@@ -28,8 +29,8 @@ AppVerName={#AppName} {#AppVersion}
 AppPublisher=reprinted
 AppPublisherURL=https://github.com/reprinted/NOXEL-Releases
 AppUpdatesURL=https://github.com/reprinted/NOXEL-Releases/releases
-VersionInfoVersion={#AppVersion}
-VersionInfoProductVersion={#AppVersion}
+VersionInfoVersion={#AppNumericVersion}
+VersionInfoProductVersion={#AppNumericVersion}
 VersionInfoProductTextVersion={#AppVersion}
 VersionInfoTextVersion={#AppVersion}
 VersionInfoCompany=reprinted

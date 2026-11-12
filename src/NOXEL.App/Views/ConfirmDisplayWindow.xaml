@@ -11,20 +11,33 @@
                 <TextBlock Text="NOXEL" FontSize="12" FontWeight="SemiBold" CharacterSpacing="160" Foreground="{ThemeResource NoxelTextSecondary}" />
             </StackPanel>
         </Grid>
-        <StackPanel Margin="24,46,24,20" Spacing="10">
-            <TextBlock Text="Keep these display settings?" FontSize="20" FontWeight="SemiBold" Foreground="{ThemeResource NoxelTextPrimary}" />
+        <Grid Margin="24,46,24,20" RowSpacing="16">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <!-- Keep the recovery actions visible even with large text or a long monitor name. -->
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" HorizontalScrollMode="Disabled">
+            <StackPanel Spacing="10">
+            <TextBlock Text="Keep these display settings?" TextWrapping="Wrap" FontSize="20" FontWeight="SemiBold" Foreground="{ThemeResource NoxelTextPrimary}" />
             <TextBlock x:Name="Detail" Style="{StaticResource BodyText}" />
             <TextBlock x:Name="Note" Style="{StaticResource MutedText}" Visibility="Collapsed" />
             <TextBlock x:Name="Countdown" Style="{StaticResource MutedText}" />
             <ProgressBar x:Name="Progress" Maximum="15" Value="15" />
-            <Grid ColumnSpacing="10" Margin="0,6,0,0">
+            </StackPanel>
+            </ScrollViewer>
+            <Grid Grid.Row="1" ColumnSpacing="10">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <Button x:Name="RevertButton" Content="Revert" HorizontalAlignment="Stretch" Click="OnRevert" />
-                <Button x:Name="KeepButton" Grid.Column="1" Content="Keep changes" Style="{StaticResource AccentButtonStyle}" HorizontalAlignment="Stretch" Click="OnKeep" />
+                <Button x:Name="RevertButton" AutomationProperties.Name="Revert" HorizontalAlignment="Stretch" Click="OnRevert">
+                    <TextBlock Text="Revert" TextWrapping="Wrap" TextAlignment="Center" />
+                </Button>
+                <Button x:Name="KeepButton" Grid.Column="1" AutomationProperties.Name="Keep changes" Style="{StaticResource NoxelPrimaryButton}" HorizontalAlignment="Stretch" Click="OnKeep">
+                    <TextBlock Text="Keep changes" TextWrapping="Wrap" TextAlignment="Center" />
+                </Button>
             </Grid>
-        </StackPanel>
+        </Grid>
     </Grid>
 </Window>

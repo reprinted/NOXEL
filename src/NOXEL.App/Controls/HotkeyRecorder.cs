@@ -37,6 +37,9 @@ public sealed class HotkeyRecorder : Button
     {
         DefaultStyleKey = typeof(Button);
         MinWidth = 170;
+        MinHeight = 44;
+        Padding = new Thickness(12, 10, 12, 10);
+        VerticalContentAlignment = VerticalAlignment.Center;
         HorizontalContentAlignment = HorizontalAlignment.Left;
         FontFamily = (Microsoft.UI.Xaml.Media.FontFamily)Application.Current.Resources["NoxelMono"];
         // Implicit Button styles don't reach subclasses, so take NOXEL's control radius explicitly.

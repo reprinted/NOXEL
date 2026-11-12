@@ -10,7 +10,7 @@
         <!-- Ambient "liquid glass" layer: a tint over the Mica backdrop plus two static soft glows. Nothing here animates. -->
         <Grid IsHitTestVisible="False">
             <Rectangle Fill="{ThemeResource NoxelWindowTint}" />
-            <Ellipse Width="900" Height="700" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-320,-320,0,0" Opacity="0.55">
+            <Ellipse Width="900" Height="700" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-320,-320,0,0" Opacity="0.18">
                 <Ellipse.Fill>
                     <RadialGradientBrush>
                         <GradientStop Color="{ThemeResource NoxelGlowAColor}" Offset="0" />
@@ -18,7 +18,7 @@
                     </RadialGradientBrush>
                 </Ellipse.Fill>
             </Ellipse>
-            <Ellipse Width="900" Height="760" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,-340,-360" Opacity="0.32">
+            <Ellipse Width="900" Height="760" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,-340,-360" Opacity="0.08">
                 <Ellipse.Fill>
                     <RadialGradientBrush>
                         <GradientStop Color="{ThemeResource NoxelGlowBColor}" Offset="0" />
@@ -101,12 +101,12 @@
         <Grid x:Name="FatalPanel" Visibility="Collapsed" Background="{ThemeResource NoxelWindowTint}">
             <Border Style="{StaticResource GlassCard}" MaxWidth="560" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <StackPanel Spacing="12">
-                    <TextBlock Text="NOXEL couldn't start" Style="{StaticResource PageTitle}" FontSize="22" />
+                    <TextBlock Text="NOXEL couldn't start" x:Name="PageHeading" Style="{StaticResource PageTitle}" FontSize="22" />
                     <TextBlock x:Name="FatalText" Style="{StaticResource BodyText}" IsTextSelectionEnabled="True" />
                     <TextBlock x:Name="FatalPath" Style="{StaticResource MutedText}" IsTextSelectionEnabled="True" />
                     <StackPanel Orientation="Horizontal" Spacing="8">
                         <Button Content="Open log folder" Click="OnOpenLogs" />
-                        <Button Content="Exit" Style="{StaticResource AccentButtonStyle}" Click="OnFatalExit" />
+                        <Button Content="Exit" Style="{StaticResource NoxelPrimaryButton}" Click="OnFatalExit" />
                     </StackPanel>
                 </StackPanel>
             </Border>

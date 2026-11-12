@@ -21,7 +21,9 @@
                         <Setter Target="SideCol.Width" Value="0" />
                         <Setter Target="SidePanel.(Grid.Column)" Value="0" />
                         <Setter Target="SidePanel.(Grid.Row)" Value="1" />
-                        <Setter Target="PagePanel.Padding" Value="16,4,16,20" />
+                        <Setter Target="PagePanel.Padding" Value="16,8,16,24" />
+                        <Setter Target="PagePanel.Spacing" Value="16" />
+                        <Setter Target="PageHeading.FontSize" Value="26" />
                         <Setter Target="StripStats.(Grid.Row)" Value="1" />
                         <Setter Target="StripStats.(Grid.Column)" Value="0" />
                         <Setter Target="StripStats.(Grid.ColumnSpan)" Value="3" />
@@ -39,9 +41,9 @@
         </VisualStateManager.VisualStateGroups>
 
         <ScrollView x:Name="PageScroll">
-            <StackPanel x:Name="PagePanel" Padding="28,6,28,28" Spacing="16" MaxWidth="1320">
+            <StackPanel x:Name="PagePanel" Padding="32,12,32,32" Spacing="24" MaxWidth="1320">
                 <StackPanel>
-                    <TextBlock Text="Display" Style="{StaticResource PageTitle}" />
+                    <TextBlock Text="Display" x:Name="PageHeading" Style="{StaticResource PageTitle}" />
                     <TextBlock Text="Switch to any mode your graphics driver exposes. Every change asks you to confirm and reverts on its own if you don't." Style="{StaticResource PageSubtitle}" />
                 </StackPanel>
 
@@ -120,13 +122,17 @@
                                 </GridView.ItemContainerStyle>
                                 <GridView.ItemTemplate>
                                     <DataTemplate x:DataType="vm:ResolutionItem">
-                                        <Grid Width="164" Height="78" Padding="12,10,6,10" AutomationProperties.Name="{x:Bind AutomationName}">
+                                        <Grid Width="176" MinHeight="108" Padding="12,10,6,6" AutomationProperties.Name="{x:Bind AutomationName}">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
                                             <StackPanel Spacing="2">
-                                                <TextBlock Text="{x:Bind Text}" FontFamily="{StaticResource NoxelFontBrand}" FontSize="18" FontWeight="Bold" Foreground="{ThemeResource NoxelTextPrimary}" />
+                                                <TextBlock Text="{x:Bind Text}" FontFamily="{StaticResource NoxelFontDisplay}" FontSize="16" FontWeight="SemiBold" TextWrapping="Wrap" Foreground="{ThemeResource NoxelTextPrimary}" />
                                                 <TextBlock Text="{x:Bind Detail}" Style="{StaticResource FaintText}" />
-                                                <TextBlock Text="{x:Bind Badge}" Visibility="{x:Bind BadgeVisibility}" FontSize="10" FontWeight="Bold" CharacterSpacing="60" Foreground="{ThemeResource NoxelAccentText}" />
                                             </StackPanel>
-                                            <Button HorizontalAlignment="Right" VerticalAlignment="Top" Padding="4" Margin="0,-4,0,0" Background="Transparent" BorderThickness="0"
+                                            <TextBlock Grid.Row="1" Margin="0,0,44,0" VerticalAlignment="Center" Text="{x:Bind Badge}" Visibility="{x:Bind BadgeVisibility}" TextWrapping="Wrap" FontSize="10" FontWeight="Bold" CharacterSpacing="60" Foreground="{ThemeResource NoxelAccentText}" />
+                                            <Button Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Padding="8" Background="Transparent" BorderThickness="0"
                                                     Tag="{x:Bind}" Click="OnFavoriteClick" ToolTipService.ToolTip="{x:Bind FavTip}" AutomationProperties.Name="{x:Bind FavTip}">
                                                 <FontIcon Glyph="{x:Bind FavGlyph}" FontSize="13" />
                                             </Button>
@@ -140,7 +146,7 @@
 
                     <StackPanel x:Name="SidePanel" Grid.Column="1" Spacing="16">
                         <!-- Mode -->
-                        <Border Style="{StaticResource GlassCard}">
+                        <Border Style="{StaticResource SpotlightCard}">
                             <StackPanel Spacing="10">
                                 <TextBlock Text="Mode" Style="{StaticResource CardTitle}" />
                                 <TextBlock x:Name="SelText" Text="Select a resolution" Style="{StaticResource StatValueLarge}" />
@@ -170,7 +176,7 @@
                                 </ComboBox>
                                 <TextBlock x:Name="ScalingNote" Style="{StaticResource FaintText}" />
                                 <TextBlock x:Name="ModeWarning" Style="{StaticResource MutedText}" Foreground="{ThemeResource NoxelWarning}" Visibility="Collapsed" />
-                                <Button x:Name="ApplyButton" Content="Apply" Style="{StaticResource AccentButtonStyle}" HorizontalAlignment="Stretch" Click="OnApply" IsEnabled="False" />
+                                <Button x:Name="ApplyButton" Content="Apply" Style="{StaticResource NoxelPrimaryButton}" HorizontalAlignment="Stretch" Click="OnApply" IsEnabled="False" />
                             </StackPanel>
                         </Border>
 

@@ -81,7 +81,7 @@ public sealed class PresetStore
     }
 
     private Preset ApplyOverride(Preset b) =>
-        _overrides.TryGetValue(b.Id, out var o) ? b with { IsFavorite = o.IsFavorite, Hotkey = o.Hotkey } : b;
+        _overrides.TryGetValue(b.Id, out var o) ? b with { IsFavorite = b.Id == BuiltInPresets.OriginalId || o.IsFavorite, Hotkey = o.Hotkey } : b;
 
     public Preset Add(Preset p)
     {
@@ -98,7 +98,7 @@ public sealed class PresetStore
     {
         if (BuiltInPresets.All.Any(b => b.Id == p.Id))
         {
-            _overrides[p.Id] = new BuiltInOverride { IsFavorite = p.IsFavorite, Hotkey = HotkeyGesture.Normalize(p.Hotkey) };
+            _overrides[p.Id] = new BuiltInOverride { IsFavorite = p.Id == BuiltInPresets.OriginalId || p.IsFavorite, Hotkey = HotkeyGesture.Normalize(p.Hotkey) };
             Commit();
             return Find(p.Id)!;
         }

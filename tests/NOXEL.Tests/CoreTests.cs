@@ -216,6 +216,29 @@ public class PresetTests : IDisposable
     }
 
     [Fact]
+    public void OriginalRemainsFavoriteAfterUnfavoriteUpdateAndReload()
+    {
+        var store = NewStore();
+        Assert.Equal(BuiltInPresets.OriginalId, Assert.Single(store.Favorites).Id);
+        store.SetFavorite(BuiltInPresets.OriginalId, false);
+        Assert.True(store.Find(BuiltInPresets.OriginalId)!.IsFavorite);
+        store.Update(store.Find(BuiltInPresets.OriginalId)! with { IsFavorite = false });
+        Assert.True(NewStore().Find(BuiltInPresets.OriginalId)!.IsFavorite);
+        store.SetFavorite(BuiltInPresets.ClarityId, true);
+        Assert.Equal(2, NewStore().Favorites.Count());
+        store.SetFavorite(BuiltInPresets.ClarityId, false);
+        Assert.Equal(BuiltInPresets.OriginalId, Assert.Single(NewStore().Favorites).Id);
+    }
+
+    [Fact]
+    public void LegacyUnfavoritedOriginalIsStillFavorite()
+    {
+        File.WriteAllText(Path.Combine(_dir, "presets.json"),
+            "{\"builtInOverrides\":{\"" + BuiltInPresets.OriginalId + "\":{\"isFavorite\":false}}}");
+        Assert.True(NewStore().Find(BuiltInPresets.OriginalId)!.IsFavorite);
+    }
+
+    [Fact]
     public void BuiltInEdits_OnlyKeepFavoriteAndHotkey()
     {
         var s = NewStore();

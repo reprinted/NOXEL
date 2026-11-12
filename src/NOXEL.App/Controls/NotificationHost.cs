@@ -117,13 +117,13 @@ public sealed class NotificationHost : StackPanel
                 Foreground = (Brush)Res("NoxelTextPrimary"), FontFamily = (FontFamily)Application.Current.Resources["NoxelFontBody"],
             });
             if (!string.IsNullOrWhiteSpace(n.Message))
-                text.Children.Add(new TextBlock { Text = n.Message, Style = (Style)Application.Current.Resources["MutedText"], MaxLines = 5, TextTrimming = TextTrimming.CharacterEllipsis });
+                text.Children.Add(new TextBlock { Text = n.Message, Style = (Style)Application.Current.Resources["MutedText"] });
             Grid.SetColumn(text, 1);
             grid.Children.Add(text);
 
             var close = new Button
             {
-                Style = (Style)Application.Current.Resources["IconButton"], MinWidth = 28, MinHeight = 28, Padding = new Thickness(6),
+                Style = (Style)Application.Current.Resources["IconButton"], MinWidth = 44, MinHeight = 44, Padding = new Thickness(6),
                 VerticalAlignment = VerticalAlignment.Top, Content = new FontIcon { Glyph = "", FontSize = 10 },
             };
             AutomationProperties.SetName(close, "Dismiss notification");
@@ -135,16 +135,18 @@ public sealed class NotificationHost : StackPanel
             body.Children.Add(grid);
             if (n.Actions is { Count: > 0 })
             {
-                var row = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 8, Margin = new Thickness(40, 0, 0, 0) };
+                var row = new StackPanel { Spacing = 8, Margin = new Thickness(40, 0, 0, 0) };
                 for (int i = 0; i < n.Actions.Count; i++)
                 {
                     var a = n.Actions[i];
                     var b = new Button
                     {
-                        Content = a.Label, MinHeight = 32, Padding = new Thickness(14, 5, 14, 6),
+                        Content = new TextBlock { Text = a.Label, TextWrapping = TextWrapping.Wrap, TextAlignment = TextAlignment.Center },
+                        MinHeight = 44, Padding = new Thickness(14, 5, 14, 6), HorizontalAlignment = HorizontalAlignment.Stretch,
                         CornerRadius = (CornerRadius)Application.Current.Resources["NoxelRadiusControl"],
                     };
-                    if (i == 0) b.Style = (Style)Application.Current.Resources["AccentButtonStyle"];
+                    if (i == 0) b.Style = (Style)Application.Current.Resources["NoxelPrimaryButton"];
+                    AutomationProperties.SetName(b, a.Label);
                     b.Click += (_, _) => { a.Run(); if (a.Closes) Close(); };
                     row.Children.Add(b);
                 }
@@ -178,7 +180,7 @@ public sealed class NotificationHost : StackPanel
             // Brushes are resolved from the theme dictionaries once, so re-resolve them when the theme changes.
             var titleBlock = (TextBlock)text.Children[0];
             var glyphIcon = (FontIcon)icon.Child;
-            Root.ActualThemeChanged += (_, _) =>
+            void RefreshBrushes()
             {
                 Root.Background = (Brush)Res("NoxelNoticeFill");
                 Root.BorderBrush = (Brush)Res("NoxelGlassStroke");
@@ -186,7 +188,11 @@ public sealed class NotificationHost : StackPanel
                 glyphIcon.Foreground = (Brush)Res(colorKey);
                 titleBlock.Foreground = (Brush)Res("NoxelTextPrimary");
                 if (_bar is not null) _bar.Background = (Brush)Res("NoxelAccent");
-            };
+            }
+            void OnSystemThemeChanged() => Root.DispatcherQueue.TryEnqueue(() => { if (Root.IsLoaded) RefreshBrushes(); });
+            Root.ActualThemeChanged += (_, _) => RefreshBrushes();
+            Root.Loaded += (_, _) => { RefreshBrushes(); ThemeService.SystemThemeChanged += OnSystemThemeChanged; };
+            Root.Unloaded += (_, _) => ThemeService.SystemThemeChanged -= OnSystemThemeChanged;
             AutomationProperties.SetName(Root, n.Title);
             AutomationProperties.SetLiveSetting(Root, n.Kind == NoticeKind.Error ? AutomationLiveSetting.Assertive : AutomationLiveSetting.Polite);
             Root.PointerEntered += (_, _) => Pause();

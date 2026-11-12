@@ -6,7 +6,8 @@
     Title="NOXEL">
     <Grid x:Name="Root">
         <Rectangle Fill="{ThemeResource NoxelWindowTint}" />
-        <Grid Padding="16,10,16,16" RowSpacing="12">
+        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollMode="Disabled" HorizontalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch">
+        <Grid x:Name="ContentLayout" VerticalAlignment="Top" Padding="16,10,16,16" RowSpacing="12">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
@@ -41,5 +42,6 @@
                 </Button>
             </Grid>
         </Grid>
+        </ScrollViewer>
     </Grid>
 </Window>

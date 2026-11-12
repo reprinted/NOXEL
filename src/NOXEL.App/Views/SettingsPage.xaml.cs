@@ -115,7 +115,7 @@ public sealed partial class SettingsPage : Page
             var color = ThemeService.ParseHex(hex)!.Value;
             var b = new Button
             {
-                Width = 34, Height = 34, Padding = new Thickness(0), CornerRadius = new CornerRadius(17),
+                Width = 44, Height = 44, Padding = new Thickness(0), CornerRadius = new CornerRadius(22),
                 Background = new SolidColorBrush(color), BorderThickness = new Thickness(2),
                 BorderBrush = new SolidColorBrush(Microsoft.UI.Colors.Transparent), Tag = hex,
             };

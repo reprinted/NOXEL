@@ -11,7 +11,8 @@ internal static class ResourceExtensions
     public static object ThemeDictionariesLookup(this ResourceDictionary _, string key)
     {
         var app = Application.Current.Resources;
-        var theme = App.Main?.Content is FrameworkElement fe && fe.ActualTheme == ElementTheme.Light ? "Light"
+        var theme = Services.ThemeService.HighContrast ? "HighContrast"
+            : App.Main?.Content is FrameworkElement fe && fe.ActualTheme == ElementTheme.Light ? "Light"
             : App.Main is null && App.Controller is not null && !Services.ThemeService.IsDark(App.Settings.Theme) ? "Light" : "Dark";
         foreach (var md in app.MergedDictionaries)
         {

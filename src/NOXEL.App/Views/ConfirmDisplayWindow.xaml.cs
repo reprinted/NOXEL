@@ -34,7 +34,10 @@ public sealed partial class ConfirmDisplayWindow : Window
             op.IsAlwaysOnTop = true;
         }
         double s = WindowHelper.Scale(this);
-        AppWindow.Resize(new global::Windows.Graphics.SizeInt32((int)(470 * s), (int)(290 * s)));
+        // Grow with Windows' text size so the details rarely need to scroll (the Keep/Revert row never scrolls away).
+        // Capped at 611 x 440 units so the prompt still fits on a 640 x 480 mode. At 100 % text size this is 470 x 290.
+        double text = Math.Clamp(new global::Windows.UI.ViewManagement.UISettings().TextScaleFactor, 1.0, 2.25);
+        AppWindow.Resize(new global::Windows.Graphics.SizeInt32((int)(470 * Math.Min(text, 1.3) * s), (int)(Math.Min(290 * text, 440) * s)));
         ApplyTheme();
 
         Detail.Text = $"{p.Monitor.FriendlyName} is now {p.NewMode.Width}×{p.NewMode.Height} at {p.NewMode.RefreshHz} Hz (was {p.OldMode.Width}×{p.OldMode.Height} at {p.OldMode.RefreshHz} Hz).";
