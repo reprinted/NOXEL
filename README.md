@@ -1,13 +1,17 @@
 # NOXEL
 
-A lightweight Windows 10/11 display utility: resolution and refresh-rate switching, native/stretched toggling,
-real color adjustments, unified presets, global hotkeys, a tray icon and a compact view, in one native WinUI 3 app.
+NOXEL is a Windows 10/11 x64 display utility. Switch resolution and refresh rate, toggle native or stretched modes, and save display and color settings together in presets you can apply with hotkeys.
 
-**Official download (recommended):** [NOXEL-Setup.exe — Installer](https://github.com/reprinted/NOXEL-Releases/releases/latest). Installs NOXEL normally (per-user install, no administrator rights required).
+| Download | Choose this if |
+| --- | --- |
+| **[Windows installer](https://github.com/reprinted/NOXEL-Releases/releases/latest/download/NOXEL-Setup.exe)** | You want the recommended per-user installation. |
+| [Portable executable](https://github.com/reprinted/NOXEL-Releases/releases/latest/download/NOXEL.exe) | You want to run NOXEL without installing it. |
 
-**Alternative download:** [NOXEL.exe — Portable Version](https://github.com/reprinted/NOXEL-Releases/releases/latest). Runs directly without installation (self-contained Windows x64 executable; no separate .NET installation needed). **This is the portable version, not the installer.**
+[Release notes and checksums](https://github.com/reprinted/NOXEL-Releases/releases/latest) · [Compatibility](#compatibility)
 
-NOXEL is free software under the [GNU General Public License v3.0 only](LICENSE) (`GPL-3.0-only`).
+![NOXEL Dashboard, Display, Color Studio, and Presets screens](docs/screenshots/wide-1400.png)
+
+NOXEL is licensed under the [GNU General Public License v3.0 only](LICENSE).
 
 ## Features
 
