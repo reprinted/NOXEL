@@ -11,8 +11,6 @@ NOXEL is a Windows 10/11 x64 display utility. Switch resolution and refresh rate
 
 [Release notes and checksums](https://github.com/reprinted/NOXEL-Releases/releases/latest) · [Compatibility](#compatibility)
 
-![NOXEL Dashboard, Display, Color Studio, and Presets screens](docs/screenshots/wide-1400.png)
-
 NOXEL is licensed under the [GNU General Public License v3.0 only](LICENSE).
 
 ## Features
