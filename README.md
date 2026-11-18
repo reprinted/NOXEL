@@ -11,6 +11,15 @@ NOXEL is a Windows 10/11 x64 display utility. Switch resolution and refresh rate
 
 [Release notes and checksums](https://github.com/reprinted/NOXEL-Releases/releases/latest) · [Compatibility](#compatibility)
 
+<p align="center">
+  <img src="docs/screenshots/noxel-display-resolutions.png" alt="NOXEL Display page: monitor details, resolution cards with the current 1440×1080 mode selected, and refresh-rate and GPU scaling controls">
+</p>
+<p align="center"><sub>NOXEL v1.0.3 on Windows 11</sub></p>
+
+| Dashboard | Color Studio | Presets |
+|---|---|---|
+| ![NOXEL Dashboard: current resolution, refresh rate, native mode and colour profile, active preset, favorites and quick actions](docs/screenshots/noxel-dashboard.png) | ![NOXEL Color Studio: sliders for digital vibrance, saturation, brightness and contrast, with apply, compare and import actions](docs/screenshots/noxel-color-studio.png) | ![NOXEL Presets: built-in presets (Original, Clarity, Vibrant, Cinema, After Hours, Competitive) with their settings and Apply buttons](docs/screenshots/noxel-presets.png) |
+
 NOXEL is licensed under the [GNU General Public License v3.0 only](LICENSE).
 
 ## Features
