@@ -1,3 +1,5 @@
+<img src="src/NOXEL.App/Assets/noxel-256.png" alt="NOXEL app icon" width="96" height="96">
+
 # NOXEL
 
 NOXEL is a Windows 10/11 x64 display utility. Switch resolution and refresh rate, toggle native or stretched modes, and save display and color settings together in presets you can apply with hotkeys.
