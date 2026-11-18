@@ -16,7 +16,19 @@ public static class WindowHelper
     [DllImport("user32.dll")] private static extern bool SetForegroundWindow(IntPtr hwnd);
     [DllImport("user32.dll")] private static extern bool AllowSetForegroundWindow(int pid);
 
+    [DllImport("dwmapi.dll")] private static extern int DwmSetWindowAttribute(IntPtr hwnd, int attr, ref int value, int size);
+    private const int DWMWA_CLOAK = 13;
+
     public static IntPtr Hwnd(Window w) => WinRT.Interop.WindowNative.GetWindowHandle(w);
+
+    /// <summary>
+    /// Hides a shown window from the screen while DWM keeps composing it, so its first frame can be drawn
+    /// before anyone sees it (no backdrop or blank frame flashes first). Cosmetic: failures are ignored.
+    /// </summary>
+    public static void SetCloaked(Window w, bool cloaked)
+    {
+        try { int v = cloaked ? 1 : 0; DwmSetWindowAttribute(Hwnd(w), DWMWA_CLOAK, ref v, sizeof(int)); } catch { }
+    }
 
     public static double Scale(Window w)
     {

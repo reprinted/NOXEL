@@ -4,6 +4,7 @@
 using Noxel.Core.Color;
 using Noxel.Core.Display;
 using Noxel.Core.Infrastructure;
+using Noxel.Windows.DeviceApi;
 using Noxel.Windows.SystemIntegration;
 
 namespace Noxel.Windows.ColorApi;
@@ -47,7 +48,7 @@ public sealed class ColorService
         bool vib = false;
         try { vib = _vibrance.Initialize(); } catch (Exception ex) { Log.Error("NVAPI init", ex); }
         var (matOk, matReason) = _host.Invoke(() => _matrix.Probe());
-        var (rampOk, rampReason) = GammaRampEngine.Probe(_devices);
+        var (rampOk, rampReason) = ProbeRamp(monitors);
         if (rampOk) _ramp.CaptureOriginals(_devices);
         (_vibOk, _matOk, _matReason, _rampOk, _rampReason) = (vib, matOk, matReason, rampOk, rampReason);
         Capabilities = BuildCaps(monitors, vib, matOk, matReason, rampOk, rampReason);
@@ -76,9 +77,10 @@ public sealed class ColorService
     {
         _devices = monitors.Where(m => m.IsActive && m.DeviceName.Length > 0).Select(m => m.DeviceName).ToList();
         if (!_matrix.IsApplied) (_matOk, _matReason) = _host.Invoke(() => _matrix.Probe());
-        if (!_rampOk) (_rampOk, _rampReason) = GammaRampEngine.Probe(_devices);
+        (_rampOk, _rampReason) = ProbeRamp(monitors);
         if (!_vibOk) { try { _vibOk = _vibrance.Initialize(); } catch { } }
         Capabilities = BuildCaps(monitors, _vibOk, _matOk, _matReason, _rampOk, _rampReason);
+        FinishPendingRampRestore();
     }
 
     public ColorApplyResult Apply(ColorSettings settings)
@@ -135,10 +137,75 @@ public sealed class ColorService
         _devices = monitors.Where(m => m.IsActive && m.DeviceName.Length > 0).Select(m => m.DeviceName).ToList();
         _ramp.Prune(_devices);
         try { if (_vibrance.Available) _vibrance.Refresh(); } catch (Exception ex) { Log.Error("NVAPI refresh", ex); }
-        if (!_rampOk) (_rampOk, _rampReason) = GammaRampEngine.Probe(_devices); // a newly attached display may allow ramps
+        // Always re-check: enabling a monitor device can unblock ramps, and disabling one blocks them again.
+        (_rampOk, _rampReason) = ProbeRamp(monitors);
         Capabilities = BuildCaps(monitors, _vibOk && _vibrance.Outputs.Count > 0, _matOk, _matReason, _rampOk, _rampReason);
         if (Capabilities.RampAvailable) _ramp.CaptureOriginals(_devices);
+        FinishPendingRampRestore();
         Reapply();
+    }
+
+    /// <summary>
+    /// Re-checks gamma ramps only (cheap: read and write back the current ramp, no visible change). Used a moment after
+    /// a device change, because a monitor device that was just enabled can take a second to accept ramps.
+    /// Returns true when availability changed.
+    /// </summary>
+    public bool RecheckRamp(IReadOnlyList<MonitorInfo> monitors)
+    {
+        _devices = monitors.Where(m => m.IsActive && m.DeviceName.Length > 0).Select(m => m.DeviceName).ToList();
+        bool before = Capabilities.RampAvailable;
+        string beforeReason = Capabilities.RampReason;
+        (_rampOk, _rampReason) = ProbeRamp(monitors);
+        Capabilities = BuildCaps(monitors, _vibOk && _vibrance.Outputs.Count > 0, _matOk, _matReason, _rampOk, _rampReason);
+        if (Capabilities.RampAvailable) _ramp.CaptureOriginals(_devices);
+        FinishPendingRampRestore();
+        return before != Capabilities.RampAvailable || beforeReason != Capabilities.RampReason;
+    }
+
+    /// <summary>A ramp restore that Windows refused earlier is completed as soon as ramps can be written again.</summary>
+    private void FinishPendingRampRestore()
+    {
+        if (_rampOk && _ramp.RestorePending && !_ramp.IsApplied) _ramp.Restore();
+    }
+
+    /// <summary>
+    /// Puts one display's gamma back to its original ramp before its monitor device is disabled. Once the device is
+    /// off Windows refuses every ramp call for it while the GPU keeps showing the last ramp, so this is the last
+    /// moment NOXEL can undo its gamma there.
+    /// </summary>
+    public void ResetRampFor(string deviceName)
+    {
+        if (!_ramp.IsApplied || deviceName.Length == 0) return;
+        if (!_ramp.RestoreDevice(deviceName)) Log.Info($"Gamma: could not restore {deviceName} before disabling its monitor.");
+    }
+
+    /// <summary>Gamma ramp probe, with the most useful reason when it fails.</summary>
+    private (bool Ok, string Reason) ProbeRamp(IReadOnlyList<MonitorInfo> monitors)
+    {
+        var (ok, reason) = GammaRampEngine.Probe(_devices);
+        if (ok) return (true, "");
+        // Measured on NVIDIA: a monitor whose device is disabled in Device Manager still shows a picture, but Windows
+        // refuses to read or write its gamma ramp. That is fixable in one click, so say it instead of the generic text.
+        var disabled = DisabledMonitorNames(monitors);
+        if (disabled.Count > 0)
+            return (false, $"The monitor device for {string.Join(" and ", disabled)} is disabled in Windows, which blocks gamma. " +
+                           "Turn it on in Monitor Control (Enable device) or Device Manager; the screen keeps working either way.");
+        return (false, reason);
+    }
+
+    /// <summary>Names of active displays whose monitor device is disabled (read-only SetupAPI query).</summary>
+    private static List<string> DisabledMonitorNames(IReadOnlyList<MonitorInfo> monitors)
+    {
+        var names = new List<string>();
+        try
+        {
+            var active = monitors.Where(m => m.IsActive).ToList();
+            foreach (var dev in MonitorDeviceService.Enumerate())
+                if (dev.IsDisabled && MonitorControl.MatchDisplay(dev, active) is { } m)
+                    names.Add(m.FriendlyName.Length > 0 ? m.FriendlyName : m.DeviceName);
+        }
+        catch (Exception ex) { Log.Error("Monitor device check", ex); }
+        return names;
     }
 
     public void Shutdown() => Disable();

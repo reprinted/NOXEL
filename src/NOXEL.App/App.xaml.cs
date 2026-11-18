@@ -199,7 +199,7 @@ public partial class App : Application
     public void ApplyThemeToAllWindows()
     {
         if (!Animations.Motion.Enabled) Animations.Motion.ResetInteractions();
-        _main?.ApplyTheme();
+        _main?.ApplyThemeAnimated();
         _compact?.ApplyTheme();
         _confirm?.ApplyTheme();
     }

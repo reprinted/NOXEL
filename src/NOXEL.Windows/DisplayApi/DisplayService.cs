@@ -59,6 +59,8 @@ public sealed class DisplayService
                 StableId = stableId,
                 EdidKey = target.EdidKey,
                 FriendlyName = FriendlyName(target, path.targetInfo.outputTechnology, result.Count + 1),
+                TargetId = path.targetInfo.id,
+                TargetAdapter = Pack(path.targetInfo.adapterId),
                 AdapterName = adapter.Name ?? "",
                 Connection = DisplayConfigApi.OutputTechnologyName(path.targetInfo.outputTechnology),
                 IsPrimary = (adapter.Flags & DISPLAY_DEVICE_PRIMARY_DEVICE) != 0 || (haveCurrent && current.dmPositionX == 0 && current.dmPositionY == 0),
@@ -95,6 +97,8 @@ public sealed class DisplayService
                     StableId = id,
                     EdidKey = target.EdidKey,
                     FriendlyName = FriendlyName(target, path.targetInfo.outputTechnology, result.Count + 1),
+                    TargetId = path.targetInfo.id,
+                    TargetAdapter = Pack(path.targetInfo.adapterId),
                     Connection = DisplayConfigApi.OutputTechnologyName(path.targetInfo.outputTechnology),
                     IsActive = false,
                 });
@@ -273,6 +277,8 @@ public sealed class DisplayService
         }
         return d;
     }
+
+    public static long Pack(LUID l) => ((long)l.HighPart << 32) | l.LowPart;
 
     private static DISPLAYCONFIG_PATH_INFO[] QueryPaths(uint flags)
     {

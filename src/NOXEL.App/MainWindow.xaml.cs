@@ -49,7 +49,23 @@ public sealed partial class MainWindow : Window
         {
             Shell.Opacity = 0;
             Splash.Visibility = Visibility.Visible;
+            // Keep the window off-screen (cloaked) until the intro's first frame is composed, so neither the
+            // translucent backdrop nor an empty frame shows before the darkness. A timer guarantees it appears.
+            WindowHelper.SetCloaked(this, true);
+            Splash.Started += OnSplashStarted;
+            var reveal = DispatcherQueue.CreateTimer();
+            reveal.Interval = TimeSpan.FromSeconds(1.5);
+            reveal.IsRepeating = false;
+            reveal.Tick += (_, _) => Uncloak();
+            reveal.Start();
             Splash.Finished += OnSplashFinished;
+            Splash.HandoffStarting += OnSplashHandoff;
+            // The intro's logo travels to the title-bar wordmark while the interface fades in under it.
+            Splash.HandoffTarget = () =>
+            {
+                if (TitleWordmark.ActualWidth <= 0) return null;
+                return TitleWordmark.TransformToVisual(Splash).TransformPoint(new global::Windows.Foundation.Point(TitleWordmark.ActualWidth / 2, TitleWordmark.ActualHeight / 2));
+            };
         }
         else
         {
@@ -117,22 +133,47 @@ public sealed partial class MainWindow : Window
         if (_intro && !_splashDone) Splash.BackendReady();
     }
 
+    private bool _uncloaked;
+
+    private void Uncloak()
+    {
+        if (_uncloaked) return;
+        _uncloaked = true;
+        WindowHelper.SetCloaked(this, false);
+    }
+
+    /// <summary>The intro's first frame is composed (dark, timeline running): show the window.</summary>
+    private void OnSplashStarted(object? sender, EventArgs e)
+    {
+        Splash.Started -= OnSplashStarted;
+        Uncloak();
+    }
+
+    /// <summary>The intro is handing over: fade the real, already loaded interface in underneath it.</summary>
+    private void OnSplashHandoff(object? sender, EventArgs e)
+    {
+        var sb = new Storyboard();
+        var a = new DoubleAnimation { From = 0, To = 1, Duration = TimeSpan.FromMilliseconds(620), EasingFunction = new CubicEase { EasingMode = EasingMode.EaseInOut } };
+        Storyboard.SetTarget(a, Shell);
+        Storyboard.SetTargetProperty(a, "Opacity");
+        sb.Children.Add(a);
+        sb.Begin();
+    }
+
     private void OnSplashFinished(object? sender, EventArgs e)
     {
         _splashDone = true;
+        Uncloak();
+        Splash.Started -= OnSplashStarted;
+        Splash.HandoffStarting -= OnSplashHandoff;
+        Splash.HandoffTarget = null;
+        Shell.Opacity = 1;
         Root.Children.Remove(Splash); // release all intro resources
-        {
-            var sb = new Storyboard();
-            var a = new DoubleAnimation { From = 0, To = 1, Duration = TimeSpan.FromMilliseconds(320), EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut } };
-            Storyboard.SetTarget(a, Shell);
-            Storyboard.SetTargetProperty(a, "Opacity");
-            sb.Children.Add(a);
-            sb.Begin();
-        }
     }
 
     public void ShowFatal(Exception ex)
     {
+        Uncloak();
         Splash.Visibility = Visibility.Collapsed;
         Shell.Opacity = 1;
         FatalPanel.Visibility = Visibility.Visible;
@@ -188,17 +229,87 @@ public sealed partial class MainWindow : Window
             "Display" => typeof(DisplayPage),
             "Color" => typeof(ColorStudioPage),
             "Presets" => typeof(PresetsPage),
+            "Monitors" => typeof(MonitorControlPage),
             "Settings" => typeof(SettingsPage),
             _ => typeof(DashboardPage),
         };
-        if (ContentFrame.CurrentSourcePageType != page)
+        if (ContentFrame.CurrentSourcePageType == page)
         {
-            // NOXEL animates the entrance itself (Motion.PageEnter) so it follows NOXEL's animation settings.
-            ContentFrame.Navigate(page, null, new SuppressNavigationTransitionInfo());
+            // Back on the current page before a pending switch happened: cancel that switch.
+            if (_navTarget is not null) { _navGen++; _navTarget = null; ClearShot(ExitShot); }
         }
+        else if (_navTarget != page) SwapPage(page);
         if (Nav.DisplayMode != NavigationViewDisplayMode.Expanded) Nav.IsPaneOpen = false;
         var item = tag == "Settings" ? Nav.SettingsItem : Nav.MenuItems.OfType<NavigationViewItem>().FirstOrDefault(i => (string)i.Tag == tag);
         if (item is not null && !ReferenceEquals(Nav.SelectedItem, item)) Nav.SelectedItem = item;
+    }
+
+    private int _navGen;
+    private Type? _navTarget;
+
+    /// <summary>
+    /// Page change: a still of the current page is taken (stays on the GPU, no pixel read-back), the Frame switches
+    /// to the cached page, and the still fades out underneath while the new page fades and rises in. Rapid clicks
+    /// only ever honour the latest target; a still from an earlier click is dropped at once.
+    /// NOXEL animates this itself (not Frame transitions) so it follows NOXEL's animation settings.
+    /// </summary>
+    private async void SwapPage(Type page)
+    {
+        int gen = ++_navGen;
+        _navTarget = page;
+        ClearShot(ExitShot);
+        if (Motion.Enabled && ContentFrame.Content is FrameworkElement { ActualWidth: > 0, ActualHeight: > 0 })
+        {
+            try
+            {
+                var shot = new Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap();
+                await shot.RenderAsync(ContentFrame);
+                if (gen != _navGen) return;
+                ExitShot.Source = shot;
+                ExitShot.Width = ContentFrame.ActualWidth;
+                ExitShot.Height = ContentFrame.ActualHeight;
+                ExitShot.Opacity = 1;
+                ExitShot.Visibility = Visibility.Visible;
+            }
+            catch { ClearShot(ExitShot); } // a still is decoration only
+        }
+        if (gen != _navGen) return;
+        _navTarget = null;
+        ContentFrame.Navigate(page, null, new SuppressNavigationTransitionInfo());
+        if (ExitShot.Visibility == Visibility.Visible)
+            Motion.FadeAway(ExitShot, Motion.PageExit, () => { if (gen == _navGen) ClearShot(ExitShot); });
+    }
+
+    private static void ClearShot(Image shot)
+    {
+        shot.Source = null;
+        shot.Visibility = Visibility.Collapsed;
+    }
+
+    private int _themeGen;
+
+    /// <summary>Theme or material change: the old look fades out over the new one instead of switching in one frame.</summary>
+    public async void ApplyThemeAnimated()
+    {
+        int gen = ++_themeGen;
+        if (Motion.Enabled && _splashDone && Root.ActualWidth > 0 && AppWindow.IsVisible)
+        {
+            try
+            {
+                var shot = new Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap();
+                await shot.RenderAsync(Shell);
+                if (gen != _themeGen) return;
+                ThemeShot.Source = shot;
+                ThemeShot.Width = Shell.ActualWidth;
+                ThemeShot.Height = Shell.ActualHeight;
+                ThemeShot.Visibility = Visibility.Visible;
+            }
+            catch { ClearShot(ThemeShot); }
+        }
+        if (gen != _themeGen) return;
+        ApplyTheme();
+        if (ThemeShot.Visibility == Visibility.Visible)
+            Motion.FadeAway(ThemeShot, Motion.Theme, () => { if (gen == _themeGen) ClearShot(ThemeShot); });
     }
 
     private void OnNavSelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)

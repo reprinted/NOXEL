@@ -103,7 +103,7 @@
                                     <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
                                 <TextBlock Text="Resolutions" Style="{StaticResource CardTitle}" VerticalAlignment="Center" />
-                                <TextBox x:Name="SearchBox" Grid.Column="1" Width="170" PlaceholderText="Search, e.g. 1440" TextChanged="OnFilterChanged" AutomationProperties.Name="Search resolutions" />
+                                <TextBox x:Name="SearchBox" Grid.Column="1" Width="170" PlaceholderText="Search" TextChanged="OnFilterChanged" AutomationProperties.Name="Search resolutions" />
                                 <ComboBox x:Name="AspectBox" Grid.Column="2" Width="110" SelectedIndex="0" SelectionChanged="OnFilterChanged" AutomationProperties.Name="Aspect ratio filter">
                                     <x:String>All</x:String>
                                     <x:String>16:9</x:String>
@@ -115,14 +115,17 @@
                                 </ComboBox>
                             </Grid>
                             <TextBlock Style="{StaticResource FaintText}" Text="Starred resolutions are listed first. Select a card, pick a refresh rate, then Apply." />
+                            <!-- Cards share the row evenly (OnResGridSizeChanged), so narrow windows get full-width cards, not a gap. -->
                             <GridView x:Name="ResGrid" SelectionMode="Single" SelectionChanged="OnResolutionSelected" IsItemClickEnabled="False"
-                                      AutomationProperties.Name="Resolutions" Padding="0">
+                                      AutomationProperties.Name="Resolutions" Padding="0" SizeChanged="OnResGridSizeChanged">
                                 <GridView.ItemContainerStyle>
-                                    <StaticResource ResourceKey="NoxelGridViewItem" />
+                                    <Style TargetType="GridViewItem" BasedOn="{StaticResource NoxelGridViewItem}">
+                                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                    </Style>
                                 </GridView.ItemContainerStyle>
                                 <GridView.ItemTemplate>
                                     <DataTemplate x:DataType="vm:ResolutionItem">
-                                        <Grid Width="176" MinHeight="108" Padding="12,10,6,6" AutomationProperties.Name="{x:Bind AutomationName}">
+                                        <Grid MinWidth="166" MinHeight="108" Padding="12,10,6,6" AutomationProperties.Name="{x:Bind AutomationName}">
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="Auto" />
                                                 <RowDefinition Height="Auto" />

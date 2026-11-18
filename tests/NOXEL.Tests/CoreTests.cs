@@ -478,3 +478,67 @@ public class UpdateTests
         Assert.True(Noxel.Core.Updates.UpdateSource.IsTrustedDownloadUri(new Uri("http://127.0.0.1:8080/x"), allowLoopback: true));
     }
 }
+
+public class MonitorControlTests
+{
+    private static MonitorInfo Display(string edid, uint target, bool active, bool primary = false) => new()
+    {
+        DeviceName = active ? $@"\\.\DISPLAY{target}" : "", StableId = $"{edid}#{target}", EdidKey = edid,
+        FriendlyName = edid, TargetId = target, TargetAdapter = 42, IsActive = active, IsPrimary = primary,
+    };
+
+    private static MonitorDevice Device(string id, bool disabled = false) =>
+        new(id, "Generic Monitor", disabled, disabled, disabled ? MonitorControl.ProblemDisabled : 0, false);
+
+    [Fact]
+    public void ParsesRealInstanceIds()
+    {
+        var (key, uid) = MonitorControl.ParseInstanceId(@"DISPLAY\XEC2450\5&27933969&0&UID4352");
+        Assert.Equal("XEC2450", key);
+        Assert.Equal(4352u, uid);
+        Assert.True(MonitorControl.IsValidInstanceId(@"DISPLAY\AOC2702\5&27933969&0&UID4356"));
+    }
+
+    [Theory]
+    [InlineData(@"USB\VID_046D&PID_C52B\5&1")]          // not a monitor
+    [InlineData(@"DISPLAY\XEC2450\5&2 & calc.exe")]     // spaces / injection
+    [InlineData(@"DISPLAY\XEC2450\..\..\x")]            // path tricks
+    [InlineData(@"DISPLAY\XEC2450")]                    // incomplete
+    [InlineData("")]
+    public void RejectsAnythingElse(string id) => Assert.False(MonitorControl.IsValidInstanceId(id));
+
+    [Fact]
+    public void MatchesByModelThenTargetId()
+    {
+        var a = Display("AOC2702", 4352, true); var b = Display("AOC2702", 4356, true); var c = Display("XEC2450", 4360, true);
+        var all = new[] { a, b, c };
+        Assert.Same(b, MonitorControl.MatchDisplay(Device(@"DISPLAY\AOC2702\5&1&0&UID4356"), all));
+        Assert.Same(c, MonitorControl.MatchDisplay(Device(@"DISPLAY\XEC2450\5&1&0&UID9999"), all)); // unique model
+        Assert.Null(MonitorControl.MatchDisplay(Device(@"DISPLAY\AOC2702\5&1&0&UID1"), all));      // two identical, UID unknown
+        Assert.Null(MonitorControl.MatchDisplay(Device(@"DISPLAY\DEL1234\5&1&0&UID4352"), all));   // not connected
+    }
+
+    [Fact]
+    public void NeverDisconnectsTheLastActiveDisplay()
+    {
+        var only = Display("XEC2450", 1, true, primary: true); var off = Display("AOC2702", 2, false);
+        Assert.NotNull(MonitorControl.WhyNotDisconnect(only, new[] { only, off }));
+        Assert.NotNull(MonitorControl.WhyNotDisconnect(off, new[] { only, off }));
+        var second = Display("AOC2702", 2, true);
+        Assert.Null(MonitorControl.WhyNotDisconnect(only, new[] { only, second }));
+    }
+
+    [Fact]
+    public void NeverDisablesTheOnlyScreenOrAnUnidentifiedOneWhenAlone()
+    {
+        var only = Display("XEC2450", 1, true);
+        var dev = Device(@"DISPLAY\XEC2450\5&1&0&UID1");
+        Assert.NotNull(MonitorControl.WhyNotDisable(dev, only, new[] { only }));
+        Assert.NotNull(MonitorControl.WhyNotDisable(dev, null, new[] { only }));
+        Assert.NotNull(MonitorControl.WhyNotDisable(dev, only, Array.Empty<MonitorInfo>()));
+        Assert.NotNull(MonitorControl.WhyNotDisable(Device(@"DISPLAY\XEC2450\5&1&0&UID1", disabled: true), only, new[] { only, Display("AOC2702", 2, true) }));
+        var two = new[] { only, Display("AOC2702", 2, true) };
+        Assert.Null(MonitorControl.WhyNotDisable(dev, only, two));
+        Assert.Null(MonitorControl.WhyNotDisable(dev, null, two));
+    }
+}

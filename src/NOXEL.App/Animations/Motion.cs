@@ -20,16 +20,21 @@ namespace Noxel.App.Animations;
 public static class Motion
 {
     // ---------------- tokens ----------------
-    public static readonly TimeSpan Hover = TimeSpan.FromMilliseconds(140);
-    public static readonly TimeSpan Press = TimeSpan.FromMilliseconds(120);
-    public static readonly TimeSpan Toggle = TimeSpan.FromMilliseconds(150);
-    public static readonly TimeSpan Dropdown = TimeSpan.FromMilliseconds(180);
-    public static readonly TimeSpan Dialog = TimeSpan.FromMilliseconds(200);
-    public static readonly TimeSpan Page = TimeSpan.FromMilliseconds(220);
-    public static readonly TimeSpan Sidebar = TimeSpan.FromMilliseconds(240);
+    // One timing scale for the whole app, shared with the "Awakening" intro (same curves, shorter durations).
+    public static readonly TimeSpan Hover = TimeSpan.FromMilliseconds(140);      // hover lift
+    public static readonly TimeSpan Press = TimeSpan.FromMilliseconds(100);      // press squeeze
+    public static readonly TimeSpan PopTime = TimeSpan.FromMilliseconds(220);        // favourite star
+    public static readonly TimeSpan Dialog = TimeSpan.FromMilliseconds(220);     // notices in / out
+    public static readonly TimeSpan PageExit = TimeSpan.FromMilliseconds(120);   // outgoing page fades under the new one
+    public static readonly TimeSpan Page = TimeSpan.FromMilliseconds(240);       // incoming page
+    public static readonly TimeSpan Theme = TimeSpan.FromMilliseconds(300);      // theme / material cross-fade
 
-    /// <summary>Ease-out used for entrances and hover; ease-in-out for value changes.</summary>
-    private static readonly Vector2 OutA = new(0.1f, 0.9f), OutB = new(0.2f, 1f);
+    /// <summary>
+    /// Easing, identical to the intro's: quintic-like ease-out for entrances and hover, cubic ease-out for fades,
+    /// symmetric cubic ease-in-out for value changes and hand-offs. No overshoot anywhere.
+    /// </summary>
+    private static readonly Vector2 OutA = new(0.22f, 1f), OutB = new(0.36f, 1f);
+    private static readonly Vector2 FadeA = new(0.33f, 1f), FadeB = new(0.68f, 1f);
     private static readonly Vector2 InOutA = new(0.65f, 0f), InOutB = new(0.35f, 1f);
 
     public static bool Enabled => App.Controller is not null && ThemeService.AnimationsAllowed(App.Settings);
@@ -42,6 +47,7 @@ public static class Motion
     }
 
     private static CompositionEasingFunction EaseOut(Compositor c) => c.CreateCubicBezierEasingFunction(OutA, OutB);
+    private static CompositionEasingFunction EaseFade(Compositor c) => c.CreateCubicBezierEasingFunction(FadeA, FadeB);
     public static CompositionEasingFunction EaseInOut(Compositor c) => c.CreateCubicBezierEasingFunction(InOutA, InOutB);
 
     private static void AnimateTranslation(Visual v, Vector3 to, TimeSpan d, Vector3? from = null)
@@ -67,7 +73,7 @@ public static class Motion
 
     // ---------------- page transitions ----------------
 
-    /// <summary>New page: short fade with a gentle 14 px rise. With motion blur, a fading motion trail follows it.</summary>
+    /// <summary>New page: short fade with a gentle 10 px rise. With motion blur, a fading motion trail follows it.</summary>
     public static void PageEnter(FrameworkElement page, UIElement? trailHost)
     {
         var v = V(page);
@@ -77,9 +83,24 @@ public static class Motion
             v.Opacity = 1; v.Properties.InsertVector3("Translation", Vector3.Zero);
             return;
         }
-        AnimateScalar(v, "Opacity", 1f, Page, from: 0f);
-        AnimateTranslation(v, Vector3.Zero, Page, from: new Vector3(0, 14, 0));
-        if (MotionBlur && trailHost is not null) MotionTrail.Play(page, trailHost, new Vector3(0, 14, 0), Page);
+        AnimateScalar(v, "Opacity", 1f, Page, from: 0f, ease: EaseFade(v.Compositor));
+        AnimateTranslation(v, Vector3.Zero, Page, from: new Vector3(0, 10, 0));
+        if (MotionBlur && trailHost is not null) MotionTrail.Play(page, trailHost, new Vector3(0, 10, 0), Page);
+    }
+
+    /// <summary>
+    /// Fades a still image of the outgoing content away (the page itself is already gone from the Frame), so pages
+    /// cross-fade instead of cutting. <paramref name="done"/> runs when it has finished or was replaced.
+    /// </summary>
+    public static void FadeAway(UIElement snapshot, TimeSpan duration, Action done)
+    {
+        var v = V(snapshot);
+        if (!Enabled) { v.Opacity = 0; done(); return; }
+        var c = v.Compositor;
+        var batch = c.CreateScopedBatch(CompositionBatchTypes.Animation);
+        AnimateScalar(v, "Opacity", 0f, duration, from: 1f, ease: EaseFade(c));
+        batch.End();
+        batch.Completed += (_, _) => done();
     }
 
     // ---------------- notices ----------------
@@ -88,7 +109,7 @@ public static class Motion
     {
         if (!Enabled) return;
         var v = V(e);
-        AnimateScalar(v, "Opacity", 1f, Dialog, from: 0f);
+        AnimateScalar(v, "Opacity", 1f, Dialog, from: 0f, ease: EaseFade(v.Compositor));
         AnimateTranslation(v, Vector3.Zero, Dialog, from: new Vector3(0, fromY, 0));
     }
 
@@ -98,15 +119,15 @@ public static class Motion
         var v = V(e);
         var c = v.Compositor;
         var batch = c.CreateScopedBatch(CompositionBatchTypes.Animation);
-        AnimateScalar(v, "Opacity", 0f, Dialog);
-        AnimateTranslation(v, new Vector3(0, 8, 0), Dialog);
+        AnimateScalar(v, "Opacity", 0f, PageExit, ease: EaseFade(c));
+        AnimateTranslation(v, new Vector3(0, 6, 0), PageExit);
         batch.End();
         batch.Completed += (_, _) => done();
     }
 
     // ---------------- micro-interactions ----------------
 
-    /// <summary>A small scale "pop" (e.g. when a favorite star is toggled).</summary>
+    /// <summary>A small, restrained scale "pop" (e.g. when a favorite star is toggled): up to 112 %, no bounce.</summary>
     public static void Pop(FrameworkElement e)
     {
         if (!Enabled) return;
@@ -114,9 +135,9 @@ public static class Motion
         v.CenterPoint = new Vector3((float)e.ActualWidth / 2, (float)e.ActualHeight / 2, 0);
         var c = v.Compositor;
         var a = c.CreateVector3KeyFrameAnimation();
-        a.InsertKeyFrame(0.4f, new Vector3(1.25f, 1.25f, 1), EaseOut(c));
+        a.InsertKeyFrame(0.35f, new Vector3(1.12f, 1.12f, 1), EaseOut(c));
         a.InsertKeyFrame(1f, Vector3.One, EaseInOut(c));
-        a.Duration = TimeSpan.FromMilliseconds(260);
+        a.Duration = PopTime;
         v.StartAnimation("Scale", a);
     }
 
@@ -186,7 +207,7 @@ public static class Motion
     {
         if (!Enabled) return;
         var v = V(root);
-        AnimateScalar(v, "Opacity", 1f, Page, from: 0f);
+        AnimateScalar(v, "Opacity", 1f, Page, from: 0f, ease: EaseFade(v.Compositor));
         AnimateTranslation(v, Vector3.Zero, Page, from: new Vector3(0, 8, 0));
     }
 }

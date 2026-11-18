@@ -43,6 +43,13 @@ public sealed class TranslucentBackdrop : SystemBackdrop
         _controller.SetSystemBackdropConfiguration(_config);
     }
 
+    /// <summary>
+    /// NOXEL owns this backdrop's configuration (theme and "keep blur when inactive"); a theme change replaces the
+    /// backdrop with a new one. The base implementation would push the default configuration and throws
+    /// ArgumentException ("target") while the window's theme is changing, so it is deliberately not called.
+    /// </summary>
+    protected override void OnDefaultSystemBackdropConfigurationChanged(ICompositionSupportsSystemBackdrop target, XamlRoot xamlRoot) { }
+
     protected override void OnTargetDisconnected(ICompositionSupportsSystemBackdrop target)
     {
         base.OnTargetDisconnected(target);

@@ -40,6 +40,9 @@ public static class Program
         // Portable update helper mode: this is the new, verified NOXEL.exe replacing the old one. No UI, no instance lock.
         if (args.Any(a => a.Equals("--apply-portable-update", StringComparison.OrdinalIgnoreCase)))
             return Services.PortableUpdater.Run(args);
+        // Monitor Control helper (started elevated only when the user enables/disables a monitor device). No UI.
+        if (Services.MonitorControlService.IsHelperInvocation(args))
+            return Services.MonitorControlService.RunHelper(args);
 
         Instance = new SingleInstance(testScope);
         if (!Instance.IsFirst)

@@ -113,7 +113,7 @@
                             </StackPanel>
                             <StackPanel Spacing="2">
                                 <TextBlock Text="COLOR PROFILE" Style="{StaticResource SectionLabel}" />
-                                <TextBlock x:Name="IccText" Style="{StaticResource StatValue}" FontWeight="SemiBold" FontSize="12.5" FontFamily="{ThemeResource ContentControlThemeFontFamily}" TextTrimming="CharacterEllipsis" />
+                                <TextBlock x:Name="IccText" Style="{StaticResource StatValue}" FontWeight="SemiBold" FontSize="13" FontFamily="{ThemeResource ContentControlThemeFontFamily}" TextTrimming="CharacterEllipsis" />
                             </StackPanel>
                         </VariableSizedWrapGrid>
                     </Grid>

@@ -3,6 +3,41 @@
 `scripts/release.ps1` copies the section for the version being released into the GitHub release, so each version
 needs a `## x.y.z` section here before it can be released.
 
+## 1.0.3
+
+**Downloads**
+* `NOXEL-Setup.exe` — Installer for Windows x64.
+* `NOXEL.exe` — Portable, self-contained Windows x64 app.
+* `NOXEL-source.zip` — Matching source code and build instructions (GPL-3.0-only).
+
+### New
+* **Monitor Control:** enable or disable a monitor's device (like Device Manager) and disconnect or reconnect a
+  display from the desktop. Every change asks first, can be undone with a countdown, and NOXEL never lets you
+  remove your last screen. Administrator approval is requested only for device changes.
+* **New app icon** and the "N Eye" mark across the app, the installer and the dashboard.
+* **New startup intro, "The Awakening":** the N Eye forms from a line, its star wakes, and the logo hands over to
+  the app. About 3 seconds, skippable with a click or any key; "Play intro on launch" works as before.
+
+### Improvements
+* Smoother, more consistent motion: pages cross-fade, theme changes fade, and every animation uses the same timing
+  and easing. Pages keep their scroll position.
+* Text fields are vertically centered (placeholder and typed text alike) and no longer show an underline; focus is
+  an even accent outline.
+* Resolution cards on the Display page fill the row at any window width.
+* The gamma control re-checks itself when monitors change, explains when a disabled monitor is what blocks it, and
+  resets gamma to its default (also on the screen) when it becomes unavailable.
+* The resolution search box is simply labeled "Search".
+
+### Fixes
+* Switching theme with the Translucent window material no longer shows a "Something went wrong" error.
+* Monitor Control no longer shows a misleading "Restart needed" label; enabling or disabling applies immediately.
+
+### Validation
+* 93 automated tests pass. The release was tested by the user, including Monitor Control and gamma on their PC.
+* Monitor Control has only been tested on NVIDIA graphics. If a monitor is disabled in Device Manager (outside
+  NOXEL) while gamma is changed, the screen keeps that gamma until the monitor is enabled again; Windows blocks
+  every gamma change for a disabled monitor.
+
 ## 1.0.2
 
 **Downloads**

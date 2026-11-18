@@ -20,6 +20,11 @@ public sealed class GammaRampEngine
     private readonly Dictionary<string, ushort[]> _originals = new(StringComparer.OrdinalIgnoreCase);
     public IReadOnlyDictionary<string, ushort[]> Originals => _originals;
     public bool IsApplied { get; private set; }
+    /// <summary>
+    /// A restore that Windows refused (e.g. the monitor device was disabled while a ramp was loaded: the GPU keeps
+    /// showing the ramp but GDI can no longer reach it). Finished by <see cref="Restore"/> once ramps work again.
+    /// </summary>
+    public bool RestorePending { get; private set; }
     /// <summary>Strength actually used in the last apply (1 = full; lower when Windows rejected the full ramp).</summary>
     public double LastStrength { get; private set; } = 1;
 
@@ -99,12 +104,19 @@ public sealed class GammaRampEngine
 
     public void Restore()
     {
+        bool all = true;
         foreach (var (d, r) in _originals)
-        {
-            if (!TryWrite(d, r)) TryWrite(d, ColorMath.IdentityRamp());
-        }
+            if (!RestoreDevice(d)) all = false;
+        RestorePending = !all;
         IsApplied = false;
         LastStrength = 1;
+    }
+
+    /// <summary>Puts one display's original ramp back (identity if the original is unknown or rejected).</summary>
+    public bool RestoreDevice(string device)
+    {
+        if (_originals.TryGetValue(device, out var r) && TryWrite(device, r)) return true;
+        return TryWrite(device, ColorMath.IdentityRamp());
     }
 
     /// <summary>Forget originals for devices that disappeared (they'll be re-captured when they return).</summary>

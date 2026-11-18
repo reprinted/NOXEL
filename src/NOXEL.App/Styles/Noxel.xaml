@@ -70,6 +70,11 @@
             <SolidColorBrush x:Key="ComboBoxBorderBrush" Color="#45454F" />
             <SolidColorBrush x:Key="ComboBoxBorderBrushPointerOver" Color="#45454F" />
             <SolidColorBrush x:Key="ComboBoxBorderBrushPressed" Color="#45454F" />
+            <!-- Text fields: an even border like the dropdowns (no lighter bottom "underline"); focus = even accent outline. -->
+            <SolidColorBrush x:Key="TextControlBorderBrush" Color="#45454F" />
+            <SolidColorBrush x:Key="TextControlBorderBrushPointerOver" Color="#45454F" />
+            <StaticResource x:Key="TextControlBorderBrushFocused" ResourceKey="NoxelAccent" />
+            <Thickness x:Key="TextControlBorderThemeThicknessFocused">1</Thickness>
             <SolidColorBrush x:Key="ComboBoxForeground" Color="#F5F5F7" />
             <SolidColorBrush x:Key="ComboBoxForegroundFocused" Color="#F5F5F7" />
             <SolidColorBrush x:Key="ComboBoxForegroundFocusedPressed" Color="#F5F5F7" />
@@ -147,6 +152,11 @@
             <SolidColorBrush x:Key="ComboBoxBorderBrush" Color="#D7D7DF" />
             <SolidColorBrush x:Key="ComboBoxBorderBrushPointerOver" Color="#D7D7DF" />
             <SolidColorBrush x:Key="ComboBoxBorderBrushPressed" Color="#D7D7DF" />
+            <!-- Text fields: an even border like the dropdowns (no lighter bottom "underline"); focus = even accent outline. -->
+            <SolidColorBrush x:Key="TextControlBorderBrush" Color="#D7D7DF" />
+            <SolidColorBrush x:Key="TextControlBorderBrushPointerOver" Color="#D7D7DF" />
+            <StaticResource x:Key="TextControlBorderBrushFocused" ResourceKey="NoxelAccent" />
+            <Thickness x:Key="TextControlBorderThemeThicknessFocused">1</Thickness>
             <SolidColorBrush x:Key="ComboBoxForeground" Color="#202024" />
             <SolidColorBrush x:Key="ComboBoxForegroundFocused" Color="#202024" />
             <SolidColorBrush x:Key="ComboBoxForegroundFocusedPressed" Color="#202024" />
@@ -246,6 +256,8 @@
         <Setter Property="Padding" Value="12,10" />
         <Setter Property="TextAlignment" Value="Left" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
+        <!-- The default template ignores VerticalContentAlignment; this makes text and placeholder honour it. -->
+        <Setter Property="infra:TextFieldAlignment.HonorVerticalContentAlignment" Value="True" />
     </Style>
     <Style TargetType="ComboBox" BasedOn="{StaticResource DefaultComboBoxStyle}">
         <Setter Property="infra:DropdownPresentation.BelowField" Value="True" />

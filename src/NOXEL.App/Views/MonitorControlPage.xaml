@@ -1,0 +1,66 @@
+<Page
+    x:Class="Noxel.App.Views.MonitorControlPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Background="Transparent">
+    <Grid>
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="Layout">
+                <VisualState x:Name="Wide" />
+                <VisualState x:Name="Medium" />
+                <VisualState x:Name="Narrow">
+                    <VisualState.Setters>
+                        <Setter Target="PagePanel.Padding" Value="16,8,16,24" />
+                        <Setter Target="PagePanel.Spacing" Value="16" />
+                        <Setter Target="PageHeading.FontSize" Value="26" />
+                        <Setter Target="ExplainGrid.ColumnDefinitions[1].Width" Value="0" />
+                        <Setter Target="DeviceExplain.(Grid.Column)" Value="0" />
+                        <Setter Target="DeviceExplain.(Grid.Row)" Value="1" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
+        <ScrollView x:Name="PageScroll">
+            <StackPanel x:Name="PagePanel" Padding="32,12,32,32" Spacing="24" MaxWidth="1320">
+                <Grid ColumnSpacing="12">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel>
+                        <TextBlock Text="Monitor Control" x:Name="PageHeading" Style="{StaticResource PageTitle}" />
+                        <TextBlock Text="Take a display off the desktop, or turn a monitor's device off and on like Device Manager. Both undo themselves unless you confirm." Style="{StaticResource PageSubtitle}" />
+                    </StackPanel>
+                    <Button x:Name="RefreshButton" Grid.Column="1" VerticalAlignment="Bottom" Click="OnRefresh" AutomationProperties.Name="Refresh monitors">
+                        <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE72C;" FontSize="13" /><TextBlock Text="Refresh" /></StackPanel>
+                    </Button>
+                </Grid>
+
+                <Border Style="{StaticResource GlassCard}">
+                    <Grid x:Name="ExplainGrid" ColumnSpacing="24" RowSpacing="16">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <StackPanel Spacing="6">
+                            <TextBlock Text="Disconnect display" Style="{StaticResource CardTitle}" />
+                            <TextBlock Style="{StaticResource MutedText}" Text="Removes the display from your desktop, like &quot;Disconnect this display&quot; in Windows Settings. The monitor stays installed and Reconnect brings it back. No administrator approval needed." />
+                        </StackPanel>
+                        <StackPanel x:Name="DeviceExplain" Grid.Column="1" Spacing="6">
+                            <TextBlock Text="Disable device" Style="{StaticResource CardTitle}" />
+                            <TextBlock Style="{StaticResource MutedText}" Text="Turns the monitor's device off in Windows, the same as Device Manager. Needs administrator approval each time. Some graphics drivers keep showing a picture on a disabled monitor; Windows then just stops using its monitor driver (colour profile, brightness control)." />
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <TextBlock x:Name="ScanNote" Style="{StaticResource FaintText}" Visibility="Collapsed" />
+                <StackPanel x:Name="Rows" Spacing="16" />
+            </StackPanel>
+        </ScrollView>
+    </Grid>
+</Page>

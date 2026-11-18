@@ -25,6 +25,10 @@ public sealed class MonitorInfo
     /// <summary>EDID manufacturer+product key, used as a fallback match when the device path changes.</summary>
     public required string EdidKey { get; init; }
     public required string FriendlyName { get; init; }
+    /// <summary>Display target id from QueryDisplayConfig (drivers also use it as the monitor device's UID).</summary>
+    public uint TargetId { get; init; }
+    /// <summary>Adapter LUID of the target, packed as (HighPart &lt;&lt; 32) | LowPart.</summary>
+    public long TargetAdapter { get; init; }
     public string AdapterName { get; init; } = "";
     public string Connection { get; init; } = "Unknown";
     public bool IsPrimary { get; init; }

@@ -16,12 +16,13 @@ NOXEL is free software under the [GNU General Public License v3.0 only](LICENSE)
 | Dashboard | Live monitor data (name, resolution, exact refresh rate, max Hz, native mode, color profile, HDR), active preset, favorites, quick actions. |
 | Display | Every driver-exposed mode per monitor, refresh-rate picker, favorites, custom-resolution lookup, native/stretched setup. Every change asks **Keep / Revert** and reverts by itself after 15 s; an interrupted change is rolled back on the next start. |
 | Color Studio | Digital vibrance (NVIDIA driver), saturation, brightness, contrast, temperature (Windows color matrix), gamma (where Windows allows it). Live preview, compare, look codes. Unavailable controls are disabled with the reason. |
+| Monitor Control | Enable or disable a monitor's device (as in Device Manager) and disconnect or reconnect a display from the desktop. Asks first, undoes itself after 15 s unless you keep the change, and never removes your last screen. |
 | Presets | Display mode + colors in one profile, per monitor, with favorites, hotkeys, import/export and protected built-ins. |
 | Shell | Global hotkeys (`RegisterHotKey`, no keyboard hooks), tray menu, compact always-on-top view, single instance, optional start with Windows. |
 | Updates | Checks [NOXEL-Releases](https://github.com/reprinted/NOXEL-Releases) at start and daily (notify only by default). Installs only after size, SHA-256 and version checks, never during a pending display change. |
 
-Privacy: no telemetry, accounts or administrator rights. The only network access is the update check (can be set
-to manual). Settings and presets are JSON files in `%LOCALAPPDATA%\NOXEL`.
+Privacy: no telemetry or accounts. Administrator approval is asked for only when you enable or disable a monitor
+device in Monitor Control. The only network access is the update check (can be set to manual). Settings and presets are JSON files in `%LOCALAPPDATA%\NOXEL`.
 
 ## Compatibility
 

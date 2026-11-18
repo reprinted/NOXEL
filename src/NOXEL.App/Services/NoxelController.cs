@@ -75,7 +75,7 @@ public sealed class NoxelController
     public event Action<WindowRequest>? WindowRequested;
     public event Action? ExitRequested;
 
-    private DispatcherQueueTimer? _topologyTimer, _reapplyTimer, _saveTimer;
+    private DispatcherQueueTimer? _topologyTimer, _reapplyTimer, _saveTimer, _rampRecheckTimer;
     private volatile IReadOnlyList<TrayMenuItem> _traySnapshot = Array.Empty<TrayMenuItem>();
     private readonly Dictionary<int, Guid> _trayPresetIds = new();
     private bool _shutDown;
@@ -97,6 +97,11 @@ public sealed class NoxelController
         await Task.Run(() =>
         {
             displayRecovery = DisplayChangeManager.RecoverFromCrash(Display);
+            // A Monitor Control "Disconnect display" that was never confirmed (NOXEL closed or crashed meanwhile).
+            if (MonitorControlService.RecoverPendingLayout() is { } layout)
+                displayRecovery = (displayRecovery is null ? "" : displayRecovery + " ") + (layout.Success
+                    ? "A display NOXEL had disconnected without your confirmation was put back."
+                    : layout.Message);
             Presets.Load();
             Host = new NativeHost();
             Monitors = Display.Enumerate();
@@ -121,6 +126,7 @@ public sealed class NoxelController
         if (Settings.StartWithWindows != StartupRegistration.IsEnabled() && Settings.StartWithWindows)
             StartupRegistration.SetEnabled(true); // exe moved since last run: refresh the path
 
+        ResetBlockedGamma(notify: false);
         if (Settings.ColorEnabled && Settings.ReapplyLookOnStartup) ApplyColorInternal(report: false);
         else Settings.ColorEnabled = false;
 
@@ -164,7 +170,16 @@ public sealed class NoxelController
                 {
                     RefreshMonitors();
                     Color.OnTopologyChanged(Monitors);
+                    ResetBlockedGamma(notify: true);
                     ColorChanged?.Invoke();
+                    // A monitor device that was just enabled can take a moment before Windows accepts gamma ramps.
+                    Debounce(ref _rampRecheckTimer, TimeSpan.FromSeconds(2), () =>
+                    {
+                        if (!Color.RecheckRamp(Monitors)) return;
+                        ResetBlockedGamma(notify: true);
+                        if (Settings.ColorEnabled) Color.Reapply();
+                        ColorChanged?.Invoke();
+                    });
                 });
                 break;
             case SystemSignal.SessionUnlocked:
@@ -204,6 +219,34 @@ public sealed class NoxelController
         UpdateTray();
         ColorChanged?.Invoke();
         return r;
+    }
+
+    /// <summary>
+    /// When Windows blocks gamma ramps (e.g. the monitor device was just disabled) the gamma value can't be shown on
+    /// screen any more, so it goes back to its default (1.00) instead of lingering as a setting that does nothing.
+    /// It is not counted as an edit of the active preset; the preset itself keeps its gamma.
+    /// </summary>
+    private void ResetBlockedGamma(bool notify)
+    {
+        if (Color.Capabilities.RampAvailable || Settings.WorkingColor.GammaIsDefault) return;
+        Settings.WorkingColor = Settings.WorkingColor with { Gamma = ColorSettings.GammaRange.Default };
+        if (Settings.ColorEnabled) Color.Apply(Settings.WorkingColor);
+        SaveSoon();
+        if (notify)
+            Raise("Gamma reset", "Gamma is back to 1.00 because Windows no longer allows gamma changes on this display.",
+                  NoticeKind.Info, quietWhenHidden: true);
+    }
+
+    /// <summary>Called right before Monitor Control disables a monitor device: gamma there must be undone first.</summary>
+    public void PrepareMonitorDisable(MonitorInfo? display)
+    {
+        if (display is not null) Color.ResetRampFor(display.DeviceName);
+    }
+
+    /// <summary>A monitor disable didn't happen (UAC cancelled, failed): put the look back on that display.</summary>
+    public void MonitorDisableCancelled()
+    {
+        if (Settings.ColorEnabled) Color.Reapply();
     }
 
     public void ToggleColor() => SetColorEnabled(!Settings.ColorEnabled);

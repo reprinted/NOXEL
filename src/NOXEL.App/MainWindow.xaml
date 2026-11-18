@@ -42,7 +42,7 @@
                     <ColumnDefinition x:Name="CaptionInset" Width="140" />
                 </Grid.ColumnDefinitions>
                 <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
-                    <ctl:ShadowText Text="NOXEL" TextStyle="{StaticResource Wordmark}" VerticalAlignment="Center" />
+                    <ctl:ShadowText x:Name="TitleWordmark" Text="NOXEL" TextStyle="{StaticResource Wordmark}" VerticalAlignment="Center" />
                     <Border x:Name="VersionBadge" Style="{StaticResource Badge}">
                         <TextBlock x:Name="VersionText" Text="v1.0" Style="{StaticResource BadgeText}" FontFamily="{StaticResource NoxelMono}" />
                     </Border>
@@ -79,6 +79,9 @@
                     <NavigationViewItem Content="Presets" Tag="Presets">
                         <NavigationViewItem.Icon><FontIcon Glyph="&#xE8F1;" /></NavigationViewItem.Icon>
                     </NavigationViewItem>
+                    <NavigationViewItem Content="Monitor Control" Tag="Monitors">
+                        <NavigationViewItem.Icon><FontIcon Glyph="&#xE772;" /></NavigationViewItem.Icon>
+                    </NavigationViewItem>
                 </NavigationView.MenuItems>
                 <NavigationView.FooterMenuItems>
                     <NavigationViewItem Content="Compact view" Tag="Compact" SelectsOnInvoked="False" ToolTipService.ToolTip="Small always-available window">
@@ -87,7 +90,11 @@
                 </NavigationView.FooterMenuItems>
 
                 <Grid x:Name="ContentHost">
-                    <Frame x:Name="ContentFrame" CacheSize="5" Navigated="OnFrameNavigated" />
+                    <!-- Still image of the page being left; it fades under the incoming page (cross-fade, no cut). -->
+                    <Image x:Name="ExitShot" Visibility="Collapsed" IsHitTestVisible="False" Stretch="Fill"
+                           HorizontalAlignment="Left" VerticalAlignment="Top" AutomationProperties.AccessibilityView="Raw" />
+                    <!-- Six pages, all cached (NavigationCacheMode.Enabled): none is rebuilt and scroll positions are kept. -->
+                    <Frame x:Name="ContentFrame" CacheSize="6" Navigated="OnFrameNavigated" />
                     <Grid x:Name="MotionLayer" IsHitTestVisible="False" />
                     <ProgressRing x:Name="LoadingRing" IsActive="True" Width="40" Height="40" HorizontalAlignment="Center" VerticalAlignment="Center" />
                 </Grid>
@@ -112,6 +119,9 @@
             </Border>
         </Grid>
 
+        <!-- Still image of the window before a theme change; fades out over the new theme. -->
+        <Image x:Name="ThemeShot" Visibility="Collapsed" IsHitTestVisible="False" Stretch="Fill"
+               HorizontalAlignment="Left" VerticalAlignment="Top" AutomationProperties.AccessibilityView="Raw" />
         <anim:EyeSplash x:Name="Splash" Visibility="Collapsed" />
     </Grid>
 </Window>

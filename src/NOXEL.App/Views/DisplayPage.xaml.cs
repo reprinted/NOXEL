@@ -99,6 +99,7 @@ public sealed partial class DisplayPage : Page
         bool was = _updating;
         _updating = true;
         ResGrid.ItemsSource = list;
+        DispatcherQueue.TryEnqueue(() => FitCards(ResGrid.ActualWidth));
         EmptyText.Visibility = list.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
         if (keep is not null)
         {
@@ -324,4 +325,16 @@ public sealed partial class DisplayPage : Page
         GpuScaling.Center => "centered",
         _ => "driver / monitor default",
     };
+
+    private void OnResGridSizeChanged(object sender, SizeChangedEventArgs e) => FitCards(e.NewSize.Width);
+
+    /// <summary>As many columns as fit at 176 px or more, then the cards share the row, so there is never an empty strip.</summary>
+    private void FitCards(double width)
+    {
+        if (ResGrid.ItemsPanelRoot is not ItemsWrapGrid panel || width <= 0) return;
+        const double min = 176, gap = 10; // gap = the item container's right margin (NoxelGridViewItem)
+        int cols = Math.Max(1, (int)((width + gap) / (min + gap)));
+        double slot = Math.Floor(width / cols); // each slot includes the card's right margin, so the row never exceeds the width
+        if (double.IsNaN(panel.ItemWidth) || Math.Abs(panel.ItemWidth - slot) > 0.5) panel.ItemWidth = slot;
+    }
 }
