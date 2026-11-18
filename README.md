@@ -1,26 +1,35 @@
-<img src="src/NOXEL.App/Assets/noxel-256.png" alt="NOXEL app icon" width="96" height="96">
-
 # NOXEL
 
-NOXEL is a Windows 10/11 x64 display utility. Switch resolution and refresh rate, toggle native or stretched modes, and save display and color settings together in presets you can apply with hotkeys.
+<img src="src/NOXEL.App/Assets/noxel-256.png" alt="NOXEL app icon" width="80" height="80" align="right">
 
-| Download | Choose this if |
-| --- | --- |
-| **[Windows installer](https://github.com/reprinted/NOXEL-Releases/releases/latest/download/NOXEL-Setup.exe)** | You want the recommended per-user installation. |
-| [Portable executable](https://github.com/reprinted/NOXEL-Releases/releases/latest/download/NOXEL.exe) | You want to run NOXEL without installing it. |
+**Display settings and presets for Windows 10/11 x64.**
 
-[Release notes and checksums](https://github.com/reprinted/NOXEL-Releases/releases/latest) · [Compatibility](#compatibility)
+Switch resolution and refresh rate, toggle between native and stretched modes, and save display and color settings together in presets you can apply with hotkeys.
 
-<p align="center">
-  <img src="docs/screenshots/noxel-display-resolutions.png" alt="NOXEL Display page: monitor details, resolution cards with the current 1440×1080 mode selected, and refresh-rate and GPU scaling controls">
-</p>
-<p align="center"><sub>NOXEL v1.0.3 on Windows 11</sub></p>
+**[Download the Windows installer](https://github.com/reprinted/NOXEL-Releases/releases/latest/download/NOXEL-Setup.exe)** · [Portable version](https://github.com/reprinted/NOXEL-Releases/releases/latest/download/NOXEL.exe) · [Release notes and checksums](https://github.com/reprinted/NOXEL-Releases/releases/latest)
 
-| Dashboard | Color Studio | Presets |
-|---|---|---|
-| ![NOXEL Dashboard: current resolution, refresh rate, native mode and colour profile, active preset, favorites and quick actions](docs/screenshots/noxel-dashboard.png) | ![NOXEL Color Studio: sliders for digital vibrance, saturation, brightness and contrast, with apply, compare and import actions](docs/screenshots/noxel-color-studio.png) | ![NOXEL Presets: built-in presets (Original, Clarity, Vibrant, Cinema, After Hours, Competitive) with their settings and Apply buttons](docs/screenshots/noxel-presets.png) |
+## App preview
 
-NOXEL is licensed under the [GNU General Public License v3.0 only](LICENSE).
+![NOXEL Dashboard showing the active display mode, color profile, presets, and quick actions](docs/screenshots/noxel-dashboard.png)
+
+*NOXEL v1.0.3 on Windows 11.*
+
+<details>
+<summary>See Display, Color Studio, and Presets</summary>
+
+### Display
+
+![Display page showing available resolutions, refresh rates, and GPU scaling](docs/screenshots/noxel-display-resolutions.png)
+
+### Color Studio
+
+![Color Studio showing live preview and controls for vibrance, saturation, brightness, and contrast](docs/screenshots/noxel-color-studio.png)
+
+### Presets
+
+![Presets page showing built-in looks and options to save, import, export, and apply presets](docs/screenshots/noxel-presets.png)
+
+</details>
 
 ## Features
 
